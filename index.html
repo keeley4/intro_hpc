@@ -66,7 +66,7 @@ main { min-height: 0; overflow: auto; }
 main > .wrap { height: 100%; padding-block: 14px; }
 .mod { height: 100%; display: grid; grid-template-columns: minmax(300px, 0.95fr) minmax(320px, 1.05fr); gap: 28px; }
 .left { display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0; }
-.right { min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 10px; justify-content: center; }
+.right { min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 10px; justify-content: flex-start; padding-top: 38px; }
 .track { align-self: flex-start; font: 700 0.68rem var(--f-head); letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 8px; color: var(--il-blue); background: var(--il-storm-95); }
 .track.lap { background: var(--il-orange); color: var(--il-blue); }
 .track.clu { background: var(--il-blue); color: #fff; }
@@ -102,8 +102,8 @@ input[type=range] { width: 100%; accent-color: var(--il-blue); margin: 4px 0; he
 .note { font-size: 0.88rem; color: var(--muted); }
 
 /* visuals */
-.fit { flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; }
-canvas.map { display: block; height: min(100%, 440px); max-width: 100%; aspect-ratio: 1; border: 2px solid var(--il-blue); }
+.fit { flex: 0 1 auto; min-height: 0; display: flex; align-items: flex-start; justify-content: center; }
+canvas.map { display: block; height: min(440px, calc(100dvh - 300px)); max-width: 100%; aspect-ratio: 1; border: 2px solid var(--il-blue); }
 svg { display: block; width: 100%; height: auto; max-height: 100%; }
 .key { display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.88rem; color: var(--muted); }
 .key span::before { content: ""; display: inline-block; width: 0.85em; height: 0.85em; margin-right: 6px; vertical-align: -1px; }
@@ -210,6 +210,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
   .app { height: auto; min-height: 100dvh; }
   main { overflow: visible; }
   .mod { grid-template-columns: 1fr; height: auto; }
+  .right { padding-top: 0; }
   canvas.map { height: auto; width: min(100%, 380px); }
   footer { position: sticky; bottom: 0; }
   .verdicts { grid-template-columns: 1fr; }
@@ -325,7 +326,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
         <p class="say" id="m-say" aria-live="polite"></p>
       </div>
       <div class="right">
-        <div class="fit"><svg id="map" viewBox="0 0 400 400" style="max-width:440px" role="img" aria-label="A map cut into patches, one per core"></svg></div>
+        <div class="fit"><svg id="map" viewBox="0 0 400 400" style="max-width:min(440px, calc(100dvh - 330px))" role="img" aria-label="A map cut into patches, one per core"></svg></div>
         <div class="key"><span class="ks">real work</span><span class="kt">halo exchange (talking)</span></div>
       </div>
     </section>
