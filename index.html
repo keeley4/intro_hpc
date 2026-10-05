@@ -159,6 +159,8 @@ svg { display: block; width: 100%; height: auto; max-height: 100%; }
 .sowhat li + li { margin-top: 3px; }
 .sowhat code { font: 0.85rem var(--f-code); background: #fff; padding: 0 4px; white-space: nowrap; }
 
+.segrow { display: flex; gap: 14px; flex-wrap: wrap; }
+
 /* ICRN spec chips */
 .specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 8px; }
 .spec { background: var(--il-storm-95); border-top: 4px solid var(--il-orange); padding: 7px 9px; }
@@ -319,19 +321,22 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     <!-- 4 talking -->
     <section class="mod clumod" id="m-communication" hidden>
       <div class="left">
-        <span class="track clu">Cluster</span>
+        <div class="pills"><span class="track clu">Cluster</span><span class="track info">Background: good to know</span></div>
         <h2>The cost of communication</h2>
         <p class="story">The map is split into patches, one per core (<strong>domain decomposition</strong>). Each step, neighbors swap edge values over <strong>MPI</strong>: a <strong>halo exchange</strong>.</p>
         <p class="try">Try: more cores, then the big map</p>
-        <div class="seg" id="hp" role="group" aria-label="Cores"><button data-v="1">1 core</button><button data-v="4">4</button><button data-v="16" aria-pressed="true">16</button><button data-v="64">64</button></div>
-        <div class="seg" id="ms" role="group" aria-label="Map size"><button data-v="16" aria-pressed="true">Small map</button><button data-v="48">Big map</button></div>
+        <div class="segrow"><div class="seg" id="hp" role="group" aria-label="Cores"><button data-v="1">1 core</button><button data-v="4">4</button><button data-v="16" aria-pressed="true">16</button><button data-v="64">64</button></div>
+        <div class="seg" id="ms" role="group" aria-label="Map size"><button data-v="16" aria-pressed="true">Small map</button><button data-v="48">Big map</button></div></div>
         <div>
           <div class="rowlab"><span>1 core alone</span><b id="t1"></b></div><div class="stack"><div class="w" style="width:100%"></div></div>
         </div>
         <div>
           <div class="rowlab"><span id="tp-l"></span><b id="tp"></b></div><div class="stack"><div class="w" id="sw"></div><div class="t" id="st"></div></div>
         </div>
-        <div class="readouts" id="m-ro"></div>
+        <div class="sowhat"><span class="hpc-h">What this means for you</span><ul>
+          <li>More cores is not automatically faster. On small problems, communication eats the gain.</li>
+          <li>Before you request lots of cores, time a few small runs (see <strong>Sizing a job</strong>).</li>
+        </ul></div>
         <p class="say" id="m-say" aria-live="polite"></p>
       </div>
       <div class="right">
@@ -609,10 +614,9 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     $('#tp-l').textContent = P + (P === 1 ? ' core' : ' cores') + ', per step';
     $('#tp').textContent = fmt(tp) + ' units';
     $('#sw').style.width = (work / t1 * 100) + '%'; $('#st').style.width = (ALPHA * talk / t1 * 100) + '%';
-    $('#m-ro').innerHTML = ro('Faster by', fmt(speed, 1) + X, '') + ro('Parallel efficiency', fmt(eff * 100) + '%', eff >= 0.6 ? 'good' : eff >= 0.35 ? 'mid' : 'bad');
     $('#m-say').innerHTML = P === 1
       ? 'One core has nobody to talk to. <em>No waiting.</em>'
-      : P + ' cores should be ' + P + X + ' faster. They are only <em>' + fmt(speed, 1) + X + '</em>. Only <span class="' + (eff >= 0.6 ? 'good' : 'bad') + '">' + fmt(eff * 100) + '%</span> of what you pay for is real work.' + (SIZE === 16 && P >= 16 ? ' <em>Try the big map.</em>' : (SIZE === 48 && P >= 16 ? ' Bigger problems keep more cores busy.' : ''));
+      : P + ' cores should be ' + P + X + ' faster. They are only <em>' + fmt(speed, 1) + X + '</em>. Parallel efficiency: <span class="' + (eff >= 0.6 ? 'good' : 'bad') + '">' + fmt(eff * 100) + '%</span>.' + (SIZE === 16 && P >= 16 ? ' <em>Try the big map.</em>' : (SIZE === 48 && P >= 16 ? ' Bigger problems keep more cores busy.' : ''));
   }
 
   /* ---- 5: seating ---- */
