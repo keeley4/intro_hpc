@@ -150,6 +150,15 @@ svg { display: block; width: 100%; height: auto; max-height: 100%; }
 .hpc dd { margin: 0; color: var(--il-blue); font-weight: 600; }
 .hpc code { font: 0.85rem var(--f-code); background: #fff; padding: 0 4px; }
 
+/* "what this means for you" takeaway + background badge */
+.pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.track.info { background: var(--il-arches-95); color: var(--il-blue); border: 1px solid var(--il-arches); }
+.sowhat { border-left: 4px solid var(--il-orange); background: #fff7f2; padding: 8px 12px; }
+.sowhat .hpc-h { color: var(--il-altgeld); }
+.sowhat ul { margin: 0; padding-left: 18px; font-size: 0.95rem; }
+.sowhat li + li { margin-top: 3px; }
+.sowhat code { font: 0.85rem var(--f-code); background: #fff; padding: 0 4px; white-space: nowrap; }
+
 /* ICRN spec chips */
 .specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 8px; }
 .spec { background: var(--il-storm-95); border-top: 4px solid var(--il-orange); padding: 7px 9px; }
@@ -334,17 +343,17 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     <!-- 5 seating -->
     <section class="mod clumod" id="m-placement" hidden>
       <div class="left">
-        <span class="track clu">Cluster</span>
+        <div class="pills"><span class="track clu">Cluster</span><span class="track info">Background: good to know</span></div>
         <h2>Where your job lands matters</h2>
-        <p class="story">Cores on the same <strong>node</strong> share memory, so they talk almost for free. Cores on different nodes talk over the <strong>network</strong>, which every job on the cluster shares. Slurm picks your nodes.</p>
+        <p class="story">Cores on the same <strong>node</strong> share memory, so they talk almost for free. Cores on different nodes talk over the <strong>network</strong>, which every job on the cluster shares.</p>
         <p class="try">Try: switch the placement</p>
         <div class="seg" id="place" role="group" aria-label="Placement"><button data-v="pack" aria-pressed="true">4 cores on 1 node</button><button data-v="scatter">1 core on each of 4 nodes</button></div>
         <div class="readouts" id="j-ro"></div>
-        <div class="hpc"><span class="hpc-h">In HPC terms</span><dl>
-          <dt>Box</dt><dd>a node</dd>
-          <dt>Blue bar</dt><dd>the interconnect (network)</dd>
-          <dt>Packed placement</dt><dd><code>--nodes=1 --ntasks-per-node=4</code></dd>
-        </dl></div>
+        <div class="sowhat"><span class="hpc-h">What this means for you</span><ul>
+          <li>You don&rsquo;t pick nodes; Slurm does. The defaults are usually fine.</li>
+          <li>One habit helps: if your job fits on one node, ask for one node (<code>--nodes=1</code>).</li>
+          <li>Same job, slower today? Placement and network traffic are common reasons. Time a few runs.</li>
+        </ul></div>
         <p class="say" id="j-say" aria-live="polite"></p>
       </div>
       <div class="right"><svg id="fabric" viewBox="0 0 640 270" role="img" aria-label="Four nodes connected by a shared network"></svg></div>
