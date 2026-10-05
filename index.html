@@ -3,260 +3,444 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<style>html{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
-<title>Not a Big Laptop</title>
-</head>
-<body>
+<title>From Laptop to Cluster</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap">
 <style>
-/* Layout: one story, five steps. Each step = your situation, one thing to try, a live sentence that reacts to what you do. */
+/* Illinois brand: Illini Blue + Illini Orange lead; Montserrat headings, Source Sans body.
+   Supporting colors (Industrial, Arches, Harvest, Prairie) only in charts and status marks. */
 :root {
-  --bg: #EBF0F4; --surface: #F7F9FB; --ink: #121C26; --muted: #4F5E6C; --line: #C6D1DB;
-  --accent: #0B7A85; --accent-ink: #FFFFFF; --accent-soft: #D3EBEE;
-  --ok: #2B7A4B; --warn: #A96A0C; --bad: #B03A26; --warn-soft: #F1DDB5; --grid: #D8E0E7;
-  --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
-  --f-body: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
-  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0C151E; --surface: #132030; --ink: #E5ECF2; --muted: #97A7B6; --line: #26394B;
-    --accent: #4CC3CF; --accent-ink: #06222A; --accent-soft: #123A44;
-    --ok: #5CBF86; --warn: #E0B04A; --bad: #EE7C66; --warn-soft: #4A3A14; --grid: #1E3040; color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #0C151E; --surface: #132030; --ink: #E5ECF2; --muted: #97A7B6; --line: #26394B;
-  --accent: #4CC3CF; --accent-ink: #06222A; --accent-soft: #123A44;
-  --ok: #5CBF86; --warn: #E0B04A; --bad: #EE7C66; --warn-soft: #4A3A14; --grid: #1E3040; color-scheme: dark;
+  --il-blue: #13294B; --il-orange: #FF5F05; --il-altgeld: #C84113;
+  --il-industrial: #1D58A7; --il-arches: #009FD4; --il-harvest: #FCB316; --il-prairie: #006230; --il-earth: #7D3E13;
+  --il-blue-15: #000333; --il-blue-30: #2f4668; --il-blue-90: #e1e7f1; --il-arches-95: #e9f6fb;
+  --il-storm: #707372; --il-storm-10: #252525; --il-storm-30: #474948; --il-storm-80: #C6C7C6; --il-storm-95: #f4f4f4;
+  --bg: #FFFFFF; --surface: var(--il-storm-95); --ink: var(--il-storm-10); --head: var(--il-blue); --muted: var(--il-storm-30); --line: var(--il-storm-80);
+  --ok: var(--il-prairie); --warn: var(--il-earth); --bad: var(--il-altgeld);
+  --f-head: "Montserrat", "Arial Black", Arial, sans-serif;
+  --f-body: "Source Sans 3", "Source Sans Pro", Arial, sans-serif;
+  --f-code: ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
 }
 * { box-sizing: border-box; }
-body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 18px; line-height: 1.45; }
-.wrap { max-width: 840px; margin-inline: auto; padding-inline: 16px; padding-block: 24px 48px; }
-h1, h2 { font-family: var(--f-display); text-wrap: balance; line-height: 1.1; margin: 0; }
-h1 { font-size: clamp(2.2rem, 7vw, 3.3rem); font-weight: 700; letter-spacing: -0.02em; }
-h2 { font-size: clamp(1.6rem, 5vw, 2.1rem); font-weight: 700; }
+[hidden] { display: none !important; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--ink); font: 17px/1.4 var(--f-body); font-variant-numeric: tabular-nums; }
+.app { height: 100dvh; display: grid; grid-template-rows: auto auto auto 1fr auto; }
+.wrap { max-width: 1200px; width: 100%; margin-inline: auto; padding-inline: 16px; }
+h1, h2, h3 { font-family: var(--f-head); color: var(--head); line-height: 1.1; margin: 0; text-wrap: balance; }
 p { margin: 0; }
-.eyebrow { font-family: var(--f-mono); font-size: 0.74rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
-.lede { font-size: 1.15rem; color: var(--muted); }
-header { display: flex; flex-direction: column; gap: 8px; padding-bottom: 18px; }
-nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-block: 1px solid var(--line); margin-inline: -16px; padding: 8px 16px; display: flex; gap: 6px; overflow-x: auto; }
-nav button { flex: 1 0 auto; display: flex; align-items: center; gap: 8px; font: 600 0.92rem var(--f-body); color: var(--muted); background: transparent; border: 1px solid transparent; border-radius: 4px; padding: 7px 10px; cursor: pointer; white-space: nowrap; }
-nav button b { font-family: var(--f-mono); font-weight: 500; font-size: 0.78rem; border: 1px solid var(--line); border-radius: 50%; width: 1.6rem; height: 1.6rem; display: inline-grid; place-items: center; }
-nav button[aria-selected="true"] { color: var(--ink); background: var(--surface); border-color: var(--line); }
-nav button[aria-selected="true"] b { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+a { color: var(--il-industrial); }
+a:hover, a:focus { color: var(--il-altgeld); }
+:focus-visible { outline: 2px solid var(--il-orange); outline-offset: 2px; }
+button { font-family: var(--f-body); }
 
-section.mod { display: flex; flex-direction: column; gap: 16px; padding-top: 24px; }
-.head { display: flex; flex-direction: column; gap: 10px; }
-.story { border-left: 3px solid var(--accent); padding-left: 12px; font-size: 1.1rem; max-width: 56ch; }
-.try { font: 500 0.78rem var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
-.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
-.label { font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
-.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px 20px; }
-.ctl { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.ctl label, .ctl .cap { font-size: 0.95rem; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
-.ctl output { font-family: var(--f-mono); color: var(--ink); font-size: 0.92rem; }
-input[type=range] { width: 100%; accent-color: var(--accent); margin: 6px 0; height: 1.6rem; }
-.seg { display: flex; flex-wrap: wrap; gap: 6px; }
-.seg button, .btn { font: 600 0.95rem var(--f-body); color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 4px; padding: 8px 13px; cursor: pointer; }
-.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-.btn:hover, .seg button:hover { border-color: var(--accent); }
-.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-.readouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
-.ro { border-top: 3px solid var(--line); padding-top: 6px; min-width: 0; }
-.ro span { display: block; font-size: 0.85rem; color: var(--muted); }
-.ro strong { font-family: var(--f-mono); font-weight: 500; font-size: 1.2rem; overflow-wrap: anywhere; }
-.ro.good { border-color: var(--ok); } .ro.mid { border-color: var(--warn); } .ro.bad { border-color: var(--bad); }
-.note { font-size: 0.92rem; color: var(--muted); }
-canvas { display: block; width: 100%; max-width: 380px; aspect-ratio: 1; border: 1.5px solid var(--ink); }
-.say { font-family: var(--f-display); font-weight: 500; font-size: 1.3rem; line-height: 1.25; min-height: 3.3em; max-width: 34ch; }
-.say em { font-style: normal; color: var(--accent); }
+/* unit bar + title band, Illinois-site style */
+.unitbar { background: var(--il-blue); color: #fff; border-bottom: 4px solid var(--il-orange); }
+.unitbar .wrap { display: flex; align-items: center; gap: 14px; min-height: 44px; flex-wrap: wrap; padding-block: 6px; }
+.unitbar .unit { font: 700 1.05rem var(--f-head); letter-spacing: 0.04em; }
+.unitbar .unit-sep { width: 1px; align-self: stretch; background: rgba(255,255,255,0.35); }
+.unitbar .unit-full { font-size: 0.9rem; opacity: 0.92; flex: 1 1 260px; }
+.unitbar .iconbtn { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.55); border-radius: 0; padding: 5px 12px; font: 600 0.88rem var(--f-body); cursor: pointer; }
+.unitbar .iconbtn:hover { background: var(--il-orange); border-color: var(--il-orange); color: var(--il-blue); }
+header .wrap { display: flex; align-items: baseline; gap: 16px; padding-block: 10px 4px; flex-wrap: wrap; }
+header h1 { font-size: 1.65rem; font-weight: 800; }
+header .sub { color: var(--muted); font-size: 1rem; flex: 1 1 280px; }
+
+/* tabs, grouped by track */
+nav.wrap { display: flex; gap: 10px; overflow-x: auto; border-bottom: 1px solid var(--line); scrollbar-width: thin; }
+.grp { display: flex; flex-direction: column; gap: 2px; flex: 0 0 auto; }
+.grp > span { font: 700 0.66rem var(--f-head); letter-spacing: 0.1em; text-transform: uppercase; color: var(--il-storm); padding-left: 2px; }
+.grp.lap > span { color: var(--il-altgeld); } .grp.clu > span { color: var(--il-industrial); }
+.grp > div { display: flex; gap: 2px; }
+nav button { display: flex; align-items: center; gap: 7px; font: 600 0.92rem var(--f-body); color: var(--muted); background: transparent; border: 0; border-bottom: 4px solid transparent; padding: 6px 7px 7px; cursor: pointer; white-space: nowrap; }
+nav button:hover { color: var(--head); border-bottom-color: var(--il-storm-80); }
+nav button b { font: 700 0.72rem var(--f-head); background: var(--il-storm-95); border: 1px solid var(--line); border-radius: 50%; width: 1.5rem; height: 1.5rem; display: inline-grid; place-items: center; }
+nav button[aria-selected="true"] { color: var(--head); border-bottom-color: var(--il-blue); }
+nav button[aria-selected="true"] b { background: var(--il-blue); color: #fff; border-color: var(--il-blue); }
+.grp.lap button[aria-selected="true"] { border-bottom-color: var(--il-orange); }
+.grp.lap button[aria-selected="true"] b { background: var(--il-orange); color: var(--il-blue); border-color: var(--il-orange); }
+
+/* main panel */
+main { min-height: 0; overflow: auto; }
+main > .wrap { height: 100%; padding-block: 14px; }
+.mod { height: 100%; display: grid; grid-template-columns: minmax(300px, 0.95fr) minmax(320px, 1.05fr); gap: 28px; }
+.left { display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0; }
+.right { min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 10px; justify-content: center; }
+.track { align-self: flex-start; font: 700 0.68rem var(--f-head); letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 8px; color: var(--il-blue); background: var(--il-storm-95); }
+.track.lap { background: var(--il-orange); color: var(--il-blue); }
+.track.clu { background: var(--il-blue); color: #fff; }
+h2 { font-size: clamp(1.4rem, 2.8vw, 1.95rem); font-weight: 800; letter-spacing: -0.01em; }
+.story { color: var(--ink); max-width: 56ch; }
+.story strong { color: var(--head); font-weight: 700; }
+.try { font: 700 0.74rem var(--f-head); letter-spacing: 0.08em; text-transform: uppercase; color: var(--head); border-left: 4px solid var(--il-blue); padding-left: 8px; }
+.lapmod .try { border-color: var(--il-orange); }
+.say { font: 600 1.2rem/1.3 var(--f-head); color: var(--head); min-height: 2.6em; max-width: 40ch; }
+.say em { font-style: normal; color: var(--il-industrial); }
+.lapmod .say em { color: var(--il-altgeld); }
 .say .bad { color: var(--bad); } .say .good { color: var(--ok); }
-.pager { display: flex; justify-content: space-between; gap: 10px; }
 
-/* step 2 rooms */
-.rooms { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
-.room { border: 1.5px solid var(--ink); border-radius: 3px; padding: 6px; background: var(--bg); display: grid; grid-template-columns: repeat(16, 1fr); gap: 2px; }
-.room i { aspect-ratio: 1; border-radius: 50%; background: var(--line); display: block; }
-.room i.on { background: var(--accent); }
+.ctl { display: flex; flex-direction: column; gap: 3px; }
+.ctl label, .ctl .cap { font-size: 0.95rem; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { font: 700 0.95rem var(--f-body); color: var(--head); }
+input[type=range] { width: 100%; accent-color: var(--il-blue); margin: 4px 0; height: 1.5rem; }
+.lapmod input[type=range] { accent-color: var(--il-orange); }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg button { font: 600 0.95rem var(--f-body); color: var(--head); background: #fff; border: 1.5px solid var(--il-blue); border-radius: 0; padding: 6px 12px; cursor: pointer; }
+.seg button:hover { background: var(--il-blue-90); }
+.seg button[aria-pressed="true"] { background: var(--il-blue); color: #fff; }
+.lapmod .seg button { border-color: var(--il-orange); }
+.lapmod .seg button:hover { background: #fff0e6; }
+.lapmod .seg button[aria-pressed="true"] { background: var(--il-orange); color: var(--il-blue); }
+.seg.col { flex-direction: column; align-items: stretch; } .seg.col button { text-align: left; }
 
-/* step 3 */
-.split { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start; }
-.mapbox { flex: 0 1 380px; min-width: 240px; }
-.side { flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
-.cw0 { fill: var(--accent-soft); } .cw1 { fill: var(--surface); } .ct { fill: var(--warn); }
-.mapline { stroke: var(--ink); stroke-width: 1; fill: none; }
-.key { display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.9rem; color: var(--muted); }
-.key span::before { content: ""; display: inline-block; width: 0.9em; height: 0.9em; margin-right: 6px; vertical-align: -1px; border: 1px solid var(--ink); }
-.key .kw::before { background: var(--accent-soft); } .key .kt::before { background: var(--warn); } .key .kc::before { background: var(--muted); }
-.stack { display: flex; height: 26px; background: var(--bg); border: 1px solid var(--line); position: relative; overflow: hidden; }
+.readouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 10px; }
+.ro { border-top: 4px solid var(--line); padding-top: 4px; min-width: 0; }
+.ro span { display: block; font-size: 0.82rem; color: var(--muted); }
+.ro strong { font: 700 1.1rem var(--f-head); color: var(--head); overflow-wrap: anywhere; }
+.ro.good { border-color: var(--il-prairie); } .ro.mid { border-color: var(--il-harvest); } .ro.bad { border-color: var(--il-altgeld); }
+.note { font-size: 0.88rem; color: var(--muted); }
+
+/* visuals */
+.fit { flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; }
+canvas.map { display: block; height: min(100%, 440px); max-width: 100%; aspect-ratio: 1; border: 2px solid var(--il-blue); }
+svg { display: block; width: 100%; height: auto; max-height: 100%; }
+.key { display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.88rem; color: var(--muted); }
+.key span::before { content: ""; display: inline-block; width: 0.85em; height: 0.85em; margin-right: 6px; vertical-align: -1px; }
+.key .kw::before { background: var(--il-industrial); } .key .kt::before { background: var(--il-harvest); } .key .kc::before { background: var(--il-storm); } .key .kq::before { background: var(--il-storm-80); }
+.key .ks::before { background: var(--il-blue-90); border: 1px solid var(--il-blue); }
+
+.rooms { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 520px; width: 100%; margin-inline: auto; }
+.room { border: 2px solid var(--il-blue); padding: 6px; background: #fff; display: grid; grid-template-columns: repeat(16, 1fr); gap: 2px; }
+.room i { aspect-ratio: 1; border-radius: 50%; background: var(--il-storm-80); display: block; }
+.room i.on { background: var(--il-orange); }
+
+.stack { display: flex; height: 22px; background: var(--il-storm-95); border: 1px solid var(--line); position: relative; overflow: hidden; }
 .stack div { height: 100%; min-width: 0; }
-.stack .w { background: var(--accent); } .stack .t { background: var(--warn); } .stack .c { background: var(--muted); }
-.stack .mark { position: absolute; top: -2px; bottom: -2px; width: 3px; background: var(--ink); }
+.stack .w { background: var(--il-industrial); } .stack .t { background: var(--il-harvest); } .stack .c { background: var(--il-storm); }
+.stack .mark { position: absolute; top: -2px; bottom: -2px; width: 3px; background: var(--il-orange); }
 .rowlab { font-size: 0.88rem; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; margin-bottom: 3px; }
-.rowlab b { font-family: var(--f-mono); font-weight: 500; color: var(--ink); }
+.rowlab b { font-weight: 700; color: var(--head); }
 
-/* step 4 */
-.chartbox { min-width: 0; }
-svg { display: block; width: 100%; height: auto; }
-.ax { fill: var(--muted); font: 12px var(--f-mono); }
-.sw { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; }
-.swt { fill: var(--ink); font: 500 12px var(--f-mono); text-anchor: middle; }
-.nd { fill: var(--bg); stroke: var(--muted); stroke-width: 1.5; }
-.nd.job { fill: var(--accent); stroke: var(--accent); } .nd.other { fill: var(--line); stroke: var(--muted); }
-.lk { stroke: var(--line); stroke-width: 1.5; fill: none; }
+.cw0 { fill: var(--il-blue-90); } .cw1 { fill: #fff; } .ct { fill: var(--il-harvest); }
+.mapline { stroke: var(--il-blue); stroke-width: 1.5; fill: none; }
+.ax { fill: var(--muted); font: 12px var(--f-body); }
+.axl { stroke: var(--il-storm-80); stroke-width: 1; }
+.sw { fill: #fff; stroke: var(--il-blue); stroke-width: 2; }
+.swt { fill: var(--il-blue); font: 700 12px var(--f-head); text-anchor: middle; letter-spacing: 0.06em; }
+.lbl { fill: var(--il-blue); font: 700 13px var(--f-head); }
+.nd { fill: #fff; stroke: var(--il-storm); stroke-width: 1.5; }
+.nd.job { fill: var(--il-orange); stroke: var(--il-orange); } .nd.other { fill: var(--il-storm-80); stroke: var(--il-storm); }
 .up { fill: none; stroke-linecap: round; }
-.up.idle { stroke: var(--line); } .up.ok { stroke: var(--ok); } .up.warn { stroke: var(--warn); } .up.bad { stroke: var(--bad); }
-.util { font: 500 12px var(--f-mono); text-anchor: middle; fill: var(--ink); }
-.hall { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
+.up.idle { stroke: var(--il-storm-80); } .up.ok { stroke: var(--il-prairie); } .up.warn { stroke: var(--il-harvest); } .up.bad { stroke: var(--il-altgeld); }
+.util { font: 700 12px var(--f-body); fill: var(--il-blue); }
+.hall { fill: var(--il-blue); }
+.hall + .swt { fill: #fff; }
+.bar-lap { fill: var(--il-orange); } .bar-clu { fill: var(--il-blue); } .bar-q { fill: var(--il-storm-80); } .bar-me { fill: var(--il-storm); }
+.stopx { stroke: var(--il-altgeld); stroke-width: 3; stroke-linecap: round; }
+.stoptxt { fill: var(--il-altgeld); font: 700 12px var(--f-body); }
+.oktxt { fill: var(--il-prairie); font: 700 12px var(--f-body); }
 
-.win { border: 2px solid var(--ok); border-radius: 6px; padding: 12px 14px; background: var(--surface); }
-.win b { font-family: var(--f-display); font-size: 1.15rem; }
+/* "In HPC terms" mapping */
+.hpc { background: var(--il-storm-95); border-left: 4px solid var(--il-blue); padding: 8px 12px; }
+.hpc-h { display: block; font: 700 0.68rem var(--f-head); letter-spacing: 0.1em; text-transform: uppercase; color: var(--il-blue); margin-bottom: 4px; }
+.hpc dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 2px 12px; font-size: 0.92rem; }
+.hpc dt { color: var(--muted); }
+.hpc dt::after { content: " →"; color: var(--il-orange); }
+.hpc dd { margin: 0; color: var(--il-blue); font-weight: 600; }
+.hpc code { font: 0.85rem var(--f-code); background: #fff; padding: 0 4px; }
 
-.gloss { margin-top: 36px; border-top: 1px solid var(--line); padding-top: 16px; display: flex; flex-direction: column; gap: 10px; }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.chips button { font: 500 0.85rem var(--f-mono); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 3px; padding: 6px 10px; cursor: pointer; }
-.chips button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
-#def { min-height: 3rem; color: var(--ink); max-width: 56ch; }
+/* ICRN spec chips */
+.specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 8px; }
+.spec { background: var(--il-storm-95); border-top: 4px solid var(--il-orange); padding: 7px 9px; }
+.spec b { display: block; font: 800 1rem var(--f-head); color: var(--il-blue); }
+.spec span { font-size: 0.85rem; color: var(--muted); }
+
+/* job pipeline */
+pre.script { margin: 0; background: var(--il-blue); color: #fff; padding: 12px 14px; font: 13px/1.6 var(--f-code); overflow-x: auto; border-left: 4px solid var(--il-orange); }
+pre.script span { display: block; padding: 0 6px; color: var(--il-storm-80); }
+pre.script span.hi { background: var(--il-blue-30); color: #fff; box-shadow: inset 3px 0 0 var(--il-orange); }
+.stg { fill: #fff; stroke: var(--il-storm-80); stroke-width: 1.5; }
+.stg.on { fill: var(--il-blue); stroke: var(--il-blue); }
+.stg.done { stroke: var(--il-blue); }
+.stgt { fill: var(--il-blue); font: 700 13px var(--f-head); text-anchor: middle; }
+.stgn { fill: var(--il-storm); font: 700 11px var(--f-head); text-anchor: middle; }
+.stg.on + .stgn, .stg.on + .stgn + .stgt { fill: #fff; }
+.arrow { stroke: var(--il-orange); stroke-width: 2; fill: none; }
+
+/* decide */
+.verdicts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.vd { background: var(--il-storm-95); border-top: 5px solid var(--line); padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.vd h3 { font-size: 1rem; font-weight: 800; }
+.vd .tag { font: 700 0.74rem var(--f-head); text-transform: uppercase; letter-spacing: 0.08em; }
+.vd p { font-size: 0.93rem; color: var(--ink); }
+.vd.good { border-top-color: var(--il-prairie); } .vd.good .tag { color: var(--il-prairie); }
+.vd.mid { border-top-color: var(--il-harvest); } .vd.mid .tag { color: var(--il-earth); }
+.vd.bad { border-top-color: var(--il-altgeld); } .vd.bad .tag { color: var(--il-altgeld); }
+.vd.best { outline: 2px solid var(--il-prairie); outline-offset: -2px; background: #fff; }
+table.cmp { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+table.cmp th, table.cmp td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.cmp thead th { font: 700 0.72rem var(--f-head); letter-spacing: 0.08em; text-transform: uppercase; color: #fff; background: var(--il-blue); }
+table.cmp tbody tr:nth-child(even) { background: var(--il-storm-95); }
+table.cmp td:first-child { color: var(--il-blue); font-weight: 600; }
+
+.win { border-left: 5px solid var(--il-prairie); padding: 8px 12px; background: var(--il-storm-95); font-size: 0.97rem; }
+.win b { font-family: var(--f-head); color: var(--il-blue); }
+
+/* footer */
+footer { border-top: 1px solid var(--line); background: #fff; }
+footer .wrap { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-block: 10px max(10px, env(safe-area-inset-bottom)); }
+footer .pos { font: 700 0.8rem var(--f-head); color: var(--il-storm); letter-spacing: 0.06em; }
+.btn { font: 700 0.95rem var(--f-body); color: var(--il-blue); background: #fff; border: 2px solid var(--il-blue); border-radius: 0; padding: 7px 16px; cursor: pointer; }
+.btn:hover { background: var(--il-blue-90); }
+.btn.primary { background: var(--il-orange); color: var(--il-blue); border-color: var(--il-orange); }
+.btn.primary:hover { background: var(--il-blue); color: #fff; border-color: var(--il-blue); }
+.btn:disabled { opacity: 0.35; cursor: default; }
+
+/* glossary dialog */
+dialog { border: 0; border-top: 6px solid var(--il-orange); background: #fff; color: var(--ink); max-width: min(560px, calc(100vw - 32px)); padding: 18px; }
+dialog::backdrop { background: rgba(19,41,75,0.55); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+.chips button { font: 600 0.9rem var(--f-body); color: var(--il-blue); background: #fff; border: 1.5px solid var(--il-blue); border-radius: 0; padding: 4px 10px; cursor: pointer; }
+.chips button[aria-pressed="true"] { background: var(--il-blue); color: #fff; }
+#def { min-height: 3rem; }
+
+/* narrow screens: stack and let the panel scroll */
+@media (max-width: 860px), (max-height: 560px) {
+  .app { height: auto; min-height: 100dvh; }
+  main { overflow: visible; }
+  .mod { grid-template-columns: 1fr; height: auto; }
+  canvas.map { height: auto; width: min(100%, 380px); }
+  footer { position: sticky; bottom: 0; }
+  .verdicts { grid-template-columns: 1fr; }
+  .unitbar .unit-full { display: none; }
+}
 </style>
+</head>
+<body>
+<div class="app">
+  <div class="unitbar"><div class="wrap">
+    <span class="unit">NCSA</span><span class="unit-sep" aria-hidden="true"></span>
+    <span class="unit-full">National Center for Supercomputing Applications &middot; University of Illinois Urbana-Champaign</span>
+    <button class="iconbtn" id="open-words">Words to know</button>
+  </div></div>
+  <header><div class="wrap">
+    <h1>From Laptop to Cluster</h1>
+    <p class="sub">An introduction to research computing: when an ICRN notebook is enough, and when you need a cluster.</p>
+  </div></header>
 
-<div class="wrap">
-  <header>
-    <div class="eyebrow">A first look at supercomputing</div>
-    <h1>Not a big laptop</h1>
-    <p class="lede">Your problem is too big for your laptop. Here is what a supercomputer does about that.</p>
-  </header>
-
-  <nav aria-label="Steps">
-    <button data-tab="problem" aria-selected="true"><b>1</b>Your problem</button>
-    <button data-tab="helpers" aria-selected="false"><b>2</b>Helpers</button>
-    <button data-tab="talking" aria-selected="false"><b>3</b>Talking</button>
-    <button data-tab="halls" aria-selected="false"><b>4</b>Hallways</button>
-    <button data-tab="turn" aria-selected="false"><b>5</b>Your turn</button>
+  <nav class="wrap" aria-label="Steps">
+    <div class="grp"><span>Start</span><div><button data-tab="problem"><b>1</b>Why scale up</button></div></div>
+    <div class="grp lap"><span>Bigger laptop</span><div><button data-tab="icrn"><b>2</b>ICRN</button></div></div>
+    <div class="grp clu"><span>Cluster</span><div>
+      <button data-tab="parallel"><b>3</b>Parallel jobs</button>
+      <button data-tab="communication"><b>4</b>Communication</button>
+      <button data-tab="placement"><b>5</b>Job placement</button>
+      <button data-tab="submit"><b>6</b>Batch jobs</button>
+      <button data-tab="sizing"><b>7</b>Sizing a job</button>
+    </div></div>
+    <div class="grp"><span>Decide</span><div><button data-tab="decide"><b>8</b>Which resource</button></div></div>
   </nav>
 
-  <!-- 1 -->
-  <section class="mod" id="m-problem">
-    <div class="head">
-      <h2>Why you need a supercomputer</h2>
-      <p class="story">You forecast storms. On your laptop, a 10-day forecast on a coarse map takes about an hour. You want a sharper map, and you want the answer by tomorrow morning.</p>
-      <p class="try">Try: sharpen the map, then lengthen the forecast</p>
-    </div>
-    <div class="panel">
-      <div class="ctl"><span class="cap">Each grid square is this wide</span>
-        <div class="seg" id="dx" role="group"><button data-v="100" aria-pressed="false">100 km</button><button data-v="50" aria-pressed="false">50 km</button><button data-v="25" aria-pressed="true">25 km</button><button data-v="10" aria-pressed="false">10 km</button><button data-v="5" aria-pressed="false">5 km</button><button data-v="2" aria-pressed="false">2 km</button></div></div>
-      <div class="ctl"><label for="days">Forecast length <output id="days-out"></output></label><input id="days" type="range" min="1" max="30" step="1" value="10"></div>
-      <div class="split">
-        <div class="mapbox"><canvas id="cv" width="400" height="400" role="img" aria-label="A simulated storm drawn at the chosen grid sharpness"></canvas></div>
-        <div class="side"><div class="readouts" id="p-ro"></div><p class="note">Half the square width means 4 times the squares, and each step must be half as long. That is 8 times the work.</p></div>
+  <main><div class="wrap">
+    <!-- 1 problem -->
+    <section class="mod" id="m-problem">
+      <div class="left">
+        <span class="track">Start</span>
+        <h2>Why your laptop isn&rsquo;t enough</h2>
+        <p class="story">You forecast storms. A 10-day forecast on a coarse map takes your laptop about an hour. You want a <strong>sharper map</strong>, and you want it by morning.</p>
+        <p class="try">Try: sharpen the map, then lengthen the forecast</p>
+        <div class="ctl"><span class="cap">Grid square width (model resolution)</span>
+          <div class="seg" id="dx" role="group" aria-label="Grid square width"><button data-v="100">100 km</button><button data-v="50">50 km</button><button data-v="25" aria-pressed="true">25 km</button><button data-v="10">10 km</button><button data-v="5">5 km</button><button data-v="2">2 km</button></div></div>
+        <div class="ctl"><label for="days">Forecast length <output id="days-out"></output></label><input id="days" type="range" min="1" max="30" step="1" value="10"></div>
+        <div class="readouts" id="p-ro"></div>
+        <p class="note">Halve the square width: 4&times; the squares, and each time step must be half as long. That is 8&times; the work.</p>
+        <p class="say" id="p-say" aria-live="polite"></p>
       </div>
-      <p class="say" id="p-say" aria-live="polite"></p>
-    </div>
-    <div class="pager"><span></span><button class="btn primary" data-go="helpers">Next: get help</button></div>
-  </section>
+      <div class="right"><div class="fit"><canvas class="map" id="cv" width="400" height="400" role="img" aria-label="A simulated storm drawn at the chosen grid sharpness"></canvas></div></div>
+    </section>
 
-  <!-- 2 -->
-  <section class="mod" id="m-helpers" hidden>
-    <div class="head">
-      <h2>Hire helpers</h2>
-      <p class="story">A supercomputer has thousands of helpers. Each helper is a processor core. About 128 of them live in one machine, and each box below is one machine.</p>
-      <p class="try">Try: add helpers</p>
-    </div>
-    <div class="panel">
-      <div class="ctl"><label for="hn">Helpers <output id="hn-out"></output></label><input id="hn" type="range" min="0" max="10" step="1" value="0"></div>
-      <div class="rooms" id="rooms" aria-hidden="true"></div>
-      <div class="seg" role="group" aria-label="Kind of job">
-        <button id="k-many" aria-pressed="true">1,000 separate storms</button>
-        <button id="k-one" aria-pressed="false">One giant storm</button>
-      </div>
-      <div class="readouts" id="h-ro"></div>
-      <p class="say" id="h-say" aria-live="polite"></p>
-    </div>
-    <div class="pager"><button class="btn" data-go="problem">Back</button><button class="btn primary" data-go="talking">Next: the catch</button></div>
-  </section>
-
-  <!-- 3 -->
-  <section class="mod" id="m-talking" hidden>
-    <div class="head">
-      <h2>Helpers have to talk</h2>
-      <p class="story">Your one giant storm is a map. Each helper gets a patch. Every step, a patch needs numbers from the patches next to it.</p>
-      <p class="try">Try: pick the number of helpers, then the map size</p>
-    </div>
-    <div class="panel">
-      <div class="seg" id="hp" role="group" aria-label="Helpers"><button data-v="1" aria-pressed="false">1 helper</button><button data-v="4" aria-pressed="false">4</button><button data-v="16" aria-pressed="true">16</button><button data-v="64" aria-pressed="false">64</button></div>
-      <div class="seg" id="ms" role="group" aria-label="Map size"><button data-v="16" aria-pressed="true">Small map</button><button data-v="48" aria-pressed="false">Big map</button></div>
-      <div class="split">
-        <div class="mapbox">
-          <svg id="map" viewBox="0 0 400 400" role="img" aria-label="A map cut into patches, one per helper"></svg>
-          <div class="key"><span class="kw">real work</span><span class="kt">trading with neighbors</span></div>
+    <!-- 2 ICRN -->
+    <section class="mod lapmod" id="m-icrn" hidden>
+      <div class="left">
+        <span class="track lap">Bigger laptop &middot; ICRN</span>
+        <h2>A laptop that lives in the data center</h2>
+        <p class="story"><strong>Illinois Computes Research Notebooks (ICRN)</strong> gives you Jupyter, RStudio or VS Code in your browser. Nothing to install, and your work keeps running when you close the lid. It is still <strong>one seat</strong>: about the speed of one laptop core.</p>
+        <div class="specs">
+          <div class="spec"><b>1 core</b><span>per notebook</span></div>
+          <div class="spec"><b>Shared GPU</b><span>small models</span></div>
+          <div class="spec"><b>100 GB</b><span>saved files</span></div>
+          <div class="spec"><b>24 hours</b><span>per session</span></div>
         </div>
-        <div class="side">
-          <div><div class="rowlab"><span>1 helper alone</span><b id="t1"></b></div><div class="stack"><div class="w" style="width:100%"></div></div></div>
-          <div><div class="rowlab"><span id="tp-l"></span><b id="tp"></b></div><div class="stack"><div class="w" id="sw"></div><div class="t" id="st"></div></div></div>
-          <div class="readouts" id="m-ro"></div>
+        <p class="try">Try: lengthen the run, then close the lid</p>
+        <div class="ctl"><label for="rl">How long the run takes <output id="rl-out"></output></label><input id="rl" type="range" min="1" max="72" step="1" value="8"></div>
+        <div class="seg" id="lid" role="group" aria-label="Laptop lid"><button data-v="open" aria-pressed="true">Laptop stays open</button><button data-v="closed">Close the lid at hour 2</button></div>
+        <p class="say" id="i-say" aria-live="polite"></p>
+        <p class="note">Free for UIUC researchers. Limits change; check the <a href="https://computes.illinois.edu/resources/icrn/" target="_blank" rel="noopener">ICRN page</a>.</p>
+      </div>
+      <div class="right">
+        <svg id="lidviz" viewBox="0 0 600 250" role="img" aria-label="Timeline of the same run on a laptop, on ICRN, and on a cluster"></svg>
+        <div class="key"><span class="kq">waiting in line</span></div>
+      </div>
+    </section>
+
+    <!-- 3 parallel -->
+    <section class="mod clumod" id="m-parallel" hidden>
+      <div class="left">
+        <span class="track clu">Cluster</span>
+        <h2>Running in parallel</h2>
+        <p class="story">A cluster is many servers, called <strong>nodes</strong>, wired together. Each node has many <strong>cores</strong>; each box on the right is a node with 128.</p>
+        <p class="try">Try: add cores, then switch the kind of job</p>
+        <div class="ctl"><label for="hn">Cores <output id="hn-out"></output></label><input id="hn" type="range" min="0" max="9" step="1" value="0"></div>
+        <div class="seg" role="group" aria-label="Kind of job">
+          <button id="k-many" aria-pressed="true">1,000 separate storms</button>
+          <button id="k-one">One giant storm</button>
         </div>
+        <div class="readouts" id="h-ro"></div>
+        <div class="hpc"><span class="hpc-h">In HPC terms</span><dl>
+          <dt>1,000 separate storms</dt><dd>a job array: no talking needed</dd>
+          <dt>One giant storm</dt><dd>one parallel (MPI) job</dd>
+        </dl></div>
+        <p class="say" id="h-say" aria-live="polite"></p>
       </div>
-      <p class="say" id="m-say" aria-live="polite"></p>
-    </div>
-    <div class="pager"><button class="btn" data-go="helpers">Back</button><button class="btn primary" data-go="halls">Next: the building</button></div>
-  </section>
+      <div class="right"><div class="rooms" id="rooms" aria-hidden="true"></div></div>
+    </section>
 
-  <!-- 4 -->
-  <section class="mod" id="m-halls" hidden>
-    <div class="head">
-      <h2>Where you sit matters</h2>
-      <p class="story">Helpers sit at desks in rooms. Notes between rooms share one hallway with everyone else’s notes. A scheduler picks your seats, not you. Small model: real rooms hold about 100 desks.</p>
-      <p class="try">Try: switch between the two seatings</p>
-    </div>
-    <div class="panel">
-      <div class="ctl"><span class="cap">Where the scheduler seats your 4 helpers</span><div class="seg" id="place" role="group"><button data-v="pack" aria-pressed="true">All in one room</button><button data-v="scatter" aria-pressed="false">One per room</button></div></div>
-      <div class="chartbox"><svg id="fabric" viewBox="0 0 640 270" role="img" aria-label="Four rooms connected by one hallway"></svg></div>
-      <div class="readouts" id="j-ro"></div>
-      <p class="say" id="j-say" aria-live="polite"></p>
-    </div>
-    <div class="pager"><button class="btn" data-go="talking">Back</button><button class="btn primary" data-go="turn">Next: your turn</button></div>
-  </section>
-
-  <!-- 5 -->
-  <section class="mod" id="m-turn" hidden>
-    <div class="head">
-      <h2>Your turn</h2>
-      <p class="story">Your storm takes 20 days on one core. Your advisor wants it in 30 hours. Your allocation is 3,000 core-hours. A core-hour is one helper working for one hour, like a taxi meter.</p>
-      <p class="try">Try: find a number of helpers that meets both</p>
-    </div>
-    <div class="panel">
-      <div class="ctl"><label for="tn">Helpers <output id="tn-out"></output></label><input id="tn" type="range" min="0" max="10" step="1" value="3"></div>
-      <div>
-        <div class="rowlab"><span>Time to finish</span><b id="tt"></b></div>
-        <div class="stack" id="tbar"></div>
-        <div class="key" style="margin-top:6px"><span class="kc">chores only one helper can do</span><span class="kw">real work</span><span class="kt">talking</span></div>
+    <!-- 4 talking -->
+    <section class="mod clumod" id="m-communication" hidden>
+      <div class="left">
+        <span class="track clu">Cluster</span>
+        <h2>The cost of communication</h2>
+        <p class="story">The map is split into patches, one per core (<strong>domain decomposition</strong>). Each step, neighbors swap edge values over <strong>MPI</strong>: a <strong>halo exchange</strong>.</p>
+        <p class="try">Try: more cores, then the big map</p>
+        <div class="seg" id="hp" role="group" aria-label="Cores"><button data-v="1">1 core</button><button data-v="4">4</button><button data-v="16" aria-pressed="true">16</button><button data-v="64">64</button></div>
+        <div class="seg" id="ms" role="group" aria-label="Map size"><button data-v="16" aria-pressed="true">Small map</button><button data-v="48">Big map</button></div>
+        <div>
+          <div class="rowlab"><span>1 core alone</span><b id="t1"></b></div><div class="stack"><div class="w" style="width:100%"></div></div>
+        </div>
+        <div>
+          <div class="rowlab"><span id="tp-l"></span><b id="tp"></b></div><div class="stack"><div class="w" id="sw"></div><div class="t" id="st"></div></div>
+        </div>
+        <div class="readouts" id="m-ro"></div>
+        <p class="say" id="m-say" aria-live="polite"></p>
       </div>
-      <div>
-        <div class="rowlab"><span>Core-hours spent</span><b id="tc"></b></div>
-        <div class="stack" id="cbar"></div>
+      <div class="right">
+        <div class="fit"><svg id="map" viewBox="0 0 400 400" style="max-width:440px" role="img" aria-label="A map cut into patches, one per core"></svg></div>
+        <div class="key"><span class="ks">real work</span><span class="kt">halo exchange (talking)</span></div>
       </div>
-      <div class="readouts" id="t-ro"></div>
-      <p class="say" id="t-say" aria-live="polite"></p>
-      <div class="win" id="win" hidden><b>You found the sweet spot.</b> Real teams find it the same way. Run small tests with 1, 2, 4, 8 helpers, plot the times, and stop adding helpers when the gains flatten.</div>
-    </div>
-    <div class="pager"><button class="btn" data-go="halls">Back</button><button class="btn primary" data-go="problem">Start over</button></div>
-  </section>
+    </section>
 
-  <div class="gloss">
-    <div class="label">Words you will hear. Tap one.</div>
-    <div class="chips" id="chips"></div>
-    <p id="def" aria-live="polite"></p>
-  </div>
+    <!-- 5 seating -->
+    <section class="mod clumod" id="m-placement" hidden>
+      <div class="left">
+        <span class="track clu">Cluster</span>
+        <h2>Where your job lands matters</h2>
+        <p class="story">Cores on the same <strong>node</strong> share memory, so they talk almost for free. Cores on different nodes talk over the <strong>network</strong>, which every job on the cluster shares. Slurm picks your nodes.</p>
+        <p class="try">Try: switch the placement</p>
+        <div class="seg" id="place" role="group" aria-label="Placement"><button data-v="pack" aria-pressed="true">4 cores on 1 node</button><button data-v="scatter">1 core on each of 4 nodes</button></div>
+        <div class="readouts" id="j-ro"></div>
+        <div class="hpc"><span class="hpc-h">In HPC terms</span><dl>
+          <dt>Box</dt><dd>a node</dd>
+          <dt>Blue bar</dt><dd>the interconnect (network)</dd>
+          <dt>Packed placement</dt><dd><code>--nodes=1 --ntasks-per-node=4</code></dd>
+        </dl></div>
+        <p class="say" id="j-say" aria-live="polite"></p>
+      </div>
+      <div class="right"><svg id="fabric" viewBox="0 0 640 270" role="img" aria-label="Four nodes connected by a shared network"></svg></div>
+    </section>
+
+    <!-- 6 submitting -->
+    <section class="mod clumod" id="m-submit" hidden>
+      <div class="left">
+        <span class="track clu">Cluster</span>
+        <h2>You don&rsquo;t press Run. You submit.</h2>
+        <p class="story">On a cluster you write down what you need, hand it to the <strong>scheduler</strong>, and walk away. It runs your job when enough nodes are free.</p>
+        <p class="try">Try: step through the job</p>
+        <div class="seg col" id="stage" role="group" aria-label="Job stage"></div>
+        <p class="say" id="s-say" aria-live="polite"></p>
+      </div>
+      <div class="right">
+        <svg id="pipe" viewBox="0 0 600 90" role="img" aria-label="The five stages of a cluster job"></svg>
+        <pre class="script" id="script" aria-label="A simplified Slurm job script"></pre>
+        <p class="note">A Slurm job script, simplified. Delta and the Illinois Campus Cluster use Slurm.</p>
+      </div>
+    </section>
+
+    <!-- 7 your turn -->
+    <section class="mod clumod" id="m-sizing" hidden>
+      <div class="left">
+        <span class="track clu">Cluster</span>
+        <h2>Size your job</h2>
+        <p class="story">Your storm takes 20 days on one core. Your advisor wants it in <strong>30 hours</strong>. Your allocation is <strong>3,000 core-hours</strong>, charged as cores &times; hours, like a taxi meter.</p>
+        <p class="try">Try: find a core count that meets both</p>
+        <div class="ctl"><label for="tn">Cores <output id="tn-out"></output></label><input id="tn" type="range" min="0" max="10" step="1" value="3"></div>
+        <div class="readouts" id="t-ro"></div>
+        <div class="hpc"><span class="hpc-h">In HPC terms</span><dl>
+          <dt>Cores</dt><dd><code>--ntasks</code> in your job script</dd>
+          <dt>Chores</dt><dd>serial code that can&rsquo;t be split</dd>
+          <dt>Trying 1, 2, 4, 8</dt><dd>a scaling study</dd>
+        </dl></div>
+        <p class="say" id="t-say" aria-live="polite"></p>
+      </div>
+      <div class="right">
+        <div>
+          <div class="rowlab"><span>Time to finish (line = 30 h)</span><b id="tt"></b></div>
+          <div class="stack" id="tbar"></div>
+          <div class="key" style="margin-top:6px"><span class="kc">serial chores</span><span class="kw">real work</span><span class="kt">talking</span></div>
+        </div>
+        <div>
+          <div class="rowlab"><span>Core-hours spent (line = 3,000)</span><b id="tc"></b></div>
+          <div class="stack" id="cbar"></div>
+        </div>
+        <div class="win" id="win" hidden><b>Sweet spot.</b> Real teams find it the same way: run small tests with 1, 2, 4, 8 cores, plot the times, and stop adding cores when the gains flatten.</div>
+      </div>
+    </section>
+
+    <!-- 8 decide -->
+    <section class="mod" id="m-decide" hidden>
+      <div class="left">
+        <span class="track">Decide</span>
+        <h2>Choosing the right resource</h2>
+        <p class="story">Pick a job. See how your laptop, ICRN and a cluster each handle it.</p>
+        <div class="seg col" id="task" role="group" aria-label="Pick a job"></div>
+        <p class="say" id="d-say" aria-live="polite"></p>
+      </div>
+      <div class="right">
+        <div class="verdicts" id="verdicts"></div>
+        <table class="cmp">
+          <thead><tr><th></th><th>Laptop</th><th>ICRN</th><th>Cluster</th></tr></thead>
+          <tbody>
+            <tr><td>How you use it</td><td>On your desk</td><td>Browser notebook</td><td>Submit a script</td></tr>
+            <tr><td>Cores</td><td>Your cores</td><td>1 core, shared GPU</td><td>Hundreds to thousands</td></tr>
+            <tr><td>Runs while you&rsquo;re away</td><td>Only if left on</td><td>Up to 24 h</td><td>Yes, to your time limit</td></tr>
+            <tr><td>Wait to start</td><td>None</td><td>None</td><td>Queue</td></tr>
+            <tr><td>Cost to you</td><td>The laptop</td><td>Free at UIUC</td><td>Core-hour allocation</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div></main>
+
+  <footer><div class="wrap">
+    <button class="btn" id="prev">&larr; Back</button>
+    <span class="pos" id="pos"></span>
+    <button class="btn primary" id="next">Next &rarr;</button>
+  </div></footer>
 </div>
+
+<dialog id="words" aria-labelledby="words-h">
+  <h2 id="words-h" style="font-size:1.3rem">Words you will hear</h2>
+  <div class="chips" id="chips"></div>
+  <p id="def" aria-live="polite">Tap a word.</p>
+  <div style="display:flex;justify-content:flex-end"><button class="btn" id="close-words">Close</button></div>
+</dialog>
 
 <script>
 (function () {
   var $ = function (s) { return document.querySelector(s); };
   var $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
   var fmt = function (n, d) { return Number(n).toLocaleString('en-US', { maximumFractionDigits: d || 0, minimumFractionDigits: d || 0 }); };
+  var X = String.fromCharCode(215);
   function ro(l, v, c) { return '<div class="ro ' + (c || '') + '"><span>' + l + '</span><strong>' + v + '</strong></div>'; }
   function dur(days) {
     if (days < 1 / 24) return fmt(days * 1440) + ' minutes';
@@ -265,30 +449,50 @@ svg { display: block; width: 100%; height: auto; }
     if (days < 730) return fmt(days / 30.4, 1) + ' months';
     return fmt(days / 365, 1) + ' years';
   }
-
-  /* tabs */
-  var MODS = ['problem', 'helpers', 'talking', 'halls', 'turn'];
-  function show(id, scroll) {
-    if (MODS.indexOf(id) < 0) id = 'problem';
-    MODS.forEach(function (m) {
-      document.getElementById('m-' + m).hidden = m !== id;
-      $('[data-tab="' + m + '"]').setAttribute('aria-selected', String(m === id));
+  function seg(id, fn) {
+    $$('#' + id + ' button').forEach(function (b) {
+      if (!b.hasAttribute('aria-pressed')) b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', function () {
+        $$('#' + id + ' button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+        fn(b.dataset.v);
+      });
     });
-    try { history.replaceState(null, '', '#' + id); } catch (e) {}
-    if (scroll) window.scrollTo(0, 0);
   }
-  $$('[data-tab]').forEach(function (b) { b.addEventListener('click', function () { show(b.dataset.tab, true); }); });
-  $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { show(b.dataset.go, true); }); });
+
+  /* ---- tabs ---- */
+  var MODS = ['problem', 'icrn', 'parallel', 'communication', 'placement', 'submit', 'sizing', 'decide'];
+  var cur = 0;
+  function show(id) {
+    var i = MODS.indexOf(id); if (i < 0) i = 0; cur = i;
+    MODS.forEach(function (m, k) {
+      document.getElementById('m-' + m).hidden = k !== i;
+      $('[data-tab="' + m + '"]').setAttribute('aria-selected', String(k === i));
+    });
+    $('#prev').disabled = i === 0;
+    $('#next').textContent = i === MODS.length - 1 ? 'Start over' : 'Next →';
+    $('#pos').textContent = (i + 1) + ' of ' + MODS.length;
+    $('[data-tab="' + MODS[i] + '"]').scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    $('main').scrollTop = 0;
+    try { history.replaceState(null, '', '#' + MODS[i]); } catch (e) {}
+  }
+  $$('[data-tab]').forEach(function (b) { b.addEventListener('click', function () { show(b.dataset.tab); }); });
+  $('#prev').addEventListener('click', function () { if (cur > 0) show(MODS[cur - 1]); });
+  $('#next').addEventListener('click', function () { show(MODS[(cur + 1) % MODS.length]); });
+  document.addEventListener('keydown', function (e) {
+    if (e.target.closest('input, dialog')) return;
+    if (e.key === 'ArrowRight' && cur < MODS.length - 1) show(MODS[cur + 1]);
+    if (e.key === 'ArrowLeft' && cur > 0) show(MODS[cur - 1]);
+  });
 
   /* ---- 1: the problem ---- */
-  var L = 2.67, DEADLINE = 0.5, DX = 25;
+  var L = 2.67, DX = 25;
   function stormAt(x, y) {
     var dx = x - 0.5, dy = y - 0.5, r = Math.sqrt(dx * dx + dy * dy), th = Math.atan2(dy, dx);
     var ring = Math.exp(-Math.pow((r - 0.1) / 0.035, 2)), arms = Math.exp(-Math.pow(r / 0.33, 2)) * (0.5 + 0.5 * Math.sin(2 * th - 16 * r)) * (0.55 + 0.45 * Math.sin(40 * r + th));
     return Math.max(0, Math.min(1, 0.95 * ring + 0.6 * arms));
   }
   function ramp(v) {
-    var c = [[14, 30, 62], [18, 120, 150], [60, 190, 170], [250, 222, 120]], t = v * 3, i = Math.min(2, Math.floor(t)), f = t - i;
+    var c = [[19, 41, 75], [29, 88, 167], [0, 159, 212], [252, 179, 22], [255, 95, 5]], t = v * 4, i = Math.min(3, Math.floor(t)), f = t - i;
     return [0, 1, 2].map(function (k) { return c[i][k] + (c[i + 1][k] - c[i][k]) * f; });
   }
   function drawStorm(n) {
@@ -306,21 +510,55 @@ svg { display: block; width: 100%; height: auto; }
     $('#days-out').textContent = days + (days === 1 ? ' day' : ' days');
     drawStorm(n);
     var need = hours / 12;
-    $('#p-ro').innerHTML = ro('Grid', fmt(n) + ' \u00d7 ' + fmt(n) + ' squares', '') + ro('Work vs the starter forecast', fmt(work, work < 10 ? 1 : 0) + '\u00d7', work > 8 ? 'mid' : '') + ro('On your laptop', dur(L), need > 1 ? 'bad' : 'good') + ro('Speedup needed by morning', need > 1 ? fmt(need, need < 10 ? 1 : 0) + '\u00d7' : 'none', need > 1 ? 'bad' : 'good');
+    $('#p-ro').innerHTML = ro('Grid', fmt(n) + ' ' + X + ' ' + fmt(n), '') + ro('Work vs starter', fmt(work, work < 10 ? 1 : 0) + X, work > 8 ? 'mid' : '') + ro('On your laptop', dur(L), need > 1 ? 'bad' : 'good') + ro('Speedup needed', need > 1 ? fmt(need, need < 10 ? 1 : 0) + X : 'none', need > 1 ? 'bad' : 'good');
     $('#p-say').innerHTML = need <= 1
       ? 'Your laptop manages this overnight. <em>Make it sharper.</em>'
       : 'Your laptop needs <em>' + dur(L) + '</em>. You have 12 hours. You need to go <em>' + fmt(need, need < 10 ? 1 : 0) + ' times faster</em>.';
   }
   $('#days').addEventListener('input', function () { drawProblem(); drawHelpers(); });
-  $$('#dx button').forEach(function (b) {
-    b.addEventListener('click', function () {
-      $$('#dx button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
-      DX = +b.dataset.v; drawProblem(); drawHelpers();
-    });
-  });
+  seg('dx', function (v) { DX = +v; drawProblem(); drawHelpers(); });
 
-  /* ---- 2: helpers ---- */
-  var kind = 'many', ROOMS = 8, PER = 128;
+  /* ---- 2: ICRN, a laptop in the data center ---- */
+  var lid = 'open';
+  seg('lid', function (v) { lid = v; drawLid(); });
+  $('#rl').addEventListener('input', drawLid);
+  function drawLid() {
+    var H = +$('#rl').value, MAXH = 72, x0 = 120, W = 450, sx = function (h) { return x0 + h / MAXH * W; }, svg = '', Q = 2;
+    $('#rl-out').textContent = H + (H === 1 ? ' hour' : ' hours');
+    // axis
+    [0, 12, 24, 36, 48, 60, 72].forEach(function (h) {
+      svg += '<line class="axl" x1="' + sx(h) + '" y1="20" x2="' + sx(h) + '" y2="210"/><text class="ax" x="' + sx(h) + '" y="230" text-anchor="middle">' + h + 'h</text>';
+    });
+    svg += '<text class="ax" x="' + (x0 + W) + '" y="246" text-anchor="end">hours from start</text>';
+    function row(y, label, cls, start, end, stopAt, stopMsg, okMsg) {
+      var s = '<text class="lbl" x="0" y="' + (y + 20) + '">' + label + '</text>';
+      if (start > 0) s += '<rect class="bar-q" x="' + sx(0) + '" y="' + (y + 6) + '" width="' + (sx(start) - sx(0)) + '" height="20" rx="2"/>';
+      var e = stopAt != null ? stopAt : end;
+      s += '<rect class="' + cls + '" x="' + sx(start) + '" y="' + (y + 6) + '" width="' + Math.max(2, sx(e) - sx(start)) + '" height="20" rx="2"/>';
+      if (stopAt != null) {
+        var cx = sx(stopAt) + 8;
+        s += '<path class="stopx" d="M' + (cx - 6) + ' ' + (y + 10) + 'l12 12M' + (cx + 6) + ' ' + (y + 10) + 'l-12 12"/>';
+        s += '<text class="stoptxt" x="' + (cx + 12) + '" y="' + (y + 21) + '">' + stopMsg + '</text>';
+      } else {
+        s += '<text class="oktxt" x="' + (sx(e) + 6) + '" y="' + (y + 21) + '">' + okMsg + '</text>';
+      }
+      return s;
+    }
+    var lapStop = lid === 'closed' && H > 2 ? 2 : null;
+    var icrnStop = H > 24 ? 24 : null;
+    svg += row(24, 'Your laptop', 'bar-me', 0, H, lapStop, 'lid closed: stopped', 'done');
+    svg += row(84, 'ICRN', 'bar-lap', 0, H, icrnStop, 'session ends at 24h', 'done');
+    svg += row(144, 'Cluster job', 'bar-clu', Q, H + Q, null, '', 'done');
+    $('#lidviz').innerHTML = svg;
+    var say;
+    if (H > 24) say = 'ICRN sessions end at 24 hours. A <em>' + H + '-hour</em> run needs a cluster, or a run that saves and restarts.';
+    else if (lapStop != null) say = 'Close the lid and your laptop stops. <em>ICRN keeps going.</em> Same speed, but you are free.';
+    else say = 'All three finish at the same speed. ICRN does not make you faster. <em>It frees your laptop.</em>';
+    $('#i-say').innerHTML = say;
+  }
+
+  /* ---- 3: helpers ---- */
+  var kind = 'many', ROOMS = 4, PER = 128;
   (function buildRooms() {
     var h = '';
     for (var r = 0; r < ROOMS; r++) { h += '<div class="room">'; for (var i = 0; i < PER; i++) h += '<i></i>'; h += '</div>'; }
@@ -328,15 +566,14 @@ svg { display: block; width: 100%; height: auto; }
   })();
   var dots = $$('#rooms i');
   function drawHelpers() {
-    var N = Math.pow(2, +$('#hn').value), t = L / N, rooms = Math.ceil(N / PER);
+    var N = Math.pow(2, +$('#hn').value), t = L / N, machines = Math.ceil(N / PER), met = t <= 0.5;
     $('#hn-out').textContent = fmt(N);
     dots.forEach(function (d, i) { d.className = i < N ? 'on' : ''; });
-    var met = t <= DEADLINE;
-    $('#h-ro').innerHTML = ro('Machines used', fmt(rooms), '') + ro('Time if all goes perfectly', dur(t), met ? 'good' : 'mid') + ro('Overnight deadline', met ? 'met' : 'missed', met ? 'good' : 'bad');
+    $('#h-ro').innerHTML = ro('Nodes used', fmt(machines), '') + ro('Time, if all goes perfectly', dur(t), met ? 'good' : 'mid') + ro('By morning?', met ? 'yes' : 'no', met ? 'good' : 'bad');
     var say;
-    if (N === 1) say = 'One helper is your laptop. <em>' + dur(L) + '</em>.';
-    else if (kind === 'many') say = N + ' helpers each run their own storm. Nobody waits for anybody. <em>Time really does drop to ' + dur(t) + '.</em>';
-    else say = 'In theory, ' + fmt(N) + ' helpers cut <em>' + dur(L) + '</em> to <em>' + dur(t) + '</em>. <span class="bad">Too good to be true.</span> The next page shows why.';
+    if (N === 1) say = 'One core is your laptop: <em>' + dur(L) + '</em>.';
+    else if (kind === 'many') say = fmt(N) + ' cores each run their own storm. No core waits on another. <em>Time really does drop to ' + dur(t) + '.</em>';
+    else say = 'In theory ' + fmt(N) + ' cores cut <em>' + dur(L) + '</em> to <em>' + dur(t) + '</em>. <span class="bad">Too good to be true.</span> Next: why.';
     $('#h-say').innerHTML = say;
   }
   $('#hn').addEventListener('input', drawHelpers);
@@ -344,16 +581,8 @@ svg { display: block; width: 100%; height: auto; }
   $('#k-many').addEventListener('click', function () { setKind('many'); });
   $('#k-one').addEventListener('click', function () { setKind('one'); });
 
-  /* ---- 3: talking ---- */
+  /* ---- 4: talking ---- */
   var P = 16, SIZE = 16, ALPHA = 2;
-  function seg(id, fn) {
-    $$('#' + id + ' button').forEach(function (b) {
-      b.addEventListener('click', function () {
-        $$('#' + id + ' button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
-        fn(b.dataset.v);
-      });
-    });
-  }
   seg('hp', function (v) { P = +v; drawTalk(); });
   seg('ms', function (v) { SIZE = +v; drawTalk(); });
   function drawTalk() {
@@ -367,16 +596,16 @@ svg { display: block; width: 100%; height: auto; }
     $('#map').innerHTML = svg;
     var work = s * s, talk = k > 1 ? (4 - 4 / k) * s : 0, t1 = SIZE * SIZE, tp = work + ALPHA * talk, speed = t1 / tp, eff = speed / P;
     $('#t1').textContent = fmt(t1) + ' units';
-    $('#tp-l').textContent = P + (P === 1 ? ' helper' : ' helpers') + ', per step';
+    $('#tp-l').textContent = P + (P === 1 ? ' core' : ' cores') + ', per step';
     $('#tp').textContent = fmt(tp) + ' units';
     $('#sw').style.width = (work / t1 * 100) + '%'; $('#st').style.width = (ALPHA * talk / t1 * 100) + '%';
-    $('#m-ro').innerHTML = ro('Faster by', fmt(speed, 1) + '×', '') + ro('Real work share', fmt(eff * 100) + '%', eff >= 0.6 ? 'good' : eff >= 0.35 ? 'mid' : 'bad');
+    $('#m-ro').innerHTML = ro('Faster by', fmt(speed, 1) + X, '') + ro('Parallel efficiency', fmt(eff * 100) + '%', eff >= 0.6 ? 'good' : eff >= 0.35 ? 'mid' : 'bad');
     $('#m-say').innerHTML = P === 1
-      ? 'One helper has nobody to talk to. <em>No waiting.</em>'
-      : P + ' helpers should be ' + P + '× faster. They are only <em>' + fmt(speed, 1) + '×</em>. Only <span class="' + (eff >= 0.6 ? 'good' : 'bad') + '">' + fmt(eff * 100) + '%</span> of the time you pay for is real work.' + (SIZE === 16 && P >= 16 ? ' <em>Try the big map.</em>' : (SIZE === 48 && P >= 16 ? ' Bigger problems keep more helpers busy.' : ''));
+      ? 'One core has nobody to talk to. <em>No waiting.</em>'
+      : P + ' cores should be ' + P + X + ' faster. They are only <em>' + fmt(speed, 1) + X + '</em>. Only <span class="' + (eff >= 0.6 ? 'good' : 'bad') + '">' + fmt(eff * 100) + '%</span> of what you pay for is real work.' + (SIZE === 16 && P >= 16 ? ' <em>Try the big map.</em>' : (SIZE === 48 && P >= 16 ? ' Bigger problems keep more cores busy.' : ''));
   }
 
-  /* ---- 4: hallways ---- */
+  /* ---- 5: seating ---- */
   var job = [0, 1, 2, 3], hall = 4, busy = 1;
   seg('place', function (v) { job = v === 'pack' ? [0, 1, 2, 3] : [0, 4, 8, 12]; drawFabric(); });
   function drawFabric() {
@@ -384,27 +613,64 @@ svg { display: block; width: 100%; height: auto; }
     var per = [0, 0, 0, 0]; job.forEach(function (n) { per[Math.floor(n / 4)]++; });
     var avail = (4 / hall) * (busy ? 0.5 : 1);
     var us = per.map(function (kk) { var load = kk > 0 && kk < M ? kk * (M - kk) / (M - 1) : 0, u = load / avail; if (u > maxU) maxU = u; return u; });
-    svg += '<rect class="hall" x="40" y="14" width="560" height="34" rx="4"/><text class="swt" x="320" y="36">HALLWAY</text>';
+    svg += '<rect class="hall" x="40" y="14" width="560" height="34" rx="4"/><text class="swt" x="320" y="36">NETWORK (SHARED BY ALL JOBS)</text>';
     for (i = 0; i < 4; i++) {
       var carry = per[i] > 0 && per[i] < M, cls = !carry ? 'idle' : us[i] < 0.6 ? 'ok' : us[i] < 1 ? 'warn' : 'bad', wd = carry ? 3 + Math.min(us[i], 1.6) * 6 : 2;
       svg += '<path class="up ' + cls + '" style="stroke-width:' + wd + 'px" d="M' + cx[i] + ' 112L' + cx[i] + ' 48"/>';
-      svg += '<text class="util" x="' + (cx[i] + 8) + '" y="86" style="text-anchor:start">' + (carry ? fmt(us[i] * 100) + '% full' : '') + '</text>';
-      svg += '<rect class="sw" x="' + (cx[i] - 66) + '" y="112" width="132" height="124" rx="4"/><text class="swt" x="' + cx[i] + '" y="132">room ' + (i + 1) + '</text>';
+      svg += '<text class="util" x="' + (cx[i] + 8) + '" y="86">' + (carry ? fmt(us[i] * 100) + '% full' : '') + '</text>';
+      svg += '<rect class="sw" x="' + (cx[i] - 66) + '" y="112" width="132" height="124" rx="4"/><text class="swt" x="' + cx[i] + '" y="132">NODE ' + (i + 1) + '</text>';
       for (k = 0; k < 4; k++) {
         var id = i * 4 + k, nx = cx[i] - 36 + (k % 2) * 72, ny = 168 + Math.floor(k / 2) * 44, inJob = job.indexOf(id) >= 0;
         svg += '<circle class="nd ' + (inJob ? 'job' : busy ? 'other' : '') + '" cx="' + nx + '" cy="' + ny + '" r="15"/>';
       }
     }
-    svg += '<circle class="nd job" cx="22" cy="258" r="7"/><text class="ax" x="34" y="262">your helpers</text><circle class="nd other" cx="170" cy="258" r="7"/><text class="ax" x="182" y="262">other people’s</text><circle class="nd" cx="320" cy="258" r="7"/><text class="ax" x="332" y="262">empty desk</text>';
+    svg += '<circle class="nd job" cx="22" cy="258" r="7"/><text class="ax" x="34" y="262">your job’s cores</text><circle class="nd other" cx="170" cy="258" r="7"/><text class="ax" x="182" y="262">other jobs</text>';
     $('#fabric').innerHTML = svg;
     var sl = Math.max(1, maxU);
-    $('#j-ro').innerHTML = ro('Busiest hallway link', maxU ? fmt(maxU * 100) + '% full' : 'unused', !maxU || maxU < 0.6 ? 'good' : maxU < 1 ? 'mid' : 'bad') + ro('Notes arrive', sl === 1 ? 'on time' : fmt(sl, 1) + '× slower', sl === 1 ? 'good' : sl < 1.5 ? 'mid' : 'bad');
-    $('#j-say').innerHTML = !maxU ? 'Everyone shares one room. <em>No note ever enters the hallway.</em>'
-      : sl > 1 ? 'Every note crosses the hallway, and other people\u2019s notes are there too. It is <span class="bad">jammed</span>. <em>Same code, different seats, slower run.</em>'
-      : 'The hallway has room.';
+    $('#j-ro').innerHTML = ro('Busiest network link', maxU ? fmt(maxU * 100) + '% full' : 'unused', !maxU || maxU < 0.6 ? 'good' : maxU < 1 ? 'mid' : 'bad') + ro('Messages arrive', sl === 1 ? 'on time' : fmt(sl, 1) + X + ' slower', sl === 1 ? 'good' : sl < 1.5 ? 'mid' : 'bad');
+    $('#j-say').innerHTML = !maxU ? 'All 4 cores share one node’s memory. <em>No message touches the network.</em>'
+      : 'Every message crosses the network, alongside other jobs’ traffic. <span class="bad">Congested.</span> <em>Same code, different nodes, slower run.</em>';
   }
 
-  /* ---- 5: your turn ---- */
+  /* ---- 6: submitting a job ---- */
+  var SCRIPT = [
+    '#!/bin/bash',
+    '#SBATCH --job-name=storm',
+    '#SBATCH --nodes=2',
+    '#SBATCH --ntasks-per-node=128',
+    '#SBATCH --time=06:00:00',
+    '#SBATCH --account=my_allocation',
+    '',
+    'module load storm-model',
+    'srun ./storm --grid 5km --days 10'
+  ];
+  var STAGES = [
+    { name: 'Write', hi: [1, 2, 3, 4, 5], say: 'Write down what you need: <em>how many nodes, how long, which allocation pays</em>.' },
+    { name: 'Submit', hi: [], cmd: '$ sbatch storm.sh', say: 'One command hands it to the scheduler. <em>You can log off now.</em>' },
+    { name: 'Wait', hi: [], cmd: '$ squeue --me      # PENDING', say: 'Your job waits in the queue until 2 whole nodes are free. <em>Bigger asks can wait longer.</em>' },
+    { name: 'Run', hi: [7, 8], say: 'Slurm places 256 tasks on 2 nodes and starts them <em>all at once</em>.' },
+    { name: 'Collect', hi: [], cmd: '$ ls results/', say: 'Results land in your files. <em>Nobody watched it run.</em>' }
+  ];
+  var stg = 0;
+  $('#stage').innerHTML = STAGES.map(function (s, i) { return '<button data-v="' + i + '"' + (i === 0 ? ' aria-pressed="true"' : '') + '>' + (i + 1) + '. ' + s.name + '</button>'; }).join('');
+  seg('stage', function (v) { stg = +v; drawSubmit(); });
+  function esc(t) { return t.replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+  function drawSubmit() {
+    var s = STAGES[stg], svg = '', w = 96, gap = 24, i;
+    for (i = 0; i < STAGES.length; i++) {
+      var x = 5 + i * (w + gap);
+      svg += '<rect class="stg ' + (i === stg ? 'on' : i < stg ? 'done' : '') + '" x="' + x + '" y="15" width="' + w + '" height="56" rx="5"/>';
+      svg += '<text class="stgn" x="' + (x + w / 2) + '" y="36">' + (i + 1) + '</text><text class="stgt" x="' + (x + w / 2) + '" y="56">' + STAGES[i].name + '</text>';
+      if (i < STAGES.length - 1) svg += '<path class="arrow" d="M' + (x + w + 3) + ' 43h' + (gap - 6) + 'm-5 -4l5 4l-5 4"/>';
+    }
+    $('#pipe').innerHTML = svg;
+    var lines = SCRIPT.map(function (l, k) { return '<span class="' + (s.hi.indexOf(k) >= 0 ? 'hi' : '') + '">' + (esc(l) || '&nbsp;') + '</span>'; });
+    if (s.cmd) lines = lines.concat(['<span>&nbsp;</span>', '<span class="hi">' + esc(s.cmd) + '</span>']);
+    $('#script').innerHTML = lines.join('');
+    $('#s-say').innerHTML = s.say;
+  }
+
+  /* ---- 7: your turn ---- */
   var T1H = 480, S = 0.02, C = 0.003, TLIM = 30, BUD = 3000;
   function stackHTML(parts, max, mark) {
     var h = '', used = 0;
@@ -419,28 +685,53 @@ svg { display: block; width: 100%; height: auto; }
     $('#tbar').innerHTML = stackHTML([['c', ch], ['w', wk], ['t', tk]], 60, TLIM);
     $('#cbar').innerHTML = stackHTML([['w', cost]], 6000, BUD);
     var okT = tot <= TLIM, okC = cost <= BUD;
-    $('#t-ro').innerHTML = ro('30-hour deadline', okT ? 'met' : 'missed', okT ? 'good' : 'bad') + ro('3,000 core-hour budget', okC ? 'met' : 'over', okC ? 'good' : 'bad') + ro('Faster than 1 helper', fmt(T1H / tot, 1) + '×', '');
+    $('#t-ro').innerHTML = ro('30-hour deadline', okT ? 'met' : 'missed', okT ? 'good' : 'bad') + ro('3,000 core-hours', okC ? 'within' : 'over', okC ? 'good' : 'bad') + ro('Faster than 1 core', fmt(T1H / tot, 1) + X, '');
     $('#t-say').innerHTML = okT && okC ? '<span class="good">Both met.</span>'
       : !okT && !okC ? 'Too slow <em>and</em> too expensive.'
-      : !okT ? 'Too slow. <em>Add helpers.</em>'
-      : 'Fast enough, but <span class="bad">over budget</span>. <em>Use fewer helpers.</em> Extra helpers mostly wait on each other.';
+      : !okT ? 'Too slow. <em>Add cores.</em>'
+      : 'Fast enough, but <span class="bad">over budget</span>. <em>Use fewer cores.</em> Extra cores mostly wait on each other.';
     $('#win').hidden = !(okT && okC);
   }
   $('#tn').addEventListener('input', drawTurn);
 
-  /* glossary */
+  /* ---- 8: which one ---- */
+  var TASKS = [
+    { name: 'Explore a dataset in a notebook', v: [['mid', 'Works', 'If the tools install and the data fits on your disk.'], ['good', 'Best fit', 'Nothing to install. Notebook and files waiting in your browser.'], ['mid', 'Overkill', 'Possible, but you wait in a queue to poke at data.']], say: 'Interactive and small: <em>a bigger laptop</em> is the right tool.' },
+    { name: 'A 10-hour run, one core, overnight', v: [['mid', 'Risky', 'The laptop must stay on and awake all night.'], ['good', 'Best fit', 'Fits inside a 24-hour session. Close your laptop and go home.'], ['good', 'Works', 'Fine, but one core does not need a cluster.']], say: 'One core, under a day: <em>ICRN</em>. Your laptop stays free.' },
+    { name: 'Train a small model on a GPU', v: [['bad', 'Usually no', 'Most laptops lack a suitable GPU.'], ['good', 'Good start', 'Shared GPU is enough for small models and tests.'], ['mid', 'When it grows', 'Dedicated GPUs once training takes days or needs many GPUs.']], say: 'Start on <em>ICRN</em>. Move to a cluster when the GPU is the bottleneck.' },
+    { name: '1,000 separate storms, 1 hour each', v: [['bad', '6 weeks', 'One storm at a time.'], ['bad', '6 weeks', 'Still one core, and sessions end at 24 hours.'], ['good', 'Hours', 'Run hundreds at once. No talking needed.']], say: 'Many independent runs: <em>a cluster</em>. This is where it shines.' },
+    { name: 'One 2 km storm that needs 200 cores', v: [['bad', 'No', 'Not enough cores or memory.'], ['bad', 'No', 'Still one core.'], ['good', 'Only option', 'Split the map across nodes and let them talk over MPI.']], say: 'One job bigger than any one node: <em>only a cluster</em>.' }
+  ];
+  var NAMES = ['Your laptop', 'ICRN', 'Cluster'];
+  $('#task').innerHTML = TASKS.map(function (t, i) { return '<button data-v="' + i + '"' + (i === 0 ? ' aria-pressed="true"' : '') + '>' + t.name + '</button>'; }).join('');
+  seg('task', function (v) { drawDecide(+v); });
+  function drawDecide(i) {
+    var t = TASKS[i], best = -1;
+    t.v.forEach(function (v, k) { if (v[1] === 'Best fit' || v[1] === 'Only option' || (v[1] === 'Hours') || (v[1] === 'Good start')) best = k; });
+    $('#verdicts').innerHTML = t.v.map(function (v, k) {
+      return '<div class="vd ' + v[0] + (k === best ? ' best' : '') + '"><h3>' + NAMES[k] + '</h3><span class="tag">' + v[1] + '</span><p>' + v[2] + '</p></div>';
+    }).join('');
+    $('#d-say').innerHTML = t.say;
+  }
+
+  /* ---- glossary ---- */
   var G = {
-    'Core': 'One processor that does one stream of work. In this story, one helper.',
-    'Node': 'One machine in the supercomputer. It holds roughly 100 cores and its own memory.',
-    'Cluster': 'Hundreds or thousands of nodes wired together and managed as one system.',
+    'Core': 'One processor that does one stream of work.',
+    'Node': 'One machine in a cluster, with its own cores and memory. Often about 100 cores.',
+    'Cluster': 'Many nodes wired together and run as one shared system.',
+    'ICRN': 'Illinois Computes Research Notebooks: Jupyter, RStudio or VS Code in your browser, hosted at NCSA.',
+    'Notebook': 'A page where you run code in small pieces and see results right away. Jupyter is the common one.',
+    'Scheduler': 'The software that queues jobs and decides which nodes each one gets. Slurm is a common one.',
+    'Batch job': 'Work you submit as a script and leave to run, instead of typing commands live.',
+    'Queue': 'The line jobs wait in until enough nodes are free.',
     'Core-hour': 'One core working for one hour. Allocations are usually counted in these.',
     'Allocation': 'The budget of core-hours a project is granted.',
-    'Scheduler': 'The software that queues jobs and decides which nodes each one gets.',
-    'MPI': 'The standard way helpers in different machines pass notes to each other.',
-    'OpenMP': 'A way for helpers inside one machine to share the same memory. A different tool from MPI.',
-    'RDMA': 'Network cards that write straight into another machine’s memory, skipping the slow mailroom.',
-    'Scaling': 'How much faster a job gets as you add helpers.',
-    'Efficiency': 'The share of the time you pay for that is real work.'
+    'MPI': 'Message Passing Interface: the standard way cores on different nodes send each other data.',
+    'Interconnect': 'The fast network linking a cluster’s nodes. Every running job shares it.',
+    'Halo exchange': 'Neighboring patches of a split-up map swapping their edge values each time step.',
+    'Job array': 'Many independent copies of one job, each with different inputs. No talking needed.',
+    'Scaling': 'How much faster a job gets as you add cores.',
+    'Parallel efficiency': 'The share of the core-hours you pay for that is real work, not waiting or talking.'
   };
   $('#chips').innerHTML = Object.keys(G).map(function (k) { return '<button aria-pressed="false">' + k + '</button>'; }).join('');
   $$('#chips button').forEach(function (b) {
@@ -449,11 +740,13 @@ svg { display: block; width: 100%; height: auto; }
       $('#def').textContent = G[b.textContent];
     });
   });
+  var dlg = $('#words');
+  $('#open-words').addEventListener('click', function () { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); });
+  $('#close-words').addEventListener('click', function () { if (dlg.close) dlg.close(); else dlg.removeAttribute('open'); });
 
-  drawProblem(); drawHelpers(); drawTalk(); drawFabric(); drawTurn();
-  show((location.hash || '').replace('#', ''), false);
+  drawProblem(); drawLid(); drawHelpers(); drawTalk(); drawFabric(); drawSubmit(); drawTurn(); drawDecide(0);
+  show((location.hash || '').replace('#', ''));
 })();
 </script>
-
 </body>
 </html>
