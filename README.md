@@ -13,7 +13,7 @@ An interactive introduction to research computing for graduate students and othe
 4. **Communication.** Split a map into patches and see how the halo exchange cuts into the speedup.
 5. **Job placement.** Run the same job on one node or spread across nodes that share the network.
 6. **Batch jobs.** Write a job script, submit it, wait in the queue, run, and collect the output.
-7. **Sizing a job.** Meet a 30-hour deadline within a 3,000 core-hour allocation.
+7. **Sizing a job.** Meet a 30-hour deadline within a 3,000 core-hour allocation, and see how parallel efficiency falls as you add cores.
 
 **Decide**
 8. **Which resource.** Pick the kind of work and how much of it, and see whether your laptop, ICRN, the Illinois Campus Cluster, Delta, DeltaAI, Radiant or campus cPanel web hosting fits best. Examples range from parameter sweeps and AI training to sharing an R Shiny app.

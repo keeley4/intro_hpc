@@ -142,7 +142,7 @@ svg { display: block; width: 100%; height: auto; max-height: 100%; }
 .oktxt { fill: var(--il-prairie); font: 700 12px var(--f-body); }
 
 /* "In HPC terms" mapping */
-.hpc { background: var(--il-storm-95); border-left: 4px solid var(--il-blue); padding: 8px 12px; }
+.hpc { background: var(--il-storm-95); border-left: 4px solid var(--il-blue); padding: 6px 12px; }
 .hpc-h { display: block; font: 700 0.68rem var(--f-head); letter-spacing: 0.1em; text-transform: uppercase; color: var(--il-blue); margin-bottom: 4px; }
 .hpc dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 2px 12px; font-size: 0.92rem; }
 .hpc dt { color: var(--muted); }
@@ -234,6 +234,10 @@ table.cmp td:first-child { color: var(--il-blue); font-weight: 600; }
 
 .win { border-left: 5px solid var(--il-prairie); padding: 8px 12px; background: var(--il-storm-95); font-size: 0.97rem; }
 .win b { font-family: var(--f-head); color: var(--il-blue); }
+.win.warn { border-left-color: var(--il-harvest); }
+.eb { fill: var(--il-storm-80); } .eb.ok { fill: var(--il-prairie); } .eb.cur { stroke: var(--il-orange); stroke-width: 3; }
+.ebl { fill: var(--muted); font: 11px var(--f-body); text-anchor: middle; }
+.ebv { fill: var(--il-blue); font: 700 12px var(--f-head); text-anchor: middle; }
 
 /* footer */
 footer { border-top: 1px solid var(--line); background: #fff; }
@@ -339,7 +343,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       <div class="left">
         <span class="track clu">Cluster</span>
         <h2>Running in parallel</h2>
-        <p class="story">A cluster is a set of servers, called <strong>nodes</strong>, connected by a fast network. Each node has many <strong>cores</strong>. Each box on the right is one node with 128 cores.</p>
+        <p class="story">A cluster is many servers, called <strong>nodes</strong>, joined by a fast network. Each box on the right is one node with 128 <strong>cores</strong>.</p>
         <p class="try">Try: add cores, then switch the kind of job</p>
         <div class="ctl"><label for="hn">Cores <output id="hn-out"></output></label><input id="hn" type="range" min="0" max="9" step="1" value="0"></div>
         <div class="seg" role="group" aria-label="Kind of job">
@@ -350,6 +354,8 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
         <div class="hpc"><span class="hpc-h">In HPC terms</span><dl>
           <dt id="dt-many">1,000 separate storms</dt><dd>a job array, with no data exchange</dd>
           <dt id="dt-one">One giant storm</dt><dd>one parallel (MPI) job</dd>
+          <dt>Within one node</dt><dd>OpenMP threads can share memory</dd>
+          <dt>Across nodes</dt><dd>needs MPI or a similar library</dd>
         </dl></div>
         <p class="say" id="h-say" aria-live="polite"></p>
       </div>
@@ -428,7 +434,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
         <div class="hpc"><span class="hpc-h">In HPC terms</span><dl>
           <dt>Cores</dt><dd><code>--ntasks</code> in your job script</dd>
           <dt>Serial chores</dt><dd>code that only one core can run</dd>
-          <dt>Trying 1, 2, 4, 8</dt><dd>a scaling study</dd>
+          <dt>The chart on the right</dt><dd>a scaling study</dd>
         </dl></div>
         <p class="say" id="t-say" aria-live="polite"></p>
       </div>
@@ -442,7 +448,11 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
           <div class="rowlab"><span>Core-hours spent (line = 3,000)</span><b id="tc"></b></div>
           <div class="stack" id="cbar"></div>
         </div>
-        <div class="win" id="win" hidden><b>That works.</b> In practice you find this number the same way: run short tests on 1, 2, 4 and 8 cores, plot the times, and stop adding cores once the speedup levels off.</div>
+        <div>
+          <div class="rowlab"><span>Parallel efficiency at each core count (green = meets both)</span><b id="te"></b></div>
+          <svg id="effchart" viewBox="0 0 560 150" role="img" aria-label="Parallel efficiency for each core count"></svg>
+        </div>
+        <div class="win" id="win" hidden></div>
       </div>
     </section>
 
@@ -812,26 +822,42 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
   }
 
   /* ---- 7: your turn ---- */
-  var T1H = 480, S = 0.02, C = 0.003, TLIM = 30, BUD = 3000;
+  var T1H = 480, S = 0.01, C = 0.002, TLIM = 30, BUD = 3000;
+  function runAt(N) { var ch = S * T1H, wk = (1 - S) / N * T1H, tk = C * Math.log2(N) * T1H, tot = ch + wk + tk; return { ch: ch, wk: wk, tk: tk, tot: tot, cost: N * tot, eff: T1H / (N * tot) }; }
   function stackHTML(parts, max, mark) {
     var h = '', used = 0;
     parts.forEach(function (p) { var w = Math.max(0, Math.min(p[1] / max * 100, 100 - used)); used += w; h += '<div class="' + p[0] + '" style="width:' + w + '%"></div>'; });
     return h + '<div class="mark" style="left:' + (mark / max * 100) + '%"></div>';
   }
   function drawTurn() {
-    var N = Math.pow(2, +$('#tn').value), ch = S * T1H, wk = (1 - S) / N * T1H, tk = C * Math.log2(N) * T1H, tot = ch + wk + tk, cost = N * tot;
+    var N = Math.pow(2, +$('#tn').value), R0 = runAt(N), ch = R0.ch, wk = R0.wk, tk = R0.tk, tot = R0.tot, cost = R0.cost, eff = R0.eff;
+    var Nmin = 0, svg = '', i;
+    for (i = 0; i <= 10; i++) {
+      var n = Math.pow(2, i), q = runAt(n), good = q.tot <= TLIM && q.cost <= BUD, h = q.eff * 110, x = 8 + i * 50;
+      if (good && !Nmin) Nmin = n;
+      svg += '<rect class="eb' + (good ? ' ok' : '') + (n === N ? ' cur' : '') + '" x="' + x + '" y="' + (122 - h) + '" width="36" height="' + h + '"/>';
+      svg += '<text class="ebl" x="' + (x + 18) + '" y="138">' + n + '</text>';
+      if (n === N) svg += '<text class="ebv" x="' + (x + 18) + '" y="' + (116 - h) + '">' + fmt(q.eff * 100) + '%</text>';
+    }
+    $('#effchart').innerHTML = svg;
+    $('#te').textContent = fmt(eff * 100) + '% at ' + fmt(N) + (N === 1 ? ' core' : ' cores');
     $('#tn-out').textContent = fmt(N);
     $('#tt').textContent = fmt(tot, 1) + ' hours';
     $('#tc').textContent = fmt(cost) + ' core-hours';
     $('#tbar').innerHTML = stackHTML([['c', ch], ['w', wk], ['t', tk]], 60, TLIM);
     $('#cbar').innerHTML = stackHTML([['w', cost]], 6000, BUD);
     var okT = tot <= TLIM, okC = cost <= BUD;
-    $('#t-ro').innerHTML = ro('30-hour deadline', okT ? 'met' : 'missed', okT ? 'good' : 'bad') + ro('3,000 core-hours', okC ? 'within' : 'over', okC ? 'good' : 'bad') + ro('Faster than 1 core', fmt(T1H / tot, 1) + X, '');
-    $('#t-say').innerHTML = okT && okC ? '<span class="good">This meets both the deadline and the budget.</span>'
+    $('#t-ro').innerHTML = ro('30-hour deadline', okT ? 'met' : 'missed', okT ? 'good' : 'bad') + ro('3,000 core-hours', okC ? 'within' : 'over', okC ? 'good' : 'bad') + ro('Parallel efficiency', fmt(eff * 100) + '%', eff >= 0.6 ? 'good' : eff >= 0.35 ? 'mid' : 'bad');
+    $('#t-say').innerHTML = okT && okC ? (N === Nmin ? '<span class="good">This meets both with the fewest cores.</span>' : 'This works, but <span class="bad">efficiency drops to ' + fmt(eff * 100) + '%</span>.')
       : !okT && !okC ? 'This is too slow <em>and</em> uses too much of the allocation.'
       : !okT ? 'This misses the deadline. <em>Try more cores.</em>'
-      : 'This is fast enough but <span class="bad">over budget</span>, because the extra cores spend most of their time waiting. <em>Try fewer cores.</em>';
-    $('#win').hidden = !(okT && okC);
+      : 'Fast enough, but <span class="bad">over budget</span>. The extra cores mostly sit idle, wasting your allocation and cores others could use. <em>Try fewer cores.</em>';
+    var win = $('#win'), best = runAt(Nmin);
+    win.hidden = !(okT && okC);
+    win.className = 'win' + (N === Nmin ? '' : ' warn');
+    win.innerHTML = N === Nmin
+      ? '<b>Good choice.</b> Fewer cores miss the deadline, and more cores would mostly add waiting. Giving up a little efficiency to make a deadline is reasonable, as long as you stay within your allocation.'
+      : '<b>It works, but it is wasteful.</b> Compared with ' + Nmin + ' cores, you finish ' + fmt(best.tot - tot, 1) + ' hours sooner and spend ' + fmt(cost - best.cost) + ' more core-hours. Cores that mostly wait still count against your allocation, and other researchers could have used them.';
   }
   $('#tn').addEventListener('input', drawTurn);
 
