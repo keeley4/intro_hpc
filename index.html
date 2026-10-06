@@ -155,7 +155,7 @@ svg { display: block; width: 100%; height: auto; max-height: 100%; }
 .track.info { background: var(--il-arches-95); color: var(--il-blue); border: 1px solid var(--il-arches); }
 .sowhat { border-left: 4px solid var(--il-orange); background: #fff7f2; padding: 8px 12px; }
 .sowhat .hpc-h { color: var(--il-altgeld); }
-.sowhat ul { margin: 0; padding-left: 18px; font-size: 0.95rem; }
+.sowhat ul { margin: 0; padding-left: 18px; font-size: 0.92rem; }
 .sowhat li + li { margin-top: 3px; }
 .sowhat code { font: 0.85rem var(--f-code); background: #fff; padding: 0 4px; white-space: nowrap; }
 
@@ -166,8 +166,8 @@ svg { display: block; width: 100%; height: auto; max-height: 100%; }
 .seg.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); }
 .seg.grid2 button, .seg.grid3 button { text-align: left; padding: 5px 9px; line-height: 1.2; }
 .seg button small { display: block; font-size: 0.78rem; font-weight: 400; opacity: 0.85; }
-.rcards { display: flex; flex-direction: column; gap: 6px; }
-.rc { display: grid; grid-template-columns: 1fr auto; column-gap: 10px; background: var(--il-storm-95); border-left: 5px solid var(--il-storm-80); padding: 6px 10px; }
+.rcards { display: flex; flex-direction: column; gap: 5px; }
+.rc { display: grid; grid-template-columns: 1fr auto; column-gap: 10px; background: var(--il-storm-95); border-left: 5px solid var(--il-storm-80); padding: 4px 10px; }
 .rc h3 { font-size: 0.98rem; font-weight: 800; }
 .rc .tag { font: 700 0.7rem var(--f-head); text-transform: uppercase; letter-spacing: 0.08em; align-self: center; color: var(--il-storm); }
 .rc p { grid-column: 1 / -1; }
@@ -178,7 +178,8 @@ svg { display: block; width: 100%; height: auto; max-height: 100%; }
 .rc.also { border-left-color: var(--il-harvest); }
 .rc.also .tag { color: var(--il-earth); }
 .rc.no { opacity: 0.55; }
-.rc.no .a { display: none; }
+.rc.no .a, .rc.no .w { display: none; }
+.rc .w { font-size: 0.82rem; color: var(--il-earth); font-weight: 600; }
 
 /* ICRN spec chips */
 .specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 8px; }
@@ -257,7 +258,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
   </div></div>
   <header><div class="wrap">
     <h1>From Laptop to Cluster</h1>
-    <p class="sub">An introduction to research computing: when an ICRN notebook is enough, and when you need a cluster.</p>
+    <p class="sub">An introduction to research computing at Illinois, from notebooks to clusters.</p>
   </div></header>
 
   <nav class="wrap" aria-label="Steps">
@@ -278,14 +279,14 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     <section class="mod" id="m-problem">
       <div class="left">
         <span class="track">Start</span>
-        <h2>Why your laptop isn&rsquo;t enough</h2>
-        <p class="story">You forecast storms. A 10-day forecast on a coarse map takes your laptop about an hour. You want a <strong>sharper map</strong>, and you want it by morning.</p>
-        <p class="try">Try: sharpen the map, then lengthen the forecast</p>
+        <h2>When a laptop runs out of room</h2>
+        <p class="story">Say you run a storm forecast. A 10-day forecast on a coarse grid takes your laptop about an hour. Now you want a <strong>finer grid</strong>, and you need the results by tomorrow morning.</p>
+        <p class="try">Try: make the grid finer, then lengthen the forecast</p>
         <div class="ctl"><span class="cap">Grid square width (model resolution)</span>
           <div class="seg" id="dx" role="group" aria-label="Grid square width"><button data-v="100">100 km</button><button data-v="50">50 km</button><button data-v="25" aria-pressed="true">25 km</button><button data-v="10">10 km</button><button data-v="5">5 km</button><button data-v="2">2 km</button></div></div>
         <div class="ctl"><label for="days">Forecast length <output id="days-out"></output></label><input id="days" type="range" min="1" max="30" step="1" value="10"></div>
         <div class="readouts" id="p-ro"></div>
-        <p class="note">Halve the square width: 4&times; the squares, and each time step must be half as long. That is 8&times; the work.</p>
+        <p class="note">Halving the square width gives 4&times; as many squares, and each time step has to be half as long, so the work goes up 8&times;.</p>
         <p class="say" id="p-say" aria-live="polite"></p>
       </div>
       <div class="right"><div class="fit"><canvas class="map" id="cv" width="400" height="400" role="img" aria-label="A simulated storm drawn at the chosen grid sharpness"></canvas></div></div>
@@ -295,15 +296,15 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     <section class="mod lapmod" id="m-icrn" hidden>
       <div class="left">
         <span class="track lap">Bigger laptop &middot; ICRN</span>
-        <h2>A laptop that lives in the data center</h2>
-        <p class="story"><strong>Illinois Computes Research Notebooks (ICRN)</strong> gives you Jupyter, RStudio or VS Code in your browser. Nothing to install, and your work keeps running when you close the lid. It is still <strong>one seat</strong>: about the speed of one laptop core.</p>
+        <h2>ICRN: notebooks that run at NCSA</h2>
+        <p class="story"><strong>Illinois Computes Research Notebooks (ICRN)</strong> gives you Jupyter, RStudio or VS Code in a web browser. There is nothing to install, and your code keeps running after you close your laptop. Each notebook gets <strong>one core</strong>, so it runs at about the speed of your laptop.</p>
         <div class="specs">
           <div class="spec"><b>1 core</b><span>per notebook</span></div>
           <div class="spec"><b>Shared GPU</b><span>small models</span></div>
           <div class="spec"><b>100 GB</b><span>saved files</span></div>
           <div class="spec"><b>24 hours</b><span>per session</span></div>
         </div>
-        <p class="try">Try: lengthen the run, then close the lid</p>
+        <p class="try">Try: make the run longer, then close the laptop</p>
         <div class="ctl"><label for="rl">How long the run takes <output id="rl-out"></output></label><input id="rl" type="range" min="1" max="72" step="1" value="8"></div>
         <div class="seg" id="lid" role="group" aria-label="Laptop lid"><button data-v="open" aria-pressed="true">Laptop stays open</button><button data-v="closed">Close the lid at hour 2</button></div>
         <p class="say" id="i-say" aria-live="polite"></p>
@@ -311,7 +312,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       </div>
       <div class="right">
         <svg id="lidviz" viewBox="0 0 600 250" role="img" aria-label="Timeline of the same run on a laptop, on ICRN, and on a cluster"></svg>
-        <div class="key"><span class="kq">waiting in line</span></div>
+        <div class="key"><span class="kq">waiting in the queue</span></div>
       </div>
     </section>
 
@@ -320,7 +321,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       <div class="left">
         <span class="track clu">Cluster</span>
         <h2>Running in parallel</h2>
-        <p class="story">A cluster is many servers, called <strong>nodes</strong>, wired together. Each node has many <strong>cores</strong>; each box on the right is a node with 128.</p>
+        <p class="story">A cluster is a set of servers, called <strong>nodes</strong>, connected by a fast network. Each node has many <strong>cores</strong>. Each box on the right is one node with 128 cores.</p>
         <p class="try">Try: add cores, then switch the kind of job</p>
         <div class="ctl"><label for="hn">Cores <output id="hn-out"></output></label><input id="hn" type="range" min="0" max="9" step="1" value="0"></div>
         <div class="seg" role="group" aria-label="Kind of job">
@@ -329,7 +330,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
         </div>
         <div class="readouts" id="h-ro"></div>
         <div class="hpc"><span class="hpc-h">In HPC terms</span><dl>
-          <dt>1,000 separate storms</dt><dd>a job array: no talking needed</dd>
+          <dt>1,000 separate storms</dt><dd>a job array, with no data exchange</dd>
           <dt>One giant storm</dt><dd>one parallel (MPI) job</dd>
         </dl></div>
         <p class="say" id="h-say" aria-live="polite"></p>
@@ -342,25 +343,22 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       <div class="left">
         <div class="pills"><span class="track clu">Cluster</span><span class="track info">Background: good to know</span></div>
         <h2>The cost of communication</h2>
-        <p class="story">The map is split into patches, one per core (<strong>domain decomposition</strong>). Each step, neighbors swap edge values over <strong>MPI</strong>: a <strong>halo exchange</strong>.</p>
-        <p class="try">Try: more cores, then the big map</p>
+        <p class="story">To run one storm on many cores, the map is split into patches, one per core (<strong>domain decomposition</strong>). After each time step, neighboring patches swap edge values over <strong>MPI</strong>, which is called a <strong>halo exchange</strong>.</p>
+        <p class="try">Try: add cores, then switch to the big map</p>
         <div class="segrow"><div class="seg" id="hp" role="group" aria-label="Cores"><button data-v="1">1 core</button><button data-v="4">4</button><button data-v="16" aria-pressed="true">16</button><button data-v="64">64</button></div>
         <div class="seg" id="ms" role="group" aria-label="Map size"><button data-v="16" aria-pressed="true">Small map</button><button data-v="48">Big map</button></div></div>
-        <div>
-          <div class="rowlab"><span>1 core alone</span><b id="t1"></b></div><div class="stack"><div class="w" style="width:100%"></div></div>
-        </div>
         <div>
           <div class="rowlab"><span id="tp-l"></span><b id="tp"></b></div><div class="stack"><div class="w" id="sw"></div><div class="t" id="st"></div></div>
         </div>
         <div class="sowhat"><span class="hpc-h">What this means for you</span><ul>
-          <li>More cores is not automatically faster. On small problems, communication eats the gain.</li>
-          <li>Before you request lots of cores, time a few small runs (see <strong>Sizing a job</strong>).</li>
+          <li>Adding cores does not always make a job faster. On small problems, the time spent exchanging data can cancel out the gain.</li>
+          <li>Before you request a lot of cores, time a few short runs (see <strong>Sizing a job</strong>).</li>
         </ul></div>
         <p class="say" id="m-say" aria-live="polite"></p>
       </div>
       <div class="right">
         <div class="fit"><svg id="map" viewBox="0 0 400 400" style="max-width:min(440px, calc(100dvh - 330px))" role="img" aria-label="A map cut into patches, one per core"></svg></div>
-        <div class="key"><span class="ks">real work</span><span class="kt">halo exchange (talking)</span></div>
+        <div class="key"><span class="ks">real work</span><span class="kt">halo exchange</span></div>
       </div>
     </section>
 
@@ -368,15 +366,15 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     <section class="mod clumod" id="m-placement" hidden>
       <div class="left">
         <div class="pills"><span class="track clu">Cluster</span><span class="track info">Background: good to know</span></div>
-        <h2>Where your job lands matters</h2>
-        <p class="story">Cores on the same <strong>node</strong> share memory, so they talk almost for free. Cores on different nodes talk over the <strong>network</strong>, which every job on the cluster shares.</p>
-        <p class="try">Try: switch the placement</p>
+        <h2>Where your job runs on the cluster</h2>
+        <p class="story">Cores on the same <strong>node</strong> share memory, so passing data between them is fast. Cores on different nodes pass data over the <strong>network</strong>, which all running jobs share.</p>
+        <p class="try">Try: switch between the two placements</p>
         <div class="seg" id="place" role="group" aria-label="Placement"><button data-v="pack" aria-pressed="true">4 cores on 1 node</button><button data-v="scatter">1 core on each of 4 nodes</button></div>
         <div class="readouts" id="j-ro"></div>
         <div class="sowhat"><span class="hpc-h">What this means for you</span><ul>
-          <li>You don&rsquo;t pick nodes; Slurm does. The defaults are usually fine.</li>
-          <li>One habit helps: if your job fits on one node, ask for one node (<code>--nodes=1</code>).</li>
-          <li>Same job, slower today? Placement and network traffic are common reasons. Time a few runs.</li>
+          <li>Slurm picks your nodes, and its defaults are usually fine.</li>
+          <li>If your job fits on one node, request one node (<code>--nodes=1</code>).</li>
+          <li>If the same job runs slower on a different day, placement and network traffic are common causes. Time a few runs before drawing conclusions.</li>
         </ul></div>
         <p class="say" id="j-say" aria-live="polite"></p>
       </div>
@@ -387,8 +385,8 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     <section class="mod clumod" id="m-submit" hidden>
       <div class="left">
         <span class="track clu">Cluster</span>
-        <h2>You don&rsquo;t press Run. You submit.</h2>
-        <p class="story">On a cluster you write down what you need, hand it to the <strong>scheduler</strong>, and walk away. It runs your job when enough nodes are free.</p>
+        <h2>Submitting a batch job</h2>
+        <p class="story">On a cluster you don&rsquo;t run programs directly. You write a short script that says what you need, submit it to the <strong>scheduler</strong>, and it starts your job when enough nodes are free.</p>
         <p class="try">Try: step through the job</p>
         <div class="seg col" id="stage" role="group" aria-label="Job stage"></div>
         <p class="say" id="s-say" aria-live="polite"></p>
@@ -405,13 +403,13 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       <div class="left">
         <span class="track clu">Cluster</span>
         <h2>Size your job</h2>
-        <p class="story">Your storm takes 20 days on one core. Your advisor wants it in <strong>30 hours</strong>. Your allocation is <strong>3,000 core-hours</strong>, charged as cores &times; hours, like a taxi meter.</p>
+        <p class="story">Your storm run takes 20 days on one core, and your advisor wants results in <strong>30 hours</strong>. Your allocation is <strong>3,000 core-hours</strong>, and each job is charged cores &times; hours.</p>
         <p class="try">Try: find a core count that meets both</p>
         <div class="ctl"><label for="tn">Cores <output id="tn-out"></output></label><input id="tn" type="range" min="0" max="10" step="1" value="3"></div>
         <div class="readouts" id="t-ro"></div>
         <div class="hpc"><span class="hpc-h">In HPC terms</span><dl>
           <dt>Cores</dt><dd><code>--ntasks</code> in your job script</dd>
-          <dt>Chores</dt><dd>serial code that can&rsquo;t be split</dd>
+          <dt>Serial chores</dt><dd>code that only one core can run</dd>
           <dt>Trying 1, 2, 4, 8</dt><dd>a scaling study</dd>
         </dl></div>
         <p class="say" id="t-say" aria-live="polite"></p>
@@ -426,7 +424,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
           <div class="rowlab"><span>Core-hours spent (line = 3,000)</span><b id="tc"></b></div>
           <div class="stack" id="cbar"></div>
         </div>
-        <div class="win" id="win" hidden><b>Sweet spot.</b> Real teams find it the same way: run small tests with 1, 2, 4, 8 cores, plot the times, and stop adding cores when the gains flatten.</div>
+        <div class="win" id="win" hidden><b>That works.</b> In practice you find this number the same way: run short tests on 1, 2, 4 and 8 cores, plot the times, and stop adding cores once the speedup levels off.</div>
       </div>
     </section>
 
@@ -444,7 +442,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       </div>
       <div class="right">
         <div class="rcards" id="rcards"></div>
-        <p class="note">Large GPU memory alone does not mean Delta: Campus Cluster&rsquo;s Illinois Computes nodes include 80&ndash;141 GB GPUs. The real step up is scale. Not sure? Ask NCSA Research Consulting.</p>
+        <p class="note">A GPU with lots of memory does not by itself call for Delta, since the Campus Cluster has 80 to 141 GB GPUs. People usually move to Delta or DeltaAI when they need many GPU hours. If you are unsure, ask NCSA Research Consulting.</p>
       </div>
     </section>
   </div></main>
@@ -540,8 +538,8 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     var need = hours / 12;
     $('#p-ro').innerHTML = ro('Grid', fmt(n) + ' ' + X + ' ' + fmt(n), '') + ro('Work vs starter', fmt(work, work < 10 ? 1 : 0) + X, work > 8 ? 'mid' : '') + ro('On your laptop', dur(L), need > 1 ? 'bad' : 'good') + ro('Speedup needed', need > 1 ? fmt(need, need < 10 ? 1 : 0) + X : 'none', need > 1 ? 'bad' : 'good');
     $('#p-say').innerHTML = need <= 1
-      ? 'Your laptop manages this overnight. <em>Make it sharper.</em>'
-      : 'Your laptop needs <em>' + dur(L) + '</em>. You have 12 hours. You need to go <em>' + fmt(need, need < 10 ? 1 : 0) + ' times faster</em>.';
+      ? 'Your laptop can finish this overnight. <em>Try a finer grid.</em>'
+      : 'Your laptop needs <em>' + dur(L) + '</em>, but you have 12 hours. You would need to run <em>' + fmt(need, need < 10 ? 1 : 0) + ' times faster</em>.';
   }
   $('#days').addEventListener('input', function () { drawProblem(); drawHelpers(); });
   seg('dx', function (v) { DX = +v; drawProblem(); drawHelpers(); });
@@ -579,9 +577,9 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     svg += row(144, 'Cluster job', 'bar-clu', Q, H + Q, null, '', 'done');
     $('#lidviz').innerHTML = svg;
     var say;
-    if (H > 24) say = 'ICRN sessions end at 24 hours. A <em>' + H + '-hour</em> run needs a cluster, or a run that saves and restarts.';
-    else if (lapStop != null) say = 'Close the lid and your laptop stops. <em>ICRN keeps going.</em> Same speed, but you are free.';
-    else say = 'All three finish at the same speed. ICRN does not make you faster. <em>It frees your laptop.</em>';
+    if (H > 24) say = 'ICRN sessions end after 24 hours, so a <em>' + H + '-hour</em> run needs a cluster, or code that saves its progress and can pick up where it left off.';
+    else if (lapStop != null) say = 'Your laptop stops when you close it. <em>ICRN keeps running</em>, so you can go home.';
+    else say = 'All three take about the same time. The benefit of ICRN is that <em>your laptop is free</em> while it runs.';
     $('#i-say').innerHTML = say;
   }
 
@@ -599,9 +597,9 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     dots.forEach(function (d, i) { d.className = i < N ? 'on' : ''; });
     $('#h-ro').innerHTML = ro('Nodes used', fmt(machines), '') + ro('Time, if all goes perfectly', dur(t), met ? 'good' : 'mid') + ro('By morning?', met ? 'yes' : 'no', met ? 'good' : 'bad');
     var say;
-    if (N === 1) say = 'One core is your laptop: <em>' + dur(L) + '</em>.';
-    else if (kind === 'many') say = fmt(N) + ' cores each run their own storm. No core waits on another. <em>Time really does drop to ' + dur(t) + '.</em>';
-    else say = 'In theory ' + fmt(N) + ' cores cut <em>' + dur(L) + '</em> to <em>' + dur(t) + '</em>. <span class="bad">Too good to be true.</span> Next: why.';
+    if (N === 1) say = 'One core is about the same as your laptop, so <em>' + dur(L) + '</em>.';
+    else if (kind === 'many') say = fmt(N) + ' cores each run their own storm without waiting on each other, so the total time drops to <em>' + dur(t) + '</em>.';
+    else say = 'On paper, ' + fmt(N) + ' cores would cut <em>' + dur(L) + '</em> to <em>' + dur(t) + '</em>. <span class="bad">In practice it takes longer</span>, and the next tab shows why.';
     $('#h-say').innerHTML = say;
   }
   $('#hn').addEventListener('input', drawHelpers);
@@ -623,13 +621,12 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     for (var i = 0; i <= k; i++) { var p = i * s * cell; svg += '<path class="mapline" d="M' + p + ' 0V400M0 ' + p + 'H400"/>'; }
     $('#map').innerHTML = svg;
     var work = s * s, talk = k > 1 ? (4 - 4 / k) * s : 0, t1 = SIZE * SIZE, tp = work + ALPHA * talk, speed = t1 / tp, eff = speed / P;
-    $('#t1').textContent = fmt(t1) + ' units';
-    $('#tp-l').textContent = P + (P === 1 ? ' core' : ' cores') + ', per step';
+    $('#tp-l').textContent = 'Time per step with ' + P + (P === 1 ? ' core' : ' cores') + ' (full bar = 1 core)';
     $('#tp').textContent = fmt(tp) + ' units';
     $('#sw').style.width = (work / t1 * 100) + '%'; $('#st').style.width = (ALPHA * talk / t1 * 100) + '%';
     $('#m-say').innerHTML = P === 1
-      ? 'One core has nobody to talk to. <em>No waiting.</em>'
-      : P + ' cores should be ' + P + X + ' faster. They are only <em>' + fmt(speed, 1) + X + '</em>. Parallel efficiency: <span class="' + (eff >= 0.6 ? 'good' : 'bad') + '">' + fmt(eff * 100) + '%</span>.' + (SIZE === 16 && P >= 16 ? ' <em>Try the big map.</em>' : (SIZE === 48 && P >= 16 ? ' Bigger problems keep more cores busy.' : ''));
+      ? 'With one core there is nothing to exchange, so <em>all of the time is real work</em>.'
+      : 'Ideally ' + P + ' cores would be ' + P + X + ' faster. Here they are <em>' + fmt(speed, 1) + X + '</em> faster, a parallel efficiency of <span class="' + (eff >= 0.6 ? 'good' : 'bad') + '">' + fmt(eff * 100) + '%</span>.' + (SIZE === 16 && P >= 16 ? ' <em>Now try the big map.</em>' : (SIZE === 48 && P >= 16 ? ' A bigger problem gives each core more real work per exchange.' : ''));
   }
 
   /* ---- 5: seating ---- */
@@ -655,8 +652,8 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     $('#fabric').innerHTML = svg;
     var sl = Math.max(1, maxU);
     $('#j-ro').innerHTML = ro('Busiest network link', maxU ? fmt(maxU * 100) + '% full' : 'unused', !maxU || maxU < 0.6 ? 'good' : maxU < 1 ? 'mid' : 'bad') + ro('Messages arrive', sl === 1 ? 'on time' : fmt(sl, 1) + X + ' slower', sl === 1 ? 'good' : sl < 1.5 ? 'mid' : 'bad');
-    $('#j-say').innerHTML = !maxU ? 'All 4 cores share one node’s memory. <em>No message touches the network.</em>'
-      : 'Every message crosses the network, alongside other jobs’ traffic. <span class="bad">Congested.</span> <em>Same code, different nodes, slower run.</em>';
+    $('#j-say').innerHTML = !maxU ? 'All 4 cores are on one node, so they share memory and <em>never use the network</em>.'
+      : 'Every message now crosses the network, which other jobs are using too. <span class="bad">The links fill up</span>, and the same code runs slower.';
   }
 
   /* ---- 6: submitting a job ---- */
@@ -672,11 +669,11 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     'srun ./storm --grid 5km --days 10'
   ];
   var STAGES = [
-    { name: 'Write', hi: [1, 2, 3, 4, 5], say: 'Write down what you need: <em>how many nodes, how long, which allocation pays</em>.' },
-    { name: 'Submit', hi: [], cmd: '$ sbatch storm.sh', say: 'One command hands it to the scheduler. <em>You can log off now.</em>' },
-    { name: 'Wait', hi: [], cmd: '$ squeue --me      # PENDING', say: 'Your job waits in the queue until 2 whole nodes are free. <em>Bigger asks can wait longer.</em>' },
-    { name: 'Run', hi: [7, 8], say: 'Slurm places 256 tasks on 2 nodes and starts them <em>all at once</em>.' },
-    { name: 'Collect', hi: [], cmd: '$ ls results/', say: 'Results land in your files. <em>Nobody watched it run.</em>' }
+    { name: 'Write', hi: [1, 2, 3, 4, 5], say: 'The script lists <em>how many nodes, how long, and which allocation</em> to charge.' },
+    { name: 'Submit', hi: [], cmd: '$ sbatch storm.sh', say: 'One command sends the script to the scheduler. After that <em>you can log off</em>.' },
+    { name: 'Wait', hi: [], cmd: '$ squeue --me      # PENDING', say: 'The job waits in the queue until 2 nodes are free. <em>Larger requests usually wait longer.</em>' },
+    { name: 'Run', hi: [7, 8], say: 'Slurm starts 256 tasks across the 2 nodes <em>at the same time</em>.' },
+    { name: 'Collect', hi: [], cmd: '$ ls results/', say: 'Output is written to your project folder, and <em>you can check it whenever you log back in</em>.' }
   ];
   var stg = 0;
   $('#stage').innerHTML = STAGES.map(function (s, i) { return '<button data-v="' + i + '"' + (i === 0 ? ' aria-pressed="true"' : '') + '>' + (i + 1) + '. ' + s.name + '</button>'; }).join('');
@@ -713,50 +710,55 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     $('#cbar').innerHTML = stackHTML([['w', cost]], 6000, BUD);
     var okT = tot <= TLIM, okC = cost <= BUD;
     $('#t-ro').innerHTML = ro('30-hour deadline', okT ? 'met' : 'missed', okT ? 'good' : 'bad') + ro('3,000 core-hours', okC ? 'within' : 'over', okC ? 'good' : 'bad') + ro('Faster than 1 core', fmt(T1H / tot, 1) + X, '');
-    $('#t-say').innerHTML = okT && okC ? '<span class="good">Both met.</span>'
-      : !okT && !okC ? 'Too slow <em>and</em> too expensive.'
-      : !okT ? 'Too slow. <em>Add cores.</em>'
-      : 'Fast enough, but <span class="bad">over budget</span>. <em>Use fewer cores.</em> Extra cores mostly wait on each other.';
+    $('#t-say').innerHTML = okT && okC ? '<span class="good">This meets both the deadline and the budget.</span>'
+      : !okT && !okC ? 'This is too slow <em>and</em> uses too much of the allocation.'
+      : !okT ? 'This misses the deadline. <em>Try more cores.</em>'
+      : 'This is fast enough but <span class="bad">over budget</span>, because the extra cores spend most of their time waiting. <em>Try fewer cores.</em>';
     $('#win').hidden = !(okT && okC);
   }
   $('#tn').addEventListener('input', drawTurn);
 
   /* ---- 8: which resource ---- */
   var RES = [
-    { id: 'lap', name: 'Your laptop', d: 'Your own machine. Fine for small tests.', a: 'You already have it.' },
-    { id: 'icrn', name: 'ICRN', d: 'Browser notebooks: 1 core, shared GPU, 24-hour sessions.', a: 'Free for UIUC researchers. Just log in.' },
-    { id: 'iccp', name: 'Illinois Campus Cluster', d: 'Campus Slurm cluster. CPU nodes plus A100 80 GB, H100 and H200 GPUs.', a: 'Free Illinois Computes allocation (100,000 core-hours, 1,000 GPU hours), or your group&rsquo;s own nodes.' },
-    { id: 'delta', name: 'Delta', d: 'NCSA national system. CPU nodes plus A40, A100 and H200 GPU nodes.', a: 'ACCESS allocation; grad students apply with a faculty co-PI. NAIRR for AI.' },
-    { id: 'dai', name: 'DeltaAI', d: 'NCSA AI system. GH200 nodes with 96 GB H100 GPUs and ARM CPUs. GPU-only.', a: 'ACCESS, NAIRR, or Illinois Computes for large requests.' }
+    { id: 'lap', name: 'Your laptop', d: 'Fine for small tests and for writing code.', a: 'You already have it.' },
+    { id: 'icrn', name: 'ICRN', d: 'Notebooks in your browser with 1 core, a shared GPU and 24-hour sessions.', a: 'Free for UIUC researchers. Log in with your NetID.' },
+    { id: 'iccp', name: 'Illinois Campus Cluster', d: 'Shared campus cluster with CPU nodes and A100 80 GB, H100 and H200 GPUs.', a: 'Free Illinois Computes allocation (100,000 core-hours, 1,000 GPU hours), or your group&rsquo;s own nodes.' },
+    { id: 'delta', name: 'Delta', d: 'National NCSA system with CPU nodes and A40, A100 and H200 GPU nodes.', a: 'ACCESS allocation, which grad students can request with a faculty co-PI. NAIRR also allocates AI projects.' },
+    { id: 'dai', name: 'DeltaAI', d: 'NCSA system for AI, with 96 GB H100 GPUs and ARM processors. GPU work only.', a: 'ACCESS, NAIRR, or Illinois Computes for large requests.' },
+    { id: 'rad', name: 'Radiant', d: 'Your own always-on Linux server in NCSA&rsquo;s cloud. You set it up and run it yourself.', w: 'You start with an empty server and handle software installs, the firewall, security updates and repairs yourself. Linux experience, or a labmate who has it, makes a big difference.', a: 'Free through Illinois Computes: one server with 8 cores and 32 GB of memory. GPUs cost extra. Request it with your advisor.' }
   ];
   var WORK = [
     { id: 'explore', name: 'Explore and analyze data', ex: 'notebooks, statistics, plots' },
     { id: 'sweep', name: 'Many independent runs', ex: 'parameter sweeps, Monte Carlo, batches of files' },
     { id: 'sim', name: 'One large simulation', ex: 'a model split across many cores (MPI)' },
     { id: 'gpusim', name: 'GPU-accelerated simulation', ex: 'or GPU analysis that is not AI' },
-    { id: 'train', name: 'Train or fine-tune AI models', ex: 'deep learning on GPUs' }
+    { id: 'train', name: 'Train or fine-tune AI models', ex: 'deep learning on GPUs' },
+    { id: 'service', name: 'Keep a tool or website running', ex: 'a database, data portal or app your lab uses' }
   ];
   var SCALE = [
-    { id: 'S', name: 'Small', ex: 'hours; tests and prototypes' },
+    { id: 'S', name: 'Small', ex: 'a few hours, tests and prototypes' },
     { id: 'M', name: 'Medium', ex: 'up to ~100,000 core-hours or ~1,000 GPU hours' },
-    { id: 'L', name: 'Large', ex: 'beyond that, or many nodes at once' }
+    { id: 'L', name: 'Large', ex: 'more than that, or many nodes at once' }
   ];
   var REC = {
-    explore: { S: ['icrn', ['lap'], 'Interactive and small: <em>ICRN</em>. Nothing to install.'],
-               M: ['icrn', ['iccp'], 'Start on <em>ICRN</em>. Move to <em>Campus Cluster</em> when one core is not enough.'],
-               L: ['iccp', ['delta'], 'Big interactive analysis: <em>Campus Cluster</em>, through notebooks or batch jobs.'] },
-    sweep:   { S: ['icrn', ['lap'], 'A few hours of runs fit in one <em>ICRN</em> session.'],
-               M: ['iccp', [], 'Job arrays on <em>Campus Cluster</em>. The free allocation covers 100,000 core-hours.'],
-               L: ['iccp', ['delta'], 'Ask Illinois Computes for a larger <em>Campus Cluster</em> allocation, or apply to ACCESS for <em>Delta</em> CPU time.'] },
-    sim:     { S: ['iccp', ['lap'], 'MPI needs more than one core: <em>Campus Cluster</em>. Test on your laptop first.'],
-               M: ['iccp', [], 'Multi-node MPI runs on <em>Campus Cluster</em>, within the free allocation.'],
-               L: ['delta', ['iccp'], 'Hundreds of nodes talking over MPI: <em>Delta</em>, through an ACCESS allocation.'] },
-    gpusim:  { S: ['iccp', ['icrn'], 'Test GPU code on <em>Campus Cluster</em>. ICRN&rsquo;s shared GPU works for quick checks.'],
-               M: ['iccp', ['delta'], '<em>Campus Cluster</em>: about 1,000 free GPU hours on A100, H100 and H200 GPUs.'],
-               L: ['delta', ['dai'], 'Thousands of GPU hours: <em>Delta</em>, via ACCESS. DeltaAI fits if your code runs on its ARM-based nodes.'] },
-    train:   { S: ['icrn', ['iccp'], 'Small models and tests: <em>ICRN</em>&rsquo;s shared GPU.'],
-               M: ['iccp', ['dai'], '<em>Campus Cluster</em>: about 1,000 free GPU hours, including 80&ndash;141 GB GPUs.'],
-               L: ['dai', ['delta'], 'Thousands of GPU hours of AI training: <em>DeltaAI</em>, via ACCESS, NAIRR or Illinois Computes.'] }
+    explore: { S: ['icrn', ['lap'], 'For small interactive work, <em>ICRN</em> is the easiest place to start.'],
+               M: ['icrn', ['iccp'], 'Start on <em>ICRN</em> and move to the <em>Campus Cluster</em> when one core is not enough.'],
+               L: ['iccp', ['delta'], 'Large analyses fit on the <em>Campus Cluster</em>, either in notebooks or as batch jobs.'] },
+    sweep:   { S: ['icrn', ['lap'], 'A few hours of runs fit in a single <em>ICRN</em> session.'],
+               M: ['iccp', [], 'Use job arrays on the <em>Campus Cluster</em>. The free allocation covers 100,000 core-hours.'],
+               L: ['iccp', ['delta'], 'Ask Illinois Computes for a larger <em>Campus Cluster</em> allocation, or apply through ACCESS for CPU time on <em>Delta</em>.'] },
+    sim:     { S: ['iccp', ['lap'], 'MPI needs several cores, so use the <em>Campus Cluster</em>. Small tests can run on your laptop first.'],
+               M: ['iccp', [], 'Multi-node MPI runs fit on the <em>Campus Cluster</em> within the free allocation.'],
+               L: ['delta', ['iccp'], 'For simulations across many nodes, apply through ACCESS for time on <em>Delta</em>.'] },
+    gpusim:  { S: ['iccp', ['icrn'], 'Test GPU code on the <em>Campus Cluster</em>. The shared GPU on ICRN is fine for quick checks.'],
+               M: ['iccp', ['delta'], 'The <em>Campus Cluster</em> allocation includes about 1,000 free GPU hours on A100, H100 and H200 GPUs.'],
+               L: ['delta', ['dai'], 'For thousands of GPU hours, apply through ACCESS for <em>Delta</em>. DeltaAI also works if your code runs on its ARM processors.'] },
+    train:   { S: ['icrn', ['iccp'], 'Small models and tests can use the shared GPU on <em>ICRN</em>.'],
+               M: ['iccp', ['dai'], 'The <em>Campus Cluster</em> allocation includes about 1,000 free GPU hours, on GPUs with 80 to 141 GB of memory.'],
+               L: ['dai', ['delta'], 'For thousands of GPU hours of training, request <em>DeltaAI</em> through ACCESS, NAIRR or Illinois Computes.'] },
+    service: { S: ['rad', [], 'A small site or database that has to stay on belongs on <em>Radiant</em>. Expect to set up the Linux server yourself.'],
+               M: ['rad', [], 'A tool your lab uses every day can run on <em>Radiant</em>. Plan regular time for software and security updates.'],
+               L: ['rad', [], 'Larger services, or ones that need a GPU, can run on <em>Radiant</em> with paid resources. Talk to NCSA before you build it.'] }
   };
   var dWork = 'explore', dScale = 'S';
   function twoLine(o) { return '<b>' + o.name + '</b><small>' + o.ex + '</small>'; }
@@ -769,7 +771,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     $('#rcards').innerHTML = RES.map(function (x) {
       var cls = x.id === best ? 'best' : also.indexOf(x.id) >= 0 ? 'also' : 'no';
       var tag = cls === 'best' ? 'Best fit' : cls === 'also' ? 'Also works' : 'Not the best fit';
-      return '<div class="rc ' + cls + '"><h3>' + x.name + '</h3><span class="tag">' + tag + '</span><p class="d">' + x.d + '</p><p class="a">' + x.a + '</p></div>';
+      return '<div class="rc ' + cls + '"><h3>' + x.name + '</h3><span class="tag">' + tag + '</span><p class="d">' + x.d + '</p>' + (x.w ? '<p class="w">' + x.w + '</p>' : '') + '<p class="a">' + x.a + '</p></div>';
     }).join('');
     $('#d-say').innerHTML = r[2];
   }
@@ -779,25 +781,27 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     'Core': 'One processor that does one stream of work.',
     'Node': 'One machine in a cluster, with its own cores and memory. Often about 100 cores.',
     'Cluster': 'Many nodes wired together and run as one shared system.',
-    'ICRN': 'Illinois Computes Research Notebooks: Jupyter, RStudio or VS Code in your browser, hosted at NCSA.',
+    'ICRN': 'Illinois Computes Research Notebooks. Jupyter, RStudio or VS Code in your browser, hosted at NCSA.',
     'Illinois Computes': 'UIUC program that gives campus researchers compute, storage and expert help at no cost.',
-    'Campus Cluster': 'The Illinois Campus Cluster: a shared campus Slurm cluster. Groups can buy nodes; Illinois Computes offers free allocations.',
+    'Campus Cluster': 'The Illinois Campus Cluster, a shared campus cluster that uses Slurm. Research groups can buy nodes, and Illinois Computes gives free allocations.',
+    'Radiant': 'NCSA&rsquo;s research cloud. You get your own virtual Linux server and are responsible for setting it up and keeping it secure.',
+    'Virtual machine': 'A server that exists as software on shared hardware. It behaves like your own computer, with full admin rights.',
     'Delta': 'An NCSA system funded by NSF, with CPU nodes and A40, A100 and H200 GPU nodes. Mostly allocated through ACCESS.',
     'DeltaAI': 'An NCSA system for AI, built from NVIDIA GH200 nodes (H100 GPUs, ARM CPUs). GPU allocations only.',
     'ACCESS': 'The NSF program that allocates national systems such as Delta. Grad students can apply with a faculty co-PI.',
-    'NAIRR': 'National AI Research Resource Pilot: NSF-led program that allocates AI compute, including on Delta and DeltaAI.',
+    'NAIRR': 'The National AI Research Resource Pilot, an NSF-led program that allocates computing for AI research, including on Delta and DeltaAI.',
     'Notebook': 'A page where you run code in small pieces and see results right away. Jupyter is the common one.',
     'Scheduler': 'The software that queues jobs and decides which nodes each one gets. Slurm is a common one.',
     'Batch job': 'Work you submit as a script and leave to run, instead of typing commands live.',
     'Queue': 'The line jobs wait in until enough nodes are free.',
     'Core-hour': 'One core working for one hour. Allocations are usually counted in these.',
     'Allocation': 'The budget of core-hours a project is granted.',
-    'MPI': 'Message Passing Interface: the standard way cores on different nodes send each other data.',
-    'Interconnect': 'The fast network linking a cluster’s nodes. Every running job shares it.',
+    'MPI': 'Message Passing Interface, the standard way for cores on different nodes to send each other data.',
+    'Interconnect': 'The fast network that links a cluster’s nodes. All running jobs share it.',
     'Halo exchange': 'Neighboring patches of a split-up map swapping their edge values each time step.',
-    'Job array': 'Many independent copies of one job, each with different inputs. No talking needed.',
+    'Job array': 'Many independent copies of one job, each with different inputs. The copies do not need to exchange data.',
     'Scaling': 'How much faster a job gets as you add cores.',
-    'Parallel efficiency': 'The share of the core-hours you pay for that is real work, not waiting or talking.'
+    'Parallel efficiency': 'The share of the core-hours you pay for that goes to real work rather than waiting or exchanging data.'
   };
   $('#chips').innerHTML = Object.keys(G).map(function (k) { return '<button aria-pressed="false">' + k + '</button>'; }).join('');
   $$('#chips button').forEach(function (b) {
