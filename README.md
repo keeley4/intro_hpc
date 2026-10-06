@@ -16,7 +16,7 @@ An interactive first look at research computing for people with no background. O
 7. **Sizing a job.** Meet a 30-hour deadline inside a 3,000 core-hour budget.
 
 **Decide**
-8. **Which resource.** Pick a job and compare laptop, ICRN, and cluster.
+8. **Which resource.** Pick your kind of work and how much of it, and see whether your laptop, ICRN, the Illinois Campus Cluster, Delta, or DeltaAI fits best.
 
 Each step fits on one screen on a laptop display. Each cluster step has an "In HPC terms" box that maps the analogy to real terms. Use the tabs, Back/Next, or the arrow keys. "Words to know" opens a glossary.
 

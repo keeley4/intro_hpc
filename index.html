@@ -161,6 +161,25 @@ svg { display: block; width: 100%; height: auto; max-height: 100%; }
 
 .segrow { display: flex; gap: 14px; flex-wrap: wrap; }
 
+/* resource picker */
+.seg.grid2 { display: grid; grid-template-columns: 1fr 1fr; }
+.seg.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); }
+.seg.grid2 button, .seg.grid3 button { text-align: left; padding: 5px 9px; line-height: 1.2; }
+.seg button small { display: block; font-size: 0.78rem; font-weight: 400; opacity: 0.85; }
+.rcards { display: flex; flex-direction: column; gap: 6px; }
+.rc { display: grid; grid-template-columns: 1fr auto; column-gap: 10px; background: var(--il-storm-95); border-left: 5px solid var(--il-storm-80); padding: 6px 10px; }
+.rc h3 { font-size: 0.98rem; font-weight: 800; }
+.rc .tag { font: 700 0.7rem var(--f-head); text-transform: uppercase; letter-spacing: 0.08em; align-self: center; color: var(--il-storm); }
+.rc p { grid-column: 1 / -1; }
+.rc .d { font-size: 0.88rem; color: var(--ink); }
+.rc .a { font-size: 0.8rem; color: var(--muted); }
+.rc.best { border-left-color: var(--il-prairie); background: #fff; outline: 2px solid var(--il-prairie); outline-offset: -2px; }
+.rc.best .tag { color: var(--il-prairie); }
+.rc.also { border-left-color: var(--il-harvest); }
+.rc.also .tag { color: var(--il-earth); }
+.rc.no { opacity: 0.55; }
+.rc.no .a { display: none; }
+
 /* ICRN spec chips */
 .specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 8px; }
 .spec { background: var(--il-storm-95); border-top: 4px solid var(--il-orange); padding: 7px 9px; }
@@ -415,23 +434,17 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     <section class="mod" id="m-decide" hidden>
       <div class="left">
         <span class="track">Decide</span>
-        <h2>Choosing the right resource</h2>
-        <p class="story">Pick a job. See how your laptop, ICRN and a cluster each handle it.</p>
-        <div class="seg col" id="task" role="group" aria-label="Pick a job"></div>
+        <h2>Which resource fits your research?</h2>
+        <p class="story">Pick the kind of work you do, then roughly how much of it. The best fit is outlined.</p>
+        <div class="ctl"><span class="cap">1. What kind of work?</span>
+          <div class="seg grid2" id="work" role="group" aria-label="Kind of work"></div></div>
+        <div class="ctl"><span class="cap">2. How much of it?</span>
+          <div class="seg grid3" id="scale" role="group" aria-label="Amount of work"></div></div>
         <p class="say" id="d-say" aria-live="polite"></p>
       </div>
       <div class="right">
-        <div class="verdicts" id="verdicts"></div>
-        <table class="cmp">
-          <thead><tr><th></th><th>Laptop</th><th>ICRN</th><th>Cluster</th></tr></thead>
-          <tbody>
-            <tr><td>How you use it</td><td>On your desk</td><td>Browser notebook</td><td>Submit a script</td></tr>
-            <tr><td>Cores</td><td>Your cores</td><td>1 core, shared GPU</td><td>Hundreds to thousands</td></tr>
-            <tr><td>Runs while you&rsquo;re away</td><td>Only if left on</td><td>Up to 24 h</td><td>Yes, to your time limit</td></tr>
-            <tr><td>Wait to start</td><td>None</td><td>None</td><td>Queue</td></tr>
-            <tr><td>Cost to you</td><td>The laptop</td><td>Free at UIUC</td><td>Core-hour allocation</td></tr>
-          </tbody>
-        </table>
+        <div class="rcards" id="rcards"></div>
+        <p class="note">Large GPU memory alone does not mean Delta: Campus Cluster&rsquo;s Illinois Computes nodes include 80&ndash;141 GB GPUs. The real step up is scale. Not sure? Ask NCSA Research Consulting.</p>
       </div>
     </section>
   </div></main>
@@ -708,24 +721,57 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
   }
   $('#tn').addEventListener('input', drawTurn);
 
-  /* ---- 8: which one ---- */
-  var TASKS = [
-    { name: 'Explore a dataset in a notebook', v: [['mid', 'Works', 'If the tools install and the data fits on your disk.'], ['good', 'Best fit', 'Nothing to install. Notebook and files waiting in your browser.'], ['mid', 'Overkill', 'Possible, but you wait in a queue to poke at data.']], say: 'Interactive and small: <em>a bigger laptop</em> is the right tool.' },
-    { name: 'A 10-hour run, one core, overnight', v: [['mid', 'Risky', 'The laptop must stay on and awake all night.'], ['good', 'Best fit', 'Fits inside a 24-hour session. Close your laptop and go home.'], ['good', 'Works', 'Fine, but one core does not need a cluster.']], say: 'One core, under a day: <em>ICRN</em>. Your laptop stays free.' },
-    { name: 'Train a small model on a GPU', v: [['bad', 'Usually no', 'Most laptops lack a suitable GPU.'], ['good', 'Good start', 'Shared GPU is enough for small models and tests.'], ['mid', 'When it grows', 'Dedicated GPUs once training takes days or needs many GPUs.']], say: 'Start on <em>ICRN</em>. Move to a cluster when the GPU is the bottleneck.' },
-    { name: '1,000 separate storms, 1 hour each', v: [['bad', '6 weeks', 'One storm at a time.'], ['bad', '6 weeks', 'Still one core, and sessions end at 24 hours.'], ['good', 'Hours', 'Run hundreds at once. No talking needed.']], say: 'Many independent runs: <em>a cluster</em>. This is where it shines.' },
-    { name: 'One 2 km storm that needs 200 cores', v: [['bad', 'No', 'Not enough cores or memory.'], ['bad', 'No', 'Still one core.'], ['good', 'Only option', 'Split the map across nodes and let them talk over MPI.']], say: 'One job bigger than any one node: <em>only a cluster</em>.' }
+  /* ---- 8: which resource ---- */
+  var RES = [
+    { id: 'lap', name: 'Your laptop', d: 'Your own machine. Fine for small tests.', a: 'You already have it.' },
+    { id: 'icrn', name: 'ICRN', d: 'Browser notebooks: 1 core, shared GPU, 24-hour sessions.', a: 'Free for UIUC researchers. Just log in.' },
+    { id: 'iccp', name: 'Illinois Campus Cluster', d: 'Campus Slurm cluster. CPU nodes plus A100 80 GB, H100 and H200 GPUs.', a: 'Free Illinois Computes allocation (100,000 core-hours, 1,000 GPU hours), or your group&rsquo;s own nodes.' },
+    { id: 'delta', name: 'Delta', d: 'NCSA national system. CPU nodes plus A40, A100 and H200 GPU nodes.', a: 'ACCESS allocation; grad students apply with a faculty co-PI. NAIRR for AI.' },
+    { id: 'dai', name: 'DeltaAI', d: 'NCSA AI system. GH200 nodes with 96 GB H100 GPUs and ARM CPUs. GPU-only.', a: 'ACCESS, NAIRR, or Illinois Computes for large requests.' }
   ];
-  var NAMES = ['Your laptop', 'ICRN', 'Cluster'];
-  $('#task').innerHTML = TASKS.map(function (t, i) { return '<button data-v="' + i + '"' + (i === 0 ? ' aria-pressed="true"' : '') + '>' + t.name + '</button>'; }).join('');
-  seg('task', function (v) { drawDecide(+v); });
-  function drawDecide(i) {
-    var t = TASKS[i], best = -1;
-    t.v.forEach(function (v, k) { if (v[1] === 'Best fit' || v[1] === 'Only option' || (v[1] === 'Hours') || (v[1] === 'Good start')) best = k; });
-    $('#verdicts').innerHTML = t.v.map(function (v, k) {
-      return '<div class="vd ' + v[0] + (k === best ? ' best' : '') + '"><h3>' + NAMES[k] + '</h3><span class="tag">' + v[1] + '</span><p>' + v[2] + '</p></div>';
+  var WORK = [
+    { id: 'explore', name: 'Explore and analyze data', ex: 'notebooks, statistics, plots' },
+    { id: 'sweep', name: 'Many independent runs', ex: 'parameter sweeps, Monte Carlo, batches of files' },
+    { id: 'sim', name: 'One large simulation', ex: 'a model split across many cores (MPI)' },
+    { id: 'gpusim', name: 'GPU-accelerated simulation', ex: 'or GPU analysis that is not AI' },
+    { id: 'train', name: 'Train or fine-tune AI models', ex: 'deep learning on GPUs' }
+  ];
+  var SCALE = [
+    { id: 'S', name: 'Small', ex: 'hours; tests and prototypes' },
+    { id: 'M', name: 'Medium', ex: 'up to ~100,000 core-hours or ~1,000 GPU hours' },
+    { id: 'L', name: 'Large', ex: 'beyond that, or many nodes at once' }
+  ];
+  var REC = {
+    explore: { S: ['icrn', ['lap'], 'Interactive and small: <em>ICRN</em>. Nothing to install.'],
+               M: ['icrn', ['iccp'], 'Start on <em>ICRN</em>. Move to <em>Campus Cluster</em> when one core is not enough.'],
+               L: ['iccp', ['delta'], 'Big interactive analysis: <em>Campus Cluster</em>, through notebooks or batch jobs.'] },
+    sweep:   { S: ['icrn', ['lap'], 'A few hours of runs fit in one <em>ICRN</em> session.'],
+               M: ['iccp', [], 'Job arrays on <em>Campus Cluster</em>. The free allocation covers 100,000 core-hours.'],
+               L: ['iccp', ['delta'], 'Ask Illinois Computes for a larger <em>Campus Cluster</em> allocation, or apply to ACCESS for <em>Delta</em> CPU time.'] },
+    sim:     { S: ['iccp', ['lap'], 'MPI needs more than one core: <em>Campus Cluster</em>. Test on your laptop first.'],
+               M: ['iccp', [], 'Multi-node MPI runs on <em>Campus Cluster</em>, within the free allocation.'],
+               L: ['delta', ['iccp'], 'Hundreds of nodes talking over MPI: <em>Delta</em>, through an ACCESS allocation.'] },
+    gpusim:  { S: ['iccp', ['icrn'], 'Test GPU code on <em>Campus Cluster</em>. ICRN&rsquo;s shared GPU works for quick checks.'],
+               M: ['iccp', ['delta'], '<em>Campus Cluster</em>: about 1,000 free GPU hours on A100, H100 and H200 GPUs.'],
+               L: ['delta', ['dai'], 'Thousands of GPU hours: <em>Delta</em>, via ACCESS. DeltaAI fits if your code runs on its ARM-based nodes.'] },
+    train:   { S: ['icrn', ['iccp'], 'Small models and tests: <em>ICRN</em>&rsquo;s shared GPU.'],
+               M: ['iccp', ['dai'], '<em>Campus Cluster</em>: about 1,000 free GPU hours, including 80&ndash;141 GB GPUs.'],
+               L: ['dai', ['delta'], 'Thousands of GPU hours of AI training: <em>DeltaAI</em>, via ACCESS, NAIRR or Illinois Computes.'] }
+  };
+  var dWork = 'explore', dScale = 'S';
+  function twoLine(o) { return '<b>' + o.name + '</b><small>' + o.ex + '</small>'; }
+  $('#work').innerHTML = WORK.map(function (w, i) { return '<button data-v="' + w.id + '"' + (i === 0 ? ' aria-pressed="true"' : '') + '>' + twoLine(w) + '</button>'; }).join('');
+  $('#scale').innerHTML = SCALE.map(function (w, i) { return '<button data-v="' + w.id + '"' + (i === 0 ? ' aria-pressed="true"' : '') + '>' + twoLine(w) + '</button>'; }).join('');
+  seg('work', function (v) { dWork = v; drawDecide(); });
+  seg('scale', function (v) { dScale = v; drawDecide(); });
+  function drawDecide() {
+    var r = REC[dWork][dScale], best = r[0], also = r[1];
+    $('#rcards').innerHTML = RES.map(function (x) {
+      var cls = x.id === best ? 'best' : also.indexOf(x.id) >= 0 ? 'also' : 'no';
+      var tag = cls === 'best' ? 'Best fit' : cls === 'also' ? 'Also works' : 'Not the best fit';
+      return '<div class="rc ' + cls + '"><h3>' + x.name + '</h3><span class="tag">' + tag + '</span><p class="d">' + x.d + '</p><p class="a">' + x.a + '</p></div>';
     }).join('');
-    $('#d-say').innerHTML = t.say;
+    $('#d-say').innerHTML = r[2];
   }
 
   /* ---- glossary ---- */
@@ -734,6 +780,12 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     'Node': 'One machine in a cluster, with its own cores and memory. Often about 100 cores.',
     'Cluster': 'Many nodes wired together and run as one shared system.',
     'ICRN': 'Illinois Computes Research Notebooks: Jupyter, RStudio or VS Code in your browser, hosted at NCSA.',
+    'Illinois Computes': 'UIUC program that gives campus researchers compute, storage and expert help at no cost.',
+    'Campus Cluster': 'The Illinois Campus Cluster: a shared campus Slurm cluster. Groups can buy nodes; Illinois Computes offers free allocations.',
+    'Delta': 'An NCSA system funded by NSF, with CPU nodes and A40, A100 and H200 GPU nodes. Mostly allocated through ACCESS.',
+    'DeltaAI': 'An NCSA system for AI, built from NVIDIA GH200 nodes (H100 GPUs, ARM CPUs). GPU allocations only.',
+    'ACCESS': 'The NSF program that allocates national systems such as Delta. Grad students can apply with a faculty co-PI.',
+    'NAIRR': 'National AI Research Resource Pilot: NSF-led program that allocates AI compute, including on Delta and DeltaAI.',
     'Notebook': 'A page where you run code in small pieces and see results right away. Jupyter is the common one.',
     'Scheduler': 'The software that queues jobs and decides which nodes each one gets. Slurm is a common one.',
     'Batch job': 'Work you submit as a script and leave to run, instead of typing commands live.',
@@ -758,7 +810,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
   $('#open-words').addEventListener('click', function () { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); });
   $('#close-words').addEventListener('click', function () { if (dlg.close) dlg.close(); else dlg.removeAttribute('open'); });
 
-  drawProblem(); drawLid(); drawHelpers(); drawTalk(); drawFabric(); drawSubmit(); drawTurn(); drawDecide(0);
+  drawProblem(); drawLid(); drawHelpers(); drawTalk(); drawFabric(); drawSubmit(); drawTurn(); drawDecide();
   show((location.hash || '').replace('#', ''));
 })();
 </script>
