@@ -182,6 +182,22 @@ svg { display: block; width: 100%; height: auto; max-height: 100%; }
 #d-say { max-width: none; font-size: 1.08rem; }
 .rc .w { font-size: 0.82rem; color: var(--il-earth); font-weight: 600; }
 
+/* intro chooser */
+.intro { position: fixed; inset: 0; z-index: 40; background: #fff; overflow: auto; }
+.intro .inner { max-width: 1000px; margin: 0 auto; padding: 28px 16px 40px; display: flex; flex-direction: column; gap: 14px; }
+.intro h1 { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 800; }
+.intro .lead { font-size: 1.1rem; color: var(--ink); max-width: 60ch; }
+.picks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 6px; }
+.pick { text-align: left; background: var(--il-storm-95); border: 0; border-top: 5px solid var(--il-blue); padding: 14px 16px; cursor: pointer; display: flex; flex-direction: column; gap: 6px; font-family: var(--f-body); color: var(--ink); }
+.pick:hover, .pick:focus-visible { border-top-color: var(--il-orange); background: #fff7f2; }
+.pick b { font: 800 1.1rem var(--f-head); color: var(--il-blue); }
+.pick .who { font-size: 0.88rem; color: var(--muted); }
+.pick .prob { font-size: 0.98rem; color: var(--il-industrial); font-weight: 600; }
+.pick.other { border-top-color: var(--il-storm-80); }
+.exbtn { font: 600 0.85rem var(--f-body); color: var(--il-blue); background: #fff; border: 1.5px solid var(--il-blue); padding: 3px 10px; cursor: pointer; white-space: nowrap; }
+.exbtn:hover { background: var(--il-blue-90); }
+@media (max-width: 860px) { .picks { grid-template-columns: 1fr; } }
+
 /* ICRN spec chips */
 .specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 8px; }
 .spec { background: var(--il-storm-95); border-top: 4px solid var(--il-orange); padding: 7px 9px; }
@@ -255,6 +271,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
   <div class="unitbar"><div class="wrap">
     <span class="unit">NCSA</span><span class="unit-sep" aria-hidden="true"></span>
     <span class="unit-full">National Center for Supercomputing Applications &middot; University of Illinois Urbana-Champaign</span>
+    <button class="iconbtn" id="open-intro">Example: <span id="ex-name">Weather and climate</span> (change)</button>
     <button class="iconbtn" id="open-words">Words to know</button>
   </div></div>
   <header><div class="wrap">
@@ -281,16 +298,16 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       <div class="left">
         <span class="track">Start</span>
         <h2>When a laptop runs out of room</h2>
-        <p class="story">Say you run a storm forecast. A 10-day forecast on a coarse grid takes your laptop about an hour. Now you want a <strong>finer grid</strong>, and you need the results by tomorrow morning.</p>
-        <p class="try">Try: make the grid finer, then lengthen the forecast</p>
-        <div class="ctl"><span class="cap">Grid square width (model resolution)</span>
-          <div class="seg" id="dx" role="group" aria-label="Grid square width"><button data-v="100">100 km</button><button data-v="50">50 km</button><button data-v="25" aria-pressed="true">25 km</button><button data-v="10">10 km</button><button data-v="5">5 km</button><button data-v="2">2 km</button></div></div>
-        <div class="ctl"><label for="days">Forecast length <output id="days-out"></output></label><input id="days" type="range" min="1" max="30" step="1" value="10"></div>
+        <p class="story" id="p-story"></p>
+        <p class="try" id="p-try"></p>
+        <div class="ctl"><span class="cap" id="dx-cap"></span>
+          <div class="seg" id="dx" role="group" aria-label="Problem size"></div></div>
+        <div class="ctl"><label for="days"><span id="len-cap"></span> <output id="days-out"></output></label><input id="days" type="range" min="1" max="30" step="1" value="10"></div>
         <div class="readouts" id="p-ro"></div>
-        <p class="note">Halving the square width gives 4&times; as many squares, and each time step has to be half as long, so the work goes up 8&times;.</p>
+        <p class="note" id="p-note"></p>
         <p class="say" id="p-say" aria-live="polite"></p>
       </div>
-      <div class="right"><div class="fit"><canvas class="map" id="cv" width="400" height="400" role="img" aria-label="A simulated storm drawn at the chosen grid sharpness"></canvas></div></div>
+      <div class="right"><div class="fit"><canvas class="map" id="cv" width="400" height="400" role="img" aria-label="A picture of the problem at the chosen size"></canvas></div></div>
     </section>
 
     <!-- 2 ICRN -->
@@ -331,8 +348,8 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
         </div>
         <div class="readouts" id="h-ro"></div>
         <div class="hpc"><span class="hpc-h">In HPC terms</span><dl>
-          <dt>1,000 separate storms</dt><dd>a job array, with no data exchange</dd>
-          <dt>One giant storm</dt><dd>one parallel (MPI) job</dd>
+          <dt id="dt-many">1,000 separate storms</dt><dd>a job array, with no data exchange</dd>
+          <dt id="dt-one">One giant storm</dt><dd>one parallel (MPI) job</dd>
         </dl></div>
         <p class="say" id="h-say" aria-live="polite"></p>
       </div>
@@ -344,7 +361,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       <div class="left">
         <div class="pills"><span class="track clu">Cluster</span><span class="track info">Background: good to know</span></div>
         <h2>The cost of communication</h2>
-        <p class="story">To run one storm on many cores, the map is split into patches, one per core (<strong>domain decomposition</strong>). After each time step, neighboring patches swap edge values over <strong>MPI</strong>, which is called a <strong>halo exchange</strong>.</p>
+        <p class="story" id="m-story"></p>
         <p class="try">Try: add cores, then switch to the big map</p>
         <div class="segrow"><div class="seg" id="hp" role="group" aria-label="Cores"><button data-v="1">1 core</button><button data-v="4">4</button><button data-v="16" aria-pressed="true">16</button><button data-v="64">64</button></div>
         <div class="seg" id="ms" role="group" aria-label="Map size"><button data-v="16" aria-pressed="true">Small map</button><button data-v="48">Big map</button></div></div>
@@ -404,7 +421,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       <div class="left">
         <span class="track clu">Cluster</span>
         <h2>Size your job</h2>
-        <p class="story">Your storm run takes 20 days on one core, and your advisor wants results in <strong>30 hours</strong>. Your allocation is <strong>3,000 core-hours</strong>, and each job is charged cores &times; hours.</p>
+        <p class="story" id="t-story"></p>
         <p class="try">Try: find a core count that meets both</p>
         <div class="ctl"><label for="tn">Cores <output id="tn-out"></output></label><input id="tn" type="range" min="0" max="10" step="1" value="3"></div>
         <div class="readouts" id="t-ro"></div>
@@ -453,6 +470,15 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     <span class="pos" id="pos"></span>
     <button class="btn primary" id="next">Next &rarr;</button>
   </div></footer>
+</div>
+
+<div class="intro" id="intro" role="dialog" aria-labelledby="intro-h">
+  <div class="unitbar"><div class="wrap"><span class="unit">NCSA</span><span class="unit-sep" aria-hidden="true"></span><span class="unit-full">National Center for Supercomputing Applications &middot; University of Illinois Urbana-Champaign</span></div></div>
+  <div class="inner">
+    <h1 id="intro-h">From Laptop to Cluster</h1>
+    <p class="lead">Pick the example closest to your research. The pages that follow will use it, and you can switch at any time.</p>
+    <div class="picks" id="picks"></div>
+  </div>
 </div>
 
 <dialog id="words" aria-labelledby="words-h">
@@ -511,8 +537,72 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     if (e.key === 'ArrowLeft' && cur > 0) show(MODS[cur - 1]);
   });
 
+  /* ---- example tracks ---- */
+  function script(name, a, b, c, mod, run) { return ['#!/bin/bash', '#SBATCH --job-name=' + name, a, b, c, '#SBATCH --account=my_allocation', '', 'module load ' + mod, run]; }
+  var MPI_WAIT = 'The job waits in the queue until 2 nodes are free. <em>Larger requests usually wait longer.</em>';
+  var MPI_RUN = 'Slurm starts 256 tasks across the 2 nodes <em>at the same time</em>.';
+  var ARR_WRITE = 'The script lists <em>how many copies, how many cores each, how long, and which allocation</em> to charge.';
+  var THEMES = {
+    climate: { name: 'Weather and climate', who: 'Atmospheric science, hydrology, oceans, fluid flow', prob: 'Forecast a storm on a finer grid',
+      story: 'Say you run a storm forecast. A 10-day forecast on a coarse grid takes your laptop about an hour. Now you want a <strong>finer grid</strong>, and you need the results by tomorrow morning.',
+      tryit: 'Try: make the grid finer, then lengthen the forecast', resCap: 'Grid square width (model resolution)', sizeLabel: 'Grid',
+      res: [['100 km', 1, '10 &times; 10'], ['50 km', 8, '20 &times; 20'], ['25 km', 64, '40 &times; 40'], ['10 km', 1000, '100 &times; 100'], ['5 km', 8000, '200 &times; 200'], ['2 km', 125000, '500 &times; 500']], resDef: 2,
+      len: { cap: 'Forecast length', min: 1, max: 30, step: 1, def: 10, ref: 10, one: ' day', many: ' days' }, base: 1,
+      note: 'Halving the square width gives 4&times; as many squares, and each time step has to be half as long, so the work goes up 8&times;.',
+      more: 'Try a finer grid.', pattern: 'storm', noun: 'storm', many: '1,000 separate storms', one: 'One giant storm',
+      comm: 'To run one storm on many cores, the map is split into patches, one per core (<strong>domain decomposition</strong>). After each time step, neighboring patches swap edge values over <strong>MPI</strong>, which is called a <strong>halo exchange</strong>.',
+      run: 'storm run', decide: 'sim', file: 'storm.sh',
+      script: script('storm', '#SBATCH --nodes=2', '#SBATCH --ntasks-per-node=128', '#SBATCH --time=06:00:00', 'storm-model', 'srun ./storm --grid 5km --days 10'),
+      write: '', wait: MPI_WAIT, runs: MPI_RUN },
+    md: { name: 'Molecules and materials', who: 'Chemistry, biophysics, materials science', prob: 'Simulate a protein in water for longer',
+      story: 'Say you simulate a protein in water with molecular dynamics. A small system for 10 nanoseconds takes your laptop about an hour. Now you want a <strong>bigger system</strong> simulated for longer, and you need the results by tomorrow morning.',
+      tryit: 'Try: make the system bigger, then simulate longer', resCap: 'System size (number of atoms)', sizeLabel: 'Atoms',
+      res: [['10k', 1, '10,000'], ['25k', 2.5, '25,000'], ['50k', 5, '50,000'], ['100k', 10, '100,000'], ['500k', 50, '500,000'], ['1M', 100, '1,000,000']], resDef: 2,
+      len: { cap: 'Simulated time', min: 10, max: 500, step: 10, def: 100, ref: 10, one: ' ns', many: ' ns' }, base: 1,
+      note: 'The work grows with the number of atoms and with the simulated time, so doubling both makes the run about 4&times; longer.',
+      more: 'Try a bigger system.', pattern: 'atoms', noun: 'simulation', many: '500 independent short runs', one: 'One large system',
+      comm: 'To run one large system on many cores, the simulation box is split into regions, one per core (<strong>domain decomposition</strong>). After each time step, neighboring regions swap the atoms near their shared edges over <strong>MPI</strong>, which is called a <strong>halo exchange</strong>.',
+      run: 'protein simulation', decide: 'sim', file: 'protein.sh',
+      script: script('protein', '#SBATCH --nodes=2', '#SBATCH --ntasks-per-node=128', '#SBATCH --time=06:00:00', 'gromacs', 'srun gmx_mpi mdrun -deffnm protein'),
+      write: '', wait: MPI_WAIT, runs: MPI_RUN },
+    genomics: { name: 'Genomics and bioinformatics', who: 'Biology, genetics, crop and animal sciences', prob: 'Process sequencing data from many samples',
+      story: 'Say you align DNA sequencing reads to a reference genome. Four samples at low depth take your laptop about an hour. Now you have <strong>more samples</strong> at higher depth, and you need results by tomorrow morning.',
+      tryit: 'Try: add samples, then increase the sequencing depth', resCap: 'Number of samples', sizeLabel: 'Samples',
+      res: [['4', 1, '4'], ['12', 3, '12'], ['24', 6, '24'], ['48', 12, '48'], ['96', 24, '96'], ['384', 96, '384']], resDef: 3,
+      len: { cap: 'Sequencing depth', min: 10, max: 100, step: 5, def: 30, ref: 10, one: '&times;', many: '&times;' }, base: 1,
+      note: 'Each sample is aligned on its own, so the work grows in step with the number of samples and the depth.',
+      more: 'Try more samples.', pattern: 'plate', noun: 'sample', many: '500 separate samples', one: 'One large assembly',
+      comm: 'Most sequencing pipelines handle each sample on its own and never pay this cost. Some tools, like large genome assemblies, split one problem across cores and swap data with neighbors at every step, as in the map.',
+      run: 'genome assembly', decide: 'sweep', file: 'align.sh',
+      script: script('align', '#SBATCH --array=1-48', '#SBATCH --cpus-per-task=16', '#SBATCH --time=04:00:00', 'bwa', 'bwa mem -t 16 ref.fa sample_$SLURM_ARRAY_TASK_ID.fq'),
+      write: ARR_WRITE, wait: 'The 48 copies wait in the queue and start as cores free up. <em>They do not all need to start at once.</em>', runs: 'Each copy aligns one sample, and <em>many run at the same time</em>.' },
+    ml: { name: 'Machine learning and AI', who: 'Computer science, engineering, any field that trains models', prob: 'Train an image classifier on more images',
+      story: 'Say you train a model to classify images. A small dataset for 10 passes (epochs) takes your laptop about an hour. Now you want <strong>more training images</strong> and more epochs, and you need the model by tomorrow morning.',
+      tryit: 'Try: add images, then train for more epochs', resCap: 'Training images', sizeLabel: 'Images',
+      res: [['10k', 1, '10,000'], ['50k', 5, '50,000'], ['100k', 10, '100,000'], ['500k', 50, '500,000'], ['1M', 100, '1,000,000'], ['5M', 500, '5,000,000']], resDef: 2,
+      len: { cap: 'Training length', min: 5, max: 100, step: 5, def: 30, ref: 10, one: ' epoch', many: ' epochs' }, base: 1,
+      note: 'Each epoch passes over every image once, so the work grows with both. A GPU does each pass far faster than a laptop processor.',
+      more: 'Try more images.', pattern: 'images', noun: 'training trial', many: '500 separate training trials', one: 'One large model on many GPUs',
+      comm: 'When one model trains on many GPUs, each GPU works on part of the data. After every step they have to share and average their updates over the network, and that sharing costs time in the same way as the edge swaps on the map.',
+      run: 'model training run', decide: 'train', file: 'train.sh',
+      script: script('train', '#SBATCH --nodes=1', '#SBATCH --gpus-per-node=4', '#SBATCH --time=12:00:00', 'pytorch', 'srun python train.py --epochs 30'),
+      write: 'The script lists <em>how many GPUs, how long, and which allocation</em> to charge.', wait: 'The job waits in the queue until a node with 4 free GPUs opens up. <em>GPU nodes are often in high demand.</em>', runs: 'Slurm starts your training script on a node with <em>4 GPUs</em>.' },
+    social: { name: 'Social and health sciences', who: 'Public health, economics, sociology, psychology', prob: 'Run an epidemic model on a larger population',
+      story: 'Say you model how a disease spreads by simulating every person in a town. 10,000 people, run 10 times, takes your laptop about half an hour. Now you want a <strong>larger population</strong> and more runs by tomorrow morning.',
+      tryit: 'Try: grow the population, then add repeated runs', resCap: 'Population size', sizeLabel: 'People',
+      res: [['10k', 1, '10,000'], ['50k', 5, '50,000'], ['100k', 10, '100,000'], ['500k', 50, '500,000'], ['1M', 100, '1,000,000'], ['5M', 500, '5,000,000']], resDef: 2,
+      len: { cap: 'Repeated runs', min: 10, max: 500, step: 10, def: 50, ref: 10, one: ' run', many: ' runs' }, base: 0.5,
+      note: 'Each run follows every person, and you repeat the run many times to see the range of outcomes, so the work grows with both.',
+      more: 'Try a larger population.', pattern: 'agents', noun: 'run', many: '1,000 repeated runs', one: 'One huge population',
+      comm: 'To simulate one huge population on many cores, the map is split into regions, one per core. People who cross a border are handed to the neighboring core over <strong>MPI</strong> each step, which is a <strong>halo exchange</strong>.',
+      run: 'population model', decide: 'sweep', file: 'abm.sh',
+      script: script('abm', '#SBATCH --array=1-50', '#SBATCH --cpus-per-task=1', '#SBATCH --time=02:00:00', 'R', 'Rscript run_model.R $SLURM_ARRAY_TASK_ID'),
+      write: ARR_WRITE, wait: 'The 50 copies wait in the queue and start as cores free up. <em>They do not all need to start at once.</em>', runs: 'Each copy runs the model once, and <em>many run at the same time</em>.' }
+  };
+  var T = THEMES.climate, RI = 2;
+
   /* ---- 1: the problem ---- */
-  var L = 2.67, DX = 25;
+  var L = 2.67;
   function stormAt(x, y) {
     var dx = x - 0.5, dy = y - 0.5, r = Math.sqrt(dx * dx + dy * dy), th = Math.atan2(dy, dx);
     var ring = Math.exp(-Math.pow((r - 0.1) / 0.035, 2)), arms = Math.exp(-Math.pow(r / 0.33, 2)) * (0.5 + 0.5 * Math.sin(2 * th - 16 * r)) * (0.55 + 0.45 * Math.sin(40 * r + th));
@@ -531,19 +621,48 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     }
     ctx.putImageData(img, 0, 0);
   }
+  function rng(seed) { return function () { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; }; }
+  function drawPattern(kind, i) {
+    if (kind === 'storm') { drawStorm([10, 20, 40, 100, 200, 400][i]); return; }
+    var cv = $('#cv'), ctx = cv.getContext('2d'), R = rng(7), k, x, y, n;
+    ctx.fillStyle = '#13294B'; ctx.fillRect(0, 0, 400, 400);
+    if (kind === 'atoms') {
+      k = [5, 7, 9, 12, 20, 28][i]; var c = 400 / k;
+      for (y = 0; y < k; y++) for (x = 0; x < k; x++) {
+        var px = (x + 0.5 + (R() - 0.5) * 0.4) * c, py = (y + 0.5 + (R() - 0.5) * 0.4) * c, d = Math.hypot(px - 200, py - 200);
+        ctx.fillStyle = d < 110 ? '#FF5F05' : (R() < 0.5 ? '#009FD4' : '#1D58A7');
+        ctx.beginPath(); ctx.arc(px, py, c * 0.3, 0, 7); ctx.fill();
+      }
+    } else if (kind === 'plate') {
+      n = [4, 12, 24, 48, 96, 384][i];
+      ctx.fillStyle = '#e1e7f1'; ctx.fillRect(14, 64, 372, 272);
+      for (y = 0; y < 16; y++) for (x = 0; x < 24; x++) {
+        var idx = y * 24 + x;
+        ctx.fillStyle = idx < n ? '#FF5F05' : '#C6C7C6';
+        ctx.beginPath(); ctx.arc(30 + x * 14.8, 80 + y * 15.8, 5.6, 0, 7); ctx.fill();
+      }
+    } else if (kind === 'images') {
+      k = [2, 3, 4, 6, 8, 12][i]; var s = 400 / k, cols = ['#13294B', '#1D58A7', '#009FD4', '#FCB316', '#FF5F05', '#e1e7f1'];
+      for (y = 0; y < k; y++) for (x = 0; x < k; x++) {
+        for (var a = 0; a < 4; a++) for (var b = 0; b < 4; b++) { ctx.fillStyle = cols[Math.floor(R() * 6)]; ctx.fillRect(x * s + 3 + b * (s - 6) / 4, y * s + 3 + a * (s - 6) / 4, (s - 6) / 4 + 0.5, (s - 6) / 4 + 0.5); }
+      }
+    } else if (kind === 'agents') {
+      n = [150, 400, 800, 2000, 4000, 9000][i]; var rad = [5, 4, 3.2, 2.2, 1.6, 1.1][i];
+      for (k = 0; k < n; k++) { ctx.fillStyle = R() < 0.08 ? '#FF5F05' : '#009FD4'; ctx.beginPath(); ctx.arc(R() * 400, R() * 400, rad, 0, 7); ctx.fill(); }
+    }
+  }
   function drawProblem() {
-    var days = +$('#days').value, n = Math.round(1000 / DX), work = Math.pow(100 / DX, 3) * (days / 10), hours = work;
+    var lv = +$('#days').value, m = T.res[RI][1], work = m * lv / T.len.ref, hours = T.base * work;
     L = hours / 24;
-    $('#days-out').textContent = days + (days === 1 ? ' day' : ' days');
-    drawStorm(n);
+    $('#days-out').innerHTML = lv + (lv === 1 ? T.len.one : T.len.many);
+    drawPattern(T.pattern, RI);
     var need = hours / 12;
-    $('#p-ro').innerHTML = ro('Grid', fmt(n) + ' ' + X + ' ' + fmt(n), '') + ro('Work vs starter', fmt(work, work < 10 ? 1 : 0) + X, work > 8 ? 'mid' : '') + ro('On your laptop', dur(L), need > 1 ? 'bad' : 'good') + ro('Speedup needed', need > 1 ? fmt(need, need < 10 ? 1 : 0) + X : 'none', need > 1 ? 'bad' : 'good');
+    $('#p-ro').innerHTML = ro(T.sizeLabel, T.res[RI][2], '') + ro('Work vs smallest', fmt(work, work < 10 ? 1 : 0) + X, work > 8 ? 'mid' : '') + ro('On your laptop', dur(L), need > 1 ? 'bad' : 'good') + ro('Speedup needed', need > 1 ? fmt(need, need < 10 ? 1 : 0) + X : 'none', need > 1 ? 'bad' : 'good');
     $('#p-say').innerHTML = need <= 1
-      ? 'Your laptop can finish this overnight. <em>Try a finer grid.</em>'
+      ? 'Your laptop can finish this overnight. <em>' + T.more + '</em>'
       : 'Your laptop needs <em>' + dur(L) + '</em>, but you have 12 hours. You would need to run <em>' + fmt(need, need < 10 ? 1 : 0) + ' times faster</em>.';
   }
   $('#days').addEventListener('input', function () { drawProblem(); drawHelpers(); });
-  seg('dx', function (v) { DX = +v; drawProblem(); drawHelpers(); });
 
   /* ---- 2: ICRN, a laptop in the data center ---- */
   var lid = 'open';
@@ -599,7 +718,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     $('#h-ro').innerHTML = ro('Nodes used', fmt(machines), '') + ro('Time, if all goes perfectly', dur(t), met ? 'good' : 'mid') + ro('By morning?', met ? 'yes' : 'no', met ? 'good' : 'bad');
     var say;
     if (N === 1) say = 'One core is about the same as your laptop, so <em>' + dur(L) + '</em>.';
-    else if (kind === 'many') say = fmt(N) + ' cores each run their own storm without waiting on each other, so the total time drops to <em>' + dur(t) + '</em>.';
+    else if (kind === 'many') say = fmt(N) + ' cores each run their own ' + T.noun + ' without waiting on each other, so the total time drops to <em>' + dur(t) + '</em>.';
     else say = 'On paper, ' + fmt(N) + ' cores would cut <em>' + dur(L) + '</em> to <em>' + dur(t) + '</em>. <span class="bad">In practice it takes longer</span>, and the next tab shows why.';
     $('#h-say').innerHTML = say;
   }
@@ -658,17 +777,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
   }
 
   /* ---- 6: submitting a job ---- */
-  var SCRIPT = [
-    '#!/bin/bash',
-    '#SBATCH --job-name=storm',
-    '#SBATCH --nodes=2',
-    '#SBATCH --ntasks-per-node=128',
-    '#SBATCH --time=06:00:00',
-    '#SBATCH --account=my_allocation',
-    '',
-    'module load storm-model',
-    'srun ./storm --grid 5km --days 10'
-  ];
+  var SCRIPT = THEMES.climate.script;
   var STAGES = [
     { name: 'Write', hi: [1, 2, 3, 4, 5], say: 'The script lists <em>how many nodes, how long, and which allocation</em> to charge.' },
     { name: 'Submit', hi: [], cmd: '$ sbatch storm.sh', say: 'One command sends the script to the scheduler. After that <em>you can log off</em>.' },
@@ -676,6 +785,13 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     { name: 'Run', hi: [7, 8], say: 'Slurm starts 256 tasks across the 2 nodes <em>at the same time</em>.' },
     { name: 'Collect', hi: [], cmd: '$ ls results/', say: 'Output is written to your project folder, and <em>you can check it whenever you log back in</em>.' }
   ];
+  var STAGE_DEF = STAGES.map(function (s) { return s.say; });
+  function themeStages() {
+    SCRIPT = T.script;
+    STAGES[0].say = T.write || STAGE_DEF[0];
+    STAGES[1].cmd = '$ sbatch ' + T.file;
+    STAGES[2].say = T.wait; STAGES[3].say = T.runs;
+  }
   var stg = 0;
   $('#stage').innerHTML = STAGES.map(function (s, i) { return '<button data-v="' + i + '"' + (i === 0 ? ' aria-pressed="true"' : '') + '>' + (i + 1) + '. ' + s.name + '</button>'; }).join('');
   seg('stage', function (v) { stg = +v; drawSubmit(); });
@@ -825,8 +941,36 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
   $('#open-words').addEventListener('click', function () { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); });
   $('#close-words').addEventListener('click', function () { if (dlg.close) dlg.close(); else dlg.removeAttribute('open'); });
 
-  drawProblem(); drawLid(); drawHelpers(); drawTalk(); drawFabric(); drawSubmit(); drawTurn(); drawDecide();
-  show((location.hash || '').replace('#', ''));
+  function applyTheme(id) {
+    T = THEMES[id] || THEMES.climate; RI = T.resDef;
+    $('#ex-name').textContent = T.name;
+    $('#p-story').innerHTML = T.story; $('#p-try').textContent = T.tryit; $('#dx-cap').textContent = T.resCap; $('#p-note').innerHTML = T.note;
+    $('#len-cap').textContent = T.len.cap;
+    var sl = $('#days'); sl.min = T.len.min; sl.max = T.len.max; sl.step = T.len.step; sl.value = T.len.def;
+    $('#dx').innerHTML = T.res.map(function (o, i) { return '<button data-v="' + i + '" aria-pressed="' + (i === RI) + '">' + o[0] + '</button>'; }).join('');
+    seg('dx', function (v) { RI = +v; drawProblem(); drawHelpers(); });
+    $('#k-many').textContent = T.many; $('#k-one').textContent = T.one; $('#dt-many').textContent = T.many; $('#dt-one').textContent = T.one;
+    $('#m-story').innerHTML = T.comm;
+    $('#t-story').innerHTML = 'Your ' + T.run + ' takes 20 days on one core, and your advisor wants results in <strong>30 hours</strong>. Your allocation is <strong>3,000 core-hours</strong>, and each job is charged cores &times; hours.';
+    themeStages();
+    dWork = T.decide;
+    $$('#work button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.v === dWork)); });
+    try { localStorage.setItem('l2c-example', id); } catch (e) {}
+    drawProblem(); drawHelpers(); drawSubmit(); drawDecide();
+  }
+  var PICKS = ['climate', 'md', 'genomics', 'ml', 'social'];
+  $('#picks').innerHTML = PICKS.map(function (id) { var t = THEMES[id]; return '<button class="pick" data-v="' + id + '"><b>' + t.name + '</b><span class="who">' + t.who + '</span><span class="prob">' + t.prob + '</span></button>'; }).join('') +
+    '<button class="pick other" data-v="climate"><b>Something else</b><span class="who">Any field</span><span class="prob">Use the weather example. The ideas are the same in every field.</span></button>';
+  var intro = $('#intro');
+  $$('#picks button').forEach(function (b) { b.addEventListener('click', function () { applyTheme(b.dataset.v); intro.hidden = true; show('problem'); }); });
+  $('#open-intro').addEventListener('click', function () { intro.hidden = false; });
+  var saved = 'climate';
+  try { saved = localStorage.getItem('l2c-example') || 'climate'; } catch (e) {}
+  drawLid(); drawTalk(); drawFabric(); drawTurn();
+  applyTheme(saved);
+  var startTab = (location.hash || '').replace('#', '');
+  intro.hidden = !!startTab;
+  show(startTab);
 })();
 </script>
 </body>

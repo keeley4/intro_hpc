@@ -1,6 +1,6 @@
 # From Laptop to Cluster
 
-An interactive introduction to research computing for graduate students and other researchers who are new to it. The pages follow one example, a storm simulation that has outgrown a laptop, and show when an ICRN notebook is enough and when you need a cluster.
+An interactive introduction to research computing for graduate students and other researchers who are new to it. It opens by asking which example is closest to your research: weather and climate, molecules and materials, genomics, machine learning, or social and health sciences. The pages then follow that example as it outgrows a laptop, and show when an ICRN notebook is enough and when you need a cluster. You can switch examples at any time from the top bar.
 
 **Start**
 1. **Why scale up.** Make the forecast grid finer and see how quickly the work grows.
