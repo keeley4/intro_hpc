@@ -66,16 +66,20 @@ main { min-height: 0; overflow: auto; }
 main > .wrap { height: 100%; padding-block: 14px; }
 .mod { height: 100%; display: grid; grid-template-columns: minmax(300px, 0.95fr) minmax(320px, 1.05fr); gap: 28px; }
 .left { display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0; }
-.right { min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 10px; justify-content: flex-start; padding-top: 38px; }
+.right { min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 10px; justify-content: flex-start; padding-top: 12px; }
 .track { align-self: flex-start; font: 700 0.68rem var(--f-head); letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 8px; color: var(--il-blue); background: var(--il-storm-95); }
 .track.lap { background: var(--il-orange); color: var(--il-blue); }
 .track.clu { background: var(--il-blue); color: #fff; }
 h2 { font-size: clamp(1.4rem, 2.8vw, 1.95rem); font-weight: 800; letter-spacing: -0.01em; }
-.story { color: var(--ink); max-width: 56ch; }
+.story { color: var(--ink); }
 .story strong { color: var(--head); font-weight: 700; }
-.try { font: 700 0.74rem var(--f-head); letter-spacing: 0.08em; text-transform: uppercase; color: var(--head); border-left: 4px solid var(--il-blue); padding-left: 8px; }
-.lapmod .try { border-color: var(--il-orange); }
-.say { font: 600 1.2rem/1.3 var(--f-head); color: var(--head); min-height: 2.6em; max-width: 40ch; }
+.try { font: 600 0.92rem var(--f-body); color: var(--il-industrial); }
+.try::before { content: "▸ "; color: var(--il-orange); }
+.mod > .left > .track, .pills .track.clu { display: none; }
+.story .ln, .say .ln { display: block; }
+.story .ln + .ln { margin-top: 3px; }
+.lapmod .try { color: var(--il-altgeld); }
+.say { font: 600 1.12rem/1.35 var(--f-head); color: var(--head); min-height: 2.6em; max-width: 52ch; }
 .say em { font-style: normal; color: var(--il-industrial); }
 .lapmod .say em { color: var(--il-altgeld); }
 .say .bad { color: var(--bad); } .say .good { color: var(--ok); }
@@ -319,7 +323,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       <div class="left">
         <span class="track lap">Bigger laptop &middot; ICRN</span>
         <h2>ICRN: notebooks that run at NCSA</h2>
-        <p class="story"><strong>Illinois Computes Research Notebooks (ICRN)</strong> gives you Jupyter, RStudio or VS Code in a web browser. There is nothing to install, and your code keeps running after you close your laptop. Each notebook gets <strong>one core</strong>, so it runs at about the speed of your laptop.</p>
+        <p class="story"><strong>ICRN</strong> gives you Jupyter, RStudio or VS Code in a web browser. There is nothing to install. Your code keeps running after you close your laptop.</p>
         <div class="specs">
           <div class="spec"><b>1 core</b><span>per notebook</span></div>
           <div class="spec"><b>Shared GPU</b><span>small models</span></div>
@@ -343,7 +347,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       <div class="left">
         <span class="track clu">Cluster</span>
         <h2>Running in parallel</h2>
-        <p class="story">A cluster is many servers, called <strong>nodes</strong>, joined by a fast network. Each box on the right is one node with 128 <strong>cores</strong>.</p>
+        <p class="story">A cluster is many servers, called <strong>nodes</strong>, on a fast network. Each box on the right is one node with 128 <strong>cores</strong>.</p>
         <p class="try">Try: add cores, then switch the kind of job</p>
         <div class="ctl"><label for="hn">Cores <output id="hn-out"></output></label><input id="hn" type="range" min="0" max="9" step="1" value="0"></div>
         <div class="seg" role="group" aria-label="Kind of job">
@@ -375,8 +379,8 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
           <div class="rowlab"><span id="tp-l"></span><b id="tp"></b></div><div class="stack"><div class="w" id="sw"></div><div class="t" id="st"></div></div>
         </div>
         <div class="sowhat"><span class="hpc-h">What this means for you</span><ul>
-          <li>Adding cores does not always make a job faster. On small problems, the time spent exchanging data can cancel out the gain.</li>
-          <li>Before you request a lot of cores, time a few short runs (see <strong>Sizing a job</strong>).</li>
+          <li>More cores is not always faster, especially on small problems.</li>
+          <li>Time a few short runs before requesting many cores (see <strong>Sizing a job</strong>).</li>
         </ul></div>
         <p class="say" id="m-say" aria-live="polite"></p>
       </div>
@@ -391,14 +395,14 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       <div class="left">
         <div class="pills"><span class="track clu">Cluster</span><span class="track info">Background: good to know</span></div>
         <h2>Where your job runs on the cluster</h2>
-        <p class="story">Cores on the same <strong>node</strong> share memory, so passing data between them is fast. Cores on different nodes pass data over the <strong>network</strong>, which all running jobs share.</p>
+        <p class="story">Cores on the same <strong>node</strong> share memory, so passing data is fast. Cores on different nodes use the <strong>network</strong>, which all jobs share.</p>
         <p class="try">Try: switch between the two placements</p>
         <div class="seg" id="place" role="group" aria-label="Placement"><button data-v="pack" aria-pressed="true">4 cores on 1 node</button><button data-v="scatter">1 core on each of 4 nodes</button></div>
         <div class="readouts" id="j-ro"></div>
         <div class="sowhat"><span class="hpc-h">What this means for you</span><ul>
-          <li>Slurm picks your nodes, and its defaults are usually fine.</li>
-          <li>If your job fits on one node, request one node (<code>--nodes=1</code>).</li>
-          <li>If the same job runs slower on a different day, placement and network traffic are common causes. Time a few runs before drawing conclusions.</li>
+          <li>Slurm picks your nodes. The defaults are usually fine.</li>
+          <li>If your job fits on one node, ask for one (<code>--nodes=1</code>).</li>
+          <li>A slower run on another day is often placement or network traffic.</li>
         </ul></div>
         <p class="say" id="j-say" aria-live="polite"></p>
       </div>
@@ -410,13 +414,12 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       <div class="left">
         <span class="track clu">Cluster</span>
         <h2>Submitting a batch job</h2>
-        <p class="story">On a cluster you don&rsquo;t run programs directly. You write a short script that says what you need, submit it to the <strong>scheduler</strong>, and it starts your job when enough nodes are free.</p>
+        <p class="story">On a cluster you don&rsquo;t run programs directly. You submit a short script to the <strong>scheduler</strong>. It starts your job when enough nodes are free.</p>
         <p class="try">Try: step through the job</p>
-        <div class="seg col" id="stage" role="group" aria-label="Job stage"></div>
+        <div class="seg" id="stage" role="group" aria-label="Job stage"></div>
         <p class="say" id="s-say" aria-live="polite"></p>
       </div>
       <div class="right">
-        <svg id="pipe" viewBox="0 0 600 90" role="img" aria-label="The five stages of a cluster job"></svg>
         <pre class="script" id="script" aria-label="A simplified Slurm job script"></pre>
         <p class="note">A Slurm job script, simplified. Delta and the Illinois Campus Cluster use Slurm.</p>
       </div>
@@ -470,7 +473,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       </div>
       <div class="right">
         <div class="rcards" id="rcards"></div>
-        <p class="note">A GPU with lots of memory does not by itself call for Delta, since the Campus Cluster has 80 to 141 GB GPUs. People usually move to Delta or DeltaAI when they need many GPU hours. If you are unsure, ask NCSA Research Consulting.</p>
+        <p class="note">A large-memory GPU alone does not mean Delta: the Campus Cluster has 80 to 141 GB GPUs. If you are unsure, ask NCSA Research Consulting.</p>
       </div>
     </section>
   </div></main>
@@ -525,6 +528,18 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
   /* ---- tabs ---- */
   var MODS = ['problem', 'icrn', 'parallel', 'communication', 'placement', 'submit', 'sizing', 'decide'];
   var cur = 0;
+  function splitLines(html) {
+    var out = [], start = 0, i, c;
+    for (i = 0; i < html.length - 2; i++) {
+      if (html[i] === '.' && html[i + 1] === ' ') { c = html[i + 2]; if (c === '<' || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')) { out.push(html.slice(start, i + 1)); start = i + 2; } }
+    }
+    out.push(html.slice(start));
+    return out.length < 2 ? html : out.map(function (s) { return '<span class="ln">' + s + '</span>'; }).join('');
+  }
+  function tidyText() {
+    $$('.story, .say').forEach(function (el) { if (el.innerHTML.indexOf('class="ln"') < 0) { var t = splitLines(el.innerHTML); if (t !== el.innerHTML) el.innerHTML = t; } });
+  }
+  new MutationObserver(tidyText).observe(document.body, { childList: true, subtree: true });
   function show(id) {
     var i = MODS.indexOf(id); if (i < 0) i = 0; cur = i;
     MODS.forEach(function (m, k) {
@@ -554,57 +569,57 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
   var ARR_WRITE = 'The script lists <em>how many copies, how many cores each, how long, and which allocation</em> to charge.';
   var THEMES = {
     climate: { name: 'Weather and climate', who: 'Atmospheric science, hydrology, oceans, fluid flow', prob: 'Forecast a storm on a finer grid',
-      story: 'Say you run a storm forecast. A 10-day forecast on a coarse grid takes your laptop about an hour. Now you want a <strong>finer grid</strong>, and you need the results by tomorrow morning.',
+      story: 'Say you run a storm forecast. A 10-day forecast on a coarse grid takes your laptop an hour. Now you want a <strong>finer grid</strong>, with results by morning.',
       tryit: 'Try: make the grid finer, then lengthen the forecast', resCap: 'Grid square width (model resolution)', sizeLabel: 'Grid',
       res: [['100 km', 1, '10 &times; 10'], ['50 km', 8, '20 &times; 20'], ['25 km', 64, '40 &times; 40'], ['10 km', 1000, '100 &times; 100'], ['5 km', 8000, '200 &times; 200'], ['2 km', 125000, '500 &times; 500']], resDef: 2,
       len: { cap: 'Forecast length', min: 1, max: 30, step: 1, def: 10, ref: 10, one: ' day', many: ' days' }, base: 1,
       note: 'Halving the square width gives 4&times; as many squares, and each time step has to be half as long, so the work goes up 8&times;.',
       more: 'Try a finer grid.', pattern: 'storm', noun: 'storm', many: '1,000 separate storms', one: 'One giant storm',
-      comm: 'To run one storm on many cores, the map is split into patches, one per core (<strong>domain decomposition</strong>). After each time step, neighboring patches swap edge values over <strong>MPI</strong>, which is called a <strong>halo exchange</strong>.',
+      comm: 'The map is split into patches, one per core (<strong>domain decomposition</strong>). After each step, neighbors swap edge values over <strong>MPI</strong>, a <strong>halo exchange</strong>.',
       run: 'storm run', decide: 'sim', file: 'storm.sh',
       script: script('storm', '#SBATCH --nodes=2', '#SBATCH --ntasks-per-node=128', '#SBATCH --time=06:00:00', 'storm-model', 'srun ./storm --grid 5km --days 10'),
       write: '', wait: MPI_WAIT, runs: MPI_RUN },
     md: { name: 'Molecules and materials', who: 'Chemistry, biophysics, materials science', prob: 'Simulate a protein in water for longer',
-      story: 'Say you simulate a protein in water with molecular dynamics. A small system for 10 nanoseconds takes your laptop about an hour. Now you want a <strong>bigger system</strong> simulated for longer, and you need the results by tomorrow morning.',
+      story: 'Say you simulate a protein in water. A small system for 10 ns takes your laptop an hour. Now you want a <strong>bigger system</strong>, run longer, by morning.',
       tryit: 'Try: make the system bigger, then simulate longer', resCap: 'System size (number of atoms)', sizeLabel: 'Atoms',
       res: [['10k', 1, '10,000'], ['25k', 2.5, '25,000'], ['50k', 5, '50,000'], ['100k', 10, '100,000'], ['500k', 50, '500,000'], ['1M', 100, '1,000,000']], resDef: 2,
       len: { cap: 'Simulated time', min: 10, max: 500, step: 10, def: 100, ref: 10, one: ' ns', many: ' ns' }, base: 1,
       note: 'The work grows with the number of atoms and with the simulated time, so doubling both makes the run about 4&times; longer.',
       more: 'Try a bigger system.', pattern: 'atoms', noun: 'simulation', many: '500 independent short runs', one: 'One large system',
-      comm: 'To run one large system on many cores, the simulation box is split into regions, one per core (<strong>domain decomposition</strong>). After each time step, neighboring regions swap the atoms near their shared edges over <strong>MPI</strong>, which is called a <strong>halo exchange</strong>.',
+      comm: 'The simulation box is split into regions, one per core (<strong>domain decomposition</strong>). After each step, neighbors swap atoms near their edges over <strong>MPI</strong>, a <strong>halo exchange</strong>.',
       run: 'protein simulation', decide: 'sim', file: 'protein.sh',
       script: script('protein', '#SBATCH --nodes=2', '#SBATCH --ntasks-per-node=128', '#SBATCH --time=06:00:00', 'gromacs', 'srun gmx_mpi mdrun -deffnm protein'),
       write: '', wait: MPI_WAIT, runs: MPI_RUN },
     genomics: { name: 'Genomics and bioinformatics', who: 'Biology, genetics, crop and animal sciences', prob: 'Process sequencing data from many samples',
-      story: 'Say you align DNA sequencing reads to a reference genome. Four samples at low depth take your laptop about an hour. Now you have <strong>more samples</strong> at higher depth, and you need results by tomorrow morning.',
+      story: 'Say you align DNA reads to a reference genome. Four samples at low depth take your laptop an hour. Now you have <strong>more samples</strong> at higher depth, due by morning.',
       tryit: 'Try: add samples, then increase the sequencing depth', resCap: 'Number of samples', sizeLabel: 'Samples',
       res: [['4', 1, '4'], ['12', 3, '12'], ['24', 6, '24'], ['48', 12, '48'], ['96', 24, '96'], ['384', 96, '384']], resDef: 3,
       len: { cap: 'Sequencing depth', min: 10, max: 100, step: 5, def: 30, ref: 10, one: '&times;', many: '&times;' }, base: 1,
       note: 'Each sample is aligned on its own, so the work grows in step with the number of samples and the depth.',
       more: 'Try more samples.', pattern: 'plate', noun: 'sample', many: '500 separate samples', one: 'One large assembly',
-      comm: 'Most sequencing pipelines handle each sample on its own and never pay this cost. Some tools, like large genome assemblies, split one problem across cores and swap data with neighbors at every step, as in the map.',
+      comm: 'Most sequencing pipelines handle each sample on its own, so they skip this cost. Large genome assemblies split one problem across cores and swap data every step, like this map.',
       run: 'genome assembly', decide: 'sweep', file: 'align.sh',
       script: script('align', '#SBATCH --array=1-48', '#SBATCH --cpus-per-task=16', '#SBATCH --time=04:00:00', 'bwa', 'bwa mem -t 16 ref.fa sample_$SLURM_ARRAY_TASK_ID.fq'),
       write: ARR_WRITE, wait: 'The 48 copies wait in the queue and start as cores free up. <em>They do not all need to start at once.</em>', runs: 'Each copy aligns one sample, and <em>many run at the same time</em>.' },
     ml: { name: 'Machine learning and AI', who: 'Computer science, engineering, any field that trains models', prob: 'Train an image classifier on more images',
-      story: 'Say you train a model to classify images. A small dataset for 10 passes (epochs) takes your laptop about an hour. Now you want <strong>more training images</strong> and more epochs, and you need the model by tomorrow morning.',
+      story: 'Say you train a model to classify images. A small dataset for 10 epochs takes your laptop an hour. Now you want <strong>more images</strong> and more epochs, by morning.',
       tryit: 'Try: add images, then train for more epochs', resCap: 'Training images', sizeLabel: 'Images',
       res: [['10k', 1, '10,000'], ['50k', 5, '50,000'], ['100k', 10, '100,000'], ['500k', 50, '500,000'], ['1M', 100, '1,000,000'], ['5M', 500, '5,000,000']], resDef: 2,
       len: { cap: 'Training length', min: 5, max: 100, step: 5, def: 30, ref: 10, one: ' epoch', many: ' epochs' }, base: 1,
       note: 'Each epoch passes over every image once, so the work grows with both. A GPU does each pass far faster than a laptop processor.',
       more: 'Try more images.', pattern: 'images', noun: 'training trial', many: '500 separate training trials', one: 'One large model on many GPUs',
-      comm: 'When one model trains on many GPUs, each GPU works on part of the data. After every step they have to share and average their updates over the network, and that sharing costs time in the same way as the edge swaps on the map.',
+      comm: 'Training one model on many GPUs splits the data between them. After each step they average their updates over the network, which takes time like the swaps shown here.',
       run: 'model training run', decide: 'train', file: 'train.sh',
       script: script('train', '#SBATCH --nodes=1', '#SBATCH --gpus-per-node=4', '#SBATCH --time=12:00:00', 'pytorch', 'srun python train.py --epochs 30'),
       write: 'The script lists <em>how many GPUs, how long, and which allocation</em> to charge.', wait: 'The job waits in the queue until a node with 4 free GPUs opens up. <em>GPU nodes are often in high demand.</em>', runs: 'Slurm starts your training script on a node with <em>4 GPUs</em>.' },
     social: { name: 'Social and health sciences', who: 'Public health, economics, sociology, psychology', prob: 'Run an epidemic model on a larger population',
-      story: 'Say you model how a disease spreads by simulating every person in a town. 10,000 people, run 10 times, takes your laptop about half an hour. Now you want a <strong>larger population</strong> and more runs by tomorrow morning.',
+      story: 'Say you model how a disease spreads, person by person. A town of 10,000, run 10 times, takes half an hour. Now you want a <strong>larger population</strong> and more runs, by morning.',
       tryit: 'Try: grow the population, then add repeated runs', resCap: 'Population size', sizeLabel: 'People',
       res: [['10k', 1, '10,000'], ['50k', 5, '50,000'], ['100k', 10, '100,000'], ['500k', 50, '500,000'], ['1M', 100, '1,000,000'], ['5M', 500, '5,000,000']], resDef: 2,
       len: { cap: 'Repeated runs', min: 10, max: 500, step: 10, def: 50, ref: 10, one: ' run', many: ' runs' }, base: 0.5,
       note: 'Each run follows every person, and you repeat the run many times to see the range of outcomes, so the work grows with both.',
       more: 'Try a larger population.', pattern: 'agents', noun: 'run', many: '1,000 repeated runs', one: 'One huge population',
-      comm: 'To simulate one huge population on many cores, the map is split into regions, one per core. People who cross a border are handed to the neighboring core over <strong>MPI</strong> each step, which is a <strong>halo exchange</strong>.',
+      comm: 'A huge population is split into regions, one per core. People who cross a border are passed to the next core over <strong>MPI</strong>, a <strong>halo exchange</strong>.',
       run: 'population model', decide: 'sweep', file: 'abm.sh',
       script: script('abm', '#SBATCH --array=1-50', '#SBATCH --cpus-per-task=1', '#SBATCH --time=02:00:00', 'R', 'Rscript run_model.R $SLURM_ARRAY_TASK_ID'),
       write: ARR_WRITE, wait: 'The 50 copies wait in the queue and start as cores free up. <em>They do not all need to start at once.</em>', runs: 'Each copy runs the model once, and <em>many run at the same time</em>.' }
@@ -709,7 +724,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     var say;
     if (H > 24) say = 'ICRN sessions end after 24 hours, so a <em>' + H + '-hour</em> run needs a cluster, or code that saves its progress and can pick up where it left off.';
     else if (lapStop != null) say = 'Your laptop stops when you close it. <em>ICRN keeps running</em>, so you can go home.';
-    else say = 'All three take about the same time. The benefit of ICRN is that <em>your laptop is free</em> while it runs.';
+    else say = 'All three take about the same time. With ICRN, <em>your laptop stays free</em> while it runs.';
     $('#i-say').innerHTML = say;
   }
 
@@ -814,7 +829,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       svg += '<text class="stgn" x="' + (x + w / 2) + '" y="36">' + (i + 1) + '</text><text class="stgt" x="' + (x + w / 2) + '" y="56">' + STAGES[i].name + '</text>';
       if (i < STAGES.length - 1) svg += '<path class="arrow" d="M' + (x + w + 3) + ' 43h' + (gap - 6) + 'm-5 -4l5 4l-5 4"/>';
     }
-    $('#pipe').innerHTML = svg;
+    if ($('#pipe')) $('#pipe').innerHTML = svg;
     var lines = SCRIPT.map(function (l, k) { return '<span class="' + (s.hi.indexOf(k) >= 0 ? 'hi' : '') + '">' + (esc(l) || '&nbsp;') + '</span>'; });
     if (s.cmd) lines = lines.concat(['<span>&nbsp;</span>', '<span class="hi">' + esc(s.cmd) + '</span>']);
     $('#script').innerHTML = lines.join('');
@@ -851,7 +866,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     $('#t-say').innerHTML = okT && okC ? (N === Nmin ? '<span class="good">This meets both with the fewest cores.</span>' : 'This works, but <span class="bad">efficiency drops to ' + fmt(eff * 100) + '%</span>.')
       : !okT && !okC ? 'This is too slow <em>and</em> uses too much of the allocation.'
       : !okT ? 'This misses the deadline. <em>Try more cores.</em>'
-      : 'Fast enough, but <span class="bad">over budget</span>. The extra cores mostly sit idle, wasting your allocation and cores others could use. <em>Try fewer cores.</em>';
+      : 'Fast enough, but <span class="bad">over budget</span>, so <em>try fewer cores</em>. Idle cores still use your allocation and could have served other researchers.';
     var win = $('#win'), best = runAt(Nmin);
     win.hidden = !(okT && okC);
     win.className = 'win' + (N === Nmin ? '' : ' warn');
@@ -977,7 +992,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     seg('dx', function (v) { RI = +v; drawProblem(); drawHelpers(); });
     $('#k-many').textContent = T.many; $('#k-one').textContent = T.one; $('#dt-many').textContent = T.many; $('#dt-one').textContent = T.one;
     $('#m-story').innerHTML = T.comm;
-    $('#t-story').innerHTML = 'Your ' + T.run + ' takes 20 days on one core, and your advisor wants results in <strong>30 hours</strong>. Your allocation is <strong>3,000 core-hours</strong>, and each job is charged cores &times; hours.';
+    $('#t-story').innerHTML = 'Your ' + T.run + ' takes 20 days on one core. Your advisor wants results in <strong>30 hours</strong>. Your allocation is <strong>3,000 core-hours</strong> (cores &times; hours).';
     themeStages();
     dWork = T.decide;
     $$('#work button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.v === dWork)); });
