@@ -16,7 +16,7 @@ An interactive introduction to research computing for graduate students and othe
 7. **Sizing a job.** Meet a 30-hour deadline within a 3,000 core-hour allocation.
 
 **Decide**
-8. **Which resource.** Pick the kind of work and how much of it, and see whether your laptop, ICRN, the Illinois Campus Cluster, Delta, DeltaAI or Radiant fits best.
+8. **Which resource.** Pick the kind of work and how much of it, and see whether your laptop, ICRN, the Illinois Campus Cluster, Delta, DeltaAI, Radiant or campus cPanel web hosting fits best. Examples range from parameter sweeps and AI training to sharing an R Shiny app.
 
 Each step fits on one screen on a laptop display. Use the tabs, the Back and Next buttons, or the arrow keys. "Words to know" opens a glossary.
 

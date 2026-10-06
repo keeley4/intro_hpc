@@ -164,7 +164,7 @@ svg { display: block; width: 100%; height: auto; max-height: 100%; }
 /* resource picker */
 .seg.grid2 { display: grid; grid-template-columns: 1fr 1fr; }
 .seg.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); }
-.seg.grid2 button, .seg.grid3 button { text-align: left; padding: 5px 9px; line-height: 1.2; }
+.seg.grid2 button, .seg.grid3 button { text-align: left; padding: 4px 9px; line-height: 1.15; }
 .seg button small { display: block; font-size: 0.78rem; font-weight: 400; opacity: 0.85; }
 .rcards { display: flex; flex-direction: column; gap: 5px; }
 .rc { display: grid; grid-template-columns: 1fr auto; column-gap: 10px; background: var(--il-storm-95); border-left: 5px solid var(--il-storm-80); padding: 4px 10px; }
@@ -178,7 +178,8 @@ svg { display: block; width: 100%; height: auto; max-height: 100%; }
 .rc.also { border-left-color: var(--il-harvest); }
 .rc.also .tag { color: var(--il-earth); }
 .rc.no { opacity: 0.55; }
-.rc.no .a, .rc.no .w { display: none; }
+.rc.no .a, .rc.no .w, .rc.no .d { display: none; }
+#d-say { max-width: none; font-size: 1.08rem; }
 .rc .w { font-size: 0.82rem; color: var(--il-earth); font-weight: 600; }
 
 /* ICRN spec chips */
@@ -433,7 +434,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       <div class="left">
         <span class="track">Decide</span>
         <h2>Which resource fits your research?</h2>
-        <p class="story">Pick the kind of work you do, then roughly how much of it. The best fit is outlined.</p>
+        <p class="story">Pick your kind of work and roughly how much of it.</p>
         <div class="ctl"><span class="cap">1. What kind of work?</span>
           <div class="seg grid2" id="work" role="group" aria-label="Kind of work"></div></div>
         <div class="ctl"><span class="cap">2. How much of it?</span>
@@ -725,7 +726,8 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     { id: 'iccp', name: 'Illinois Campus Cluster', d: 'Shared campus cluster with CPU nodes and A100 80 GB, H100 and H200 GPUs.', a: 'Free Illinois Computes allocation (100,000 core-hours, 1,000 GPU hours), or your group&rsquo;s own nodes.' },
     { id: 'delta', name: 'Delta', d: 'National NCSA system with CPU nodes and A40, A100 and H200 GPU nodes.', a: 'ACCESS allocation, which grad students can request with a faculty co-PI. NAIRR also allocates AI projects.' },
     { id: 'dai', name: 'DeltaAI', d: 'NCSA system for AI, with 96 GB H100 GPUs and ARM processors. GPU work only.', a: 'ACCESS, NAIRR, or Illinois Computes for large requests.' },
-    { id: 'rad', name: 'Radiant', d: 'Your own always-on Linux server in NCSA&rsquo;s cloud. You set it up and run it yourself.', w: 'You start with an empty server and handle software installs, the firewall, security updates and repairs yourself. Linux experience, or a labmate who has it, makes a big difference.', a: 'Free through Illinois Computes: one server with 8 cores and 32 GB of memory. GPUs cost extra. Request it with your advisor.' }
+    { id: 'rad', name: 'Radiant', d: 'Your own always-on Linux server in NCSA&rsquo;s cloud. You set it up and run it yourself.', w: 'You start with an empty server and handle software installs, the firewall, security updates and repairs yourself. Linux experience, or a labmate who has it, makes a big difference.', a: 'Free through Illinois Computes: one server with 8 cores and 32 GB of memory. GPUs cost extra. Request it with your advisor.' },
+    { id: 'cpanel', name: 'Campus web hosting (cPanel)', d: 'Free Illinois web hosting at web.illinois.edu for static pages, WordPress and small database-backed sites.', a: 'Self-service for students, faculty and staff with an @illinois.edu address. R and Shiny are not on its list of supported languages.' }
   ];
   var WORK = [
     { id: 'explore', name: 'Explore and analyze data', ex: 'notebooks, statistics, plots' },
@@ -733,7 +735,8 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     { id: 'sim', name: 'One large simulation', ex: 'a model split across many cores (MPI)' },
     { id: 'gpusim', name: 'GPU-accelerated simulation', ex: 'or GPU analysis that is not AI' },
     { id: 'train', name: 'Train or fine-tune AI models', ex: 'deep learning on GPUs' },
-    { id: 'service', name: 'Keep a tool or website running', ex: 'a database, data portal or app your lab uses' }
+    { id: 'web', name: 'Host a website', ex: 'a lab site, project page or small database' },
+    { id: 'app', name: 'Share an interactive app', ex: 'an R Shiny dashboard or data explorer' }
   ];
   var SCALE = [
     { id: 'S', name: 'Small', ex: 'a few hours, tests and prototypes' },
@@ -756,14 +759,18 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     train:   { S: ['icrn', ['iccp'], 'Small models and tests can use the shared GPU on <em>ICRN</em>.'],
                M: ['iccp', ['dai'], 'The <em>Campus Cluster</em> allocation includes about 1,000 free GPU hours, on GPUs with 80 to 141 GB of memory.'],
                L: ['dai', ['delta'], 'For thousands of GPU hours of training, request <em>DeltaAI</em> through ACCESS, NAIRR or Illinois Computes.'] },
-    service: { S: ['rad', [], 'A small site or database that has to stay on belongs on <em>Radiant</em>. Expect to set up the Linux server yourself.'],
-               M: ['rad', [], 'A tool your lab uses every day can run on <em>Radiant</em>. Plan regular time for software and security updates.'],
-               L: ['rad', [], 'Larger services, or ones that need a GPU, can run on <em>Radiant</em> with paid resources. Talk to NCSA before you build it.'] }
+    web:     { S: ['cpanel', ['rad'], 'A lab or project website fits on <em>campus cPanel hosting</em>. It is free, and you can set it up yourself in an afternoon.'],
+               M: ['cpanel', ['rad'], 'WordPress or a site with a small database still fits on <em>cPanel</em>. Move to Radiant only if you need software cPanel does not offer.'],
+               L: ['rad', ['cpanel'], 'A busy site, or one that needs custom server software, belongs on <em>Radiant</em>. Expect to set up and maintain the Linux server yourself.'] },
+    app:     { S: ['icrn', ['rad'], 'You can build and try out a Shiny app in RStudio on <em>ICRN</em>. To share it with others, it needs a server that stays on, such as Radiant.'],
+               M: ['rad', ['icrn'], 'To let others use your Shiny app, run it on <em>Radiant</em>, where you install Shiny Server yourself. Posit&rsquo;s shinyapps.io is an outside option with a small free plan.'],
+               L: ['rad', [], 'An app with many users or heavy computation needs a larger <em>Radiant</em> server, with paid resources if needed. Talk to NCSA before you build it.'] }
   };
   var dWork = 'explore', dScale = 'S';
   function twoLine(o) { return '<b>' + o.name + '</b><small>' + o.ex + '</small>'; }
   $('#work').innerHTML = WORK.map(function (w, i) { return '<button data-v="' + w.id + '"' + (i === 0 ? ' aria-pressed="true"' : '') + '>' + twoLine(w) + '</button>'; }).join('');
   $('#scale').innerHTML = SCALE.map(function (w, i) { return '<button data-v="' + w.id + '"' + (i === 0 ? ' aria-pressed="true"' : '') + '>' + twoLine(w) + '</button>'; }).join('');
+  var SCALE_WEB = { S: 'a few visitors, or just your group', M: 'used every week by a lab or class', L: 'public, with many users or heavy computing' };
   seg('work', function (v) { dWork = v; drawDecide(); });
   seg('scale', function (v) { dScale = v; drawDecide(); });
   function drawDecide() {
@@ -774,6 +781,8 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       return '<div class="rc ' + cls + '"><h3>' + x.name + '</h3><span class="tag">' + tag + '</span><p class="d">' + x.d + '</p>' + (x.w ? '<p class="w">' + x.w + '</p>' : '') + '<p class="a">' + x.a + '</p></div>';
     }).join('');
     $('#d-say').innerHTML = r[2];
+    var webby = dWork === 'web' || dWork === 'app';
+    $$('#scale button').forEach(function (b, i) { b.querySelector('small').textContent = webby ? SCALE_WEB[b.dataset.v] : SCALE[i].ex; });
   }
 
   /* ---- glossary ---- */
@@ -786,6 +795,8 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     'Campus Cluster': 'The Illinois Campus Cluster, a shared campus cluster that uses Slurm. Research groups can buy nodes, and Illinois Computes gives free allocations.',
     'Radiant': 'NCSA&rsquo;s research cloud. You get your own virtual Linux server and are responsible for setting it up and keeping it secure.',
     'Virtual machine': 'A server that exists as software on shared hardware. It behaves like your own computer, with full admin rights.',
+    'cPanel': 'The control panel for free Illinois web hosting at web.illinois.edu. It handles websites, WordPress and small databases.',
+    'Shiny': 'An R package for building interactive web apps. A Shiny app needs a server running R the whole time people use it.',
     'Delta': 'An NCSA system funded by NSF, with CPU nodes and A40, A100 and H200 GPU nodes. Mostly allocated through ACCESS.',
     'DeltaAI': 'An NCSA system for AI, built from NVIDIA GH200 nodes (H100 GPUs, ARM CPUs). GPU allocations only.',
     'ACCESS': 'The NSF program that allocates national systems such as Delta. Grad students can apply with a faculty co-PI.',
