@@ -1001,7 +1001,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
   }
   var PICKS = ['climate', 'md', 'genomics', 'ml', 'social'];
   $('#picks').innerHTML = PICKS.map(function (id) { var t = THEMES[id]; return '<button class="pick" data-v="' + id + '"><b>' + t.name + '</b><span class="who">' + t.who + '</span><span class="prob">' + t.prob + '</span></button>'; }).join('') +
-    '<button class="pick other" data-v="climate"><b>Something else</b><span class="who">Any field</span><span class="prob">Use the weather example. The ideas are the same in every field.</span></button>';
+    '<button class="pick other" data-v="climate"><b>Something else</b><span class="who">Any field</span><span class="prob">Use the weather example. The ideas are similar in every field.</span></button>';
   var intro = $('#intro');
   $$('#picks button').forEach(function (b) { b.addEventListener('click', function () { applyTheme(b.dataset.v); intro.hidden = true; show('problem'); }); });
   $('#open-intro').addEventListener('click', function () { intro.hidden = false; });
