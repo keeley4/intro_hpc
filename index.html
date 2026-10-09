@@ -389,7 +389,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
         <div class="ctl"><label for="rl">How long the run takes <output id="rl-out"></output></label><input id="rl" type="range" min="1" max="72" step="1" value="8"></div>
         <div class="seg" id="lid" role="group" aria-label="Laptop lid"><button data-v="open" aria-pressed="true">Laptop stays open</button><button data-v="closed">Close the lid at hour 2</button></div>
         <p class="say" id="i-say"></p>
-        <p class="note">Free for UIUC researchers. Limits change; check the <a href="https://computes.illinois.edu/resources/icrn/" target="_blank" rel="noopener">ICRN page</a>.</p>
+        <p class="note">Free for UIUC researchers. Limits change; check the <a href="https://icrn.ncsa.illinois.edu/" target="_blank" rel="noopener">ICRN page</a>.</p>
       </div>
       <div class="right">
         <svg id="lidviz" viewBox="0 0 600 250" role="img" aria-label="Timeline of the same run on a laptop, on ICRN, and on a cluster"></svg>
@@ -544,7 +544,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
           <textarea class="summary" id="summary" readonly aria-label="Summary of your choices"></textarea>
           <p><button class="btn" type="button" id="copy">Copy summary</button> <span class="note" id="copied" role="status"></span></p>
         </details>
-        <p class="note">A large-memory GPU alone does not mean Delta: the Campus Cluster has 80 to 141 GB GPUs. If you are unsure, ask NCSA Research Consulting.</p>
+        <p class="note">A large-memory GPU alone does not mean Delta: the Campus Cluster has 80 to 141 GB GPUs. If you are unsure, contact <a href="mailto:help@ncsa.illinois.edu">NCSA System Support</a>.</p>
       </div>
     </section>
   </div></main>
@@ -1043,7 +1043,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
   /* ---- 8: which resource ---- */
   var RES = [
     { id: 'lap', name: 'Your laptop', d: 'Fine for small tests and for writing code.', a: 'You already have it.', go: null, step: 'Keep working locally. Time one real run and note its peak memory, so you know when you outgrow it.' },
-    { id: 'icrn', name: 'ICRN', d: 'Notebooks in your browser with 1 core, a shared GPU and 24-hour sessions.', a: 'Free for UIUC researchers. Log in with your NetID.', go: 'https://computes.illinois.edu/resources/icrn/', step: 'Open the ICRN page and start a notebook with your NetID.' },
+    { id: 'icrn', name: 'ICRN', d: 'Notebooks in your browser with 1 core, a shared GPU and 24-hour sessions.', a: 'Free for UIUC researchers. Log in with your NetID.', go: 'https://icrn.ncsa.illinois.edu/', step: 'Open the ICRN page and start a notebook with your NetID.' },
     { id: 'iccp', name: 'Illinois Campus Cluster', d: 'Shared campus cluster with CPU nodes and A100 80 GB, H100 and H200 GPUs.', a: 'Free Illinois Computes allocation (100,000 core-hours, 1,000 GPU hours), or your group&rsquo;s own nodes.', go: 'https://computes.illinois.edu/', step: 'Request a free Campus Cluster allocation through Illinois Computes, or ask whether your group already owns nodes.' },
     { id: 'delta', name: 'Delta', d: 'National NCSA system with CPU nodes and A40, A100 and H200 GPU nodes.', a: 'ACCESS allocation. Grad students can lead Explore or Discover projects with their advisor as co-PI and a letter from them. NAIRR also allocates AI projects.', go: 'https://allocations.access-ci.org/', step: 'Start an ACCESS request (Explore is the smallest tier). Grad students need their advisor as co-PI.' },
     { id: 'dai', name: 'DeltaAI', d: 'NCSA system for AI, with 96 GB H100 GPUs and ARM processors. GPU work only.', a: 'ACCESS, NAIRR, or Illinois Computes for large requests.', go: 'https://allocations.access-ci.org/', step: 'Request DeltaAI time through ACCESS, or through the NAIRR Pilot for AI research.' },
@@ -1072,7 +1072,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     // DRAFT(NCSA): routing for memory-bound work; confirm before publishing
     mem:     { S: ['lap', ['iccp'], 'First try reading the data in chunks. If it still does not fit, one <em>Campus Cluster</em> node has far more memory than a laptop.'],
                M: ['iccp', ['icrn'], 'A <em>Campus Cluster</em> node has far more memory than a laptop. Ask for the memory you need in your job script.'],
-               L: ['iccp', ['delta'], 'Data larger than one node needs code that splits it across nodes. Start on the <em>Campus Cluster</em> and ask NCSA Research Consulting for help.'] },
+               L: ['iccp', ['delta'], 'Data larger than one node needs code that splits it across nodes. Start on the <em>Campus Cluster</em> and contact NCSA System Support for help.'] },
     sweep:   { S: ['icrn', ['lap'], 'A few hours of runs fit in a single <em>ICRN</em> session.'],
                M: ['iccp', [], 'Use job arrays on the <em>Campus Cluster</em>. The free allocation covers 100,000 core-hours.'],
                L: ['iccp', ['delta'], 'Ask Illinois Computes for a larger <em>Campus Cluster</em> allocation, or apply through ACCESS for CPU time on <em>Delta</em>.'] },
@@ -1099,7 +1099,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
   var SCALE_WEB = { S: 'a few visitors, or just your group', M: 'used every week by a lab or class', L: 'public, with many users or heavy computing' };
   seg('work', function (v) { dWork = v; drawDecide(); });
   seg('scale', function (v) { dScale = v; drawDecide(); });
-  var CONSULT_URL = 'TODO(NCSA): Research Consulting contact link';
+  var CONSULT_URL = 'mailto:help@ncsa.illinois.edu';
   var showOthers = false;
   $('#others').addEventListener('click', function () { showOthers = !showOthers; drawDecide(); });
   function card(x, cls) {
@@ -1115,7 +1115,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     $('#rothers').hidden = !showOthers;
     $('#others').textContent = showOthers ? 'Hide the other options' : 'Show the other ' + rest.length + ' options';
     $('#others').setAttribute('aria-expanded', String(showOthers));
-    var consult = CONSULT_URL.indexOf('TODO') === 0 ? 'Not sure? Ask NCSA Research Consulting.<span class="draft">Link to add</span>' : 'Not sure? <a href="' + CONSULT_URL + '" target="_blank" rel="noopener">Ask NCSA Research Consulting</a>.';
+    var consult = 'Not sure? <a href="' + CONSULT_URL + '">Contact NCSA System Support</a>.';
     $('#nextstep').innerHTML = '<span class="hpc-h" style="color:var(--il-prairie)">Your next step</span><p>' + B.step + '</p>' +
       (B.go ? '<a class="btn primary" href="' + B.go + '" target="_blank" rel="noopener">Go to ' + B.go.replace(/^https:\/\//, '').replace(/\/$/, '') + '</a>' : '') +
       '<p class="note">' + consult + '</p>';
