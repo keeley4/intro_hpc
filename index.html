@@ -56,10 +56,10 @@ nav.wrap { display: flex; gap: 10px; overflow-x: auto; border-bottom: 1px solid 
 nav button { display: flex; align-items: center; gap: 7px; font: 600 0.92rem var(--f-body); color: var(--muted); background: transparent; border: 0; border-bottom: 4px solid transparent; padding: 6px 7px 7px; cursor: pointer; white-space: nowrap; }
 nav button:hover { color: var(--head); border-bottom-color: var(--il-storm-80); }
 nav button b { font: 700 0.72rem var(--f-head); background: var(--il-storm-95); border: 1px solid var(--line); border-radius: 50%; width: 1.5rem; height: 1.5rem; display: inline-grid; place-items: center; }
-nav button[aria-selected="true"] { color: var(--head); border-bottom-color: var(--il-blue); }
-nav button[aria-selected="true"] b { background: var(--il-blue); color: #fff; border-color: var(--il-blue); }
-.grp.lap button[aria-selected="true"] { border-bottom-color: var(--il-orange); }
-.grp.lap button[aria-selected="true"] b { background: var(--il-orange); color: var(--il-blue); border-color: var(--il-orange); }
+nav button[aria-current="step"] { color: var(--head); border-bottom-color: var(--il-blue); }
+nav button[aria-current="step"] b { background: var(--il-blue); color: #fff; border-color: var(--il-blue); }
+.grp.lap button[aria-current="step"] { border-bottom-color: var(--il-orange); }
+.grp.lap button[aria-current="step"] b { background: var(--il-orange); color: var(--il-blue); border-color: var(--il-orange); }
 
 /* main panel */
 main { min-height: 0; overflow: auto; }
@@ -111,17 +111,23 @@ canvas.map { display: block; height: min(440px, calc(100dvh - 300px)); max-width
 svg { display: block; width: 100%; height: auto; max-height: 100%; }
 .key { display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.88rem; color: var(--muted); }
 .key span::before { content: ""; display: inline-block; width: 0.85em; height: 0.85em; margin-right: 6px; vertical-align: -1px; }
-.key .kw::before { background: var(--il-industrial); } .key .kt::before { background: var(--il-harvest); } .key .kc::before { background: var(--il-storm); } .key .kq::before { background: var(--il-storm-80); }
+.key .kw::before { background: var(--il-industrial); } .key .kt::before { background: repeating-linear-gradient(45deg, var(--il-harvest) 0 3px, #fff 3px 6px); border: 1px solid var(--il-earth); } .key .kc::before { background: var(--il-storm); } .key .kq::before { background: var(--il-storm-80); }
+.key .kqs::before { background: repeating-linear-gradient(90deg, var(--il-storm-30) 0 2px, #fff 2px 6px); border: 1px solid var(--il-storm-30); }
 .key .ks::before { background: var(--il-blue-90); border: 1px solid var(--il-blue); }
 
 .rooms { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 520px; width: 100%; margin-inline: auto; }
 .room { border: 2px solid var(--il-blue); padding: 6px; background: #fff; display: grid; grid-template-columns: repeat(16, 1fr); gap: 2px; }
 .room i { aspect-ratio: 1; border-radius: 50%; background: var(--il-storm-80); display: block; }
 .room i.on { background: var(--il-orange); }
+.room i.idle { background: #fff; box-shadow: inset 0 0 0 1.5px var(--il-orange); }
+.dotkey { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; font-size: 0.85rem; color: var(--muted); margin-top: 6px; }
+.dotkey span::before { content: ""; display: inline-block; width: 0.8em; height: 0.8em; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+.dotkey .dw::before { background: var(--il-orange); } .dotkey .di::before { box-shadow: inset 0 0 0 1.5px var(--il-orange); } .dotkey .df::before { background: var(--il-storm-80); }
 
 .stack { display: flex; height: 22px; background: var(--il-storm-95); border: 1px solid var(--line); position: relative; overflow: hidden; }
 .stack div { height: 100%; min-width: 0; }
-.stack .w { background: var(--il-industrial); } .stack .t { background: var(--il-harvest); } .stack .c { background: var(--il-storm); }
+.stack .w { background: var(--il-industrial); } .stack .t { background: repeating-linear-gradient(45deg, var(--il-harvest) 0 3px, #fff 3px 6px); } .stack .c { background: var(--il-storm); }
+.stack .q { background: repeating-linear-gradient(90deg, var(--il-storm-30) 0 2px, #fff 2px 6px); }
 .stack .mark { position: absolute; top: -2px; bottom: -2px; width: 3px; background: var(--il-orange); }
 .rowlab { font-size: 0.88rem; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; margin-bottom: 3px; }
 .rowlab b { font-weight: 700; color: var(--head); }
@@ -181,13 +187,33 @@ svg { display: block; width: 100%; height: auto; max-height: 100%; }
 .rc.best .tag { color: var(--il-prairie); }
 .rc.also { border-left-color: var(--il-harvest); }
 .rc.also .tag { color: var(--il-earth); }
-.rc.no { opacity: 0.55; }
-.rc.no .a, .rc.no .w, .rc.no .d { display: none; }
+.rc.no .a, .rc.no .w { display: none; }
 #d-say { max-width: none; font-size: 1.08rem; }
 .rc .w { font-size: 0.82rem; color: var(--il-earth); font-weight: 600; }
 
+/* guess, then reveal */
+.guess { border: 1.5px dashed var(--il-blue); padding: 8px 12px; display: flex; flex-direction: column; gap: 6px; }
+.guess p { font-weight: 600; color: var(--head); }
+.linkbtn { font: 600 0.9rem var(--f-body); color: var(--il-industrial); background: none; border: 0; padding: 4px 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; align-self: flex-start; }
+.reveal { font-size: 0.95rem; color: var(--ink); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* memory */
+.mrows { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+.mbar { height: 26px; border: 2px solid var(--il-blue); background: #fff; overflow: hidden; }
+.mbar .fill { height: 100%; background: var(--il-industrial); }
+.mbar .fill.over { background: repeating-linear-gradient(45deg, var(--il-altgeld) 0 4px, #fff 4px 8px); }
+pre.term { margin: 0; background: var(--il-storm-10); color: #fff; padding: 10px 14px; font: 13px/1.6 var(--f-code); border-left: 4px solid var(--il-altgeld); overflow-x: auto; }
+
+/* next step on Decide */
+.nextstep { border-left: 5px solid var(--il-prairie); background: #fff; outline: 1px solid var(--line); padding: 8px 12px; display: flex; flex-direction: column; gap: 6px; }
+.nextstep .btn { align-self: flex-start; text-decoration: none; display: inline-block; }
+.draft { display: inline-block; font: 700 0.66rem var(--f-head); letter-spacing: 0.08em; text-transform: uppercase; color: var(--il-earth); border: 1px dashed var(--il-earth); padding: 1px 6px; margin-left: 6px; vertical-align: 1px; }
+textarea.summary { width: 100%; min-height: 8.5em; font: 0.82rem/1.45 var(--f-code); color: var(--ink); border: 1px solid var(--il-storm); padding: 8px; resize: vertical; }
+
 /* intro chooser */
 .intro { position: fixed; inset: 0; z-index: 40; background: #fff; overflow: auto; }
+.intro .close { align-self: flex-end; }
 .intro .inner { max-width: 1000px; margin: 0 auto; padding: 28px 16px 40px; display: flex; flex-direction: column; gap: 14px; }
 .intro h1 { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 800; }
 .intro .lead { font-size: 1.1rem; color: var(--ink); max-width: 60ch; }
@@ -288,16 +314,16 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
   </div></header>
 
   <nav class="wrap" aria-label="Steps">
-    <div class="grp"><span>Start</span><div><button data-tab="problem"><b>1</b>Why scale up</button></div></div>
-    <div class="grp lap"><span>Bigger laptop</span><div><button data-tab="icrn"><b>2</b>ICRN</button></div></div>
+    <div class="grp"><span>Start</span><div><button data-tab="problem"><b>1</b>Why scale up</button><button data-tab="memory"><b>2</b>Will it fit</button></div></div>
+    <div class="grp lap"><span>Bigger laptop</span><div><button data-tab="icrn"><b>3</b>ICRN</button></div></div>
     <div class="grp clu"><span>Cluster</span><div>
-      <button data-tab="parallel"><b>3</b>Parallel jobs</button>
-      <button data-tab="communication"><b>4</b>Communication</button>
-      <button data-tab="placement"><b>5</b>Job placement</button>
-      <button data-tab="submit"><b>6</b>Batch jobs</button>
-      <button data-tab="sizing"><b>7</b>Sizing a job</button>
+      <button data-tab="parallel"><b>4</b>Parallel jobs</button>
+      <button data-tab="communication"><b>5</b>Communication</button>
+      <button data-tab="placement"><b>6</b>Job placement</button>
+      <button data-tab="submit"><b>7</b>Batch jobs</button>
+      <button data-tab="sizing"><b>8</b>Sizing a job</button>
     </div></div>
-    <div class="grp"><span>Decide</span><div><button data-tab="decide"><b>8</b>Which resource</button></div></div>
+    <div class="grp"><span>Decide</span><div><button data-tab="decide"><b>9</b>Which resource</button></div></div>
   </nav>
 
   <main><div class="wrap">
@@ -313,12 +339,41 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
         <div class="ctl"><label for="days"><span id="len-cap"></span> <output id="days-out"></output></label><input id="days" type="range" min="1" max="30" step="1" value="10"></div>
         <div class="readouts" id="p-ro"></div>
         <p class="note" id="p-note"></p>
-        <p class="say" id="p-say" aria-live="polite"></p>
+        <p class="say" id="p-say"></p>
       </div>
       <div class="right"><div class="fit"><canvas class="map" id="cv" width="400" height="400" role="img" aria-label="A picture of the problem at the chosen size"></canvas></div></div>
     </section>
 
-    <!-- 2 ICRN -->
+    <!-- 2 memory -->
+    <section class="mod" id="m-memory" hidden>
+      <div class="left">
+        <span class="track">Start</span>
+        <h2>Will it fit in memory?</h2>
+        <p class="story" id="mem-story"></p>
+        <p class="try">Try: change where it runs, then the data size</p>
+        <div class="ctl"><label for="msz">Data size <output id="msz-out"></output></label><input id="msz" type="range" min="0" max="10" step="1" value="6"></div>
+        <div class="ctl"><span class="cap" id="cp-cap">Copies your program holds at once</span>
+          <div class="seg" id="copies" role="group" aria-labelledby="cp-cap"><button data-v="1">1&times;</button><button data-v="2" aria-pressed="true">2&times;</button><button data-v="3">3&times;</button></div></div>
+        <div class="ctl"><span class="cap" id="wh-cap">Where it runs</span>
+          <div class="seg" id="where" role="group" aria-labelledby="wh-cap"><button data-v="laptop" aria-pressed="true">Your laptop</button><button data-v="node">One cluster node</button><button data-v="split">4 nodes, code splits the data</button><button data-v="nosplit">4 nodes, code does not split it</button></div></div>
+        <div class="readouts" id="mem-ro"></div>
+        <div class="sowhat"><span class="hpc-h">What this means for you</span><ul>
+          <li>More cores do not add memory to your program. Only a bigger node, or code that splits the data, does.</li>
+          <li>Measure peak memory on a small run, then ask for a bit more (<code>--mem=</code> in your job script).</li>
+          <li>Reading the data in chunks often avoids needing a bigger machine at all.</li>
+        </ul></div>
+        <p class="say" id="mem-say"></p>
+      </div>
+      <div class="right">
+        <div class="mrows" id="mrows"></div>
+        <div id="oom" hidden>
+          <pre class="term" id="oom-pre"></pre>
+          <p class="note" style="margin-top:6px">This is what running out of memory often looks like. The program stops partway, sometimes with one word: Killed. Your code may be fine. It needs more memory than the machine has.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 ICRN -->
     <section class="mod lapmod" id="m-icrn" hidden>
       <div class="left">
         <span class="track lap">Bigger laptop &middot; ICRN</span>
@@ -333,7 +388,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
         <p class="try">Try: make the run longer, then close the laptop</p>
         <div class="ctl"><label for="rl">How long the run takes <output id="rl-out"></output></label><input id="rl" type="range" min="1" max="72" step="1" value="8"></div>
         <div class="seg" id="lid" role="group" aria-label="Laptop lid"><button data-v="open" aria-pressed="true">Laptop stays open</button><button data-v="closed">Close the lid at hour 2</button></div>
-        <p class="say" id="i-say" aria-live="polite"></p>
+        <p class="say" id="i-say"></p>
         <p class="note">Free for UIUC researchers. Limits change; check the <a href="https://computes.illinois.edu/resources/icrn/" target="_blank" rel="noopener">ICRN page</a>.</p>
       </div>
       <div class="right">
@@ -354,6 +409,8 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
           <button id="k-many" aria-pressed="true">1,000 separate storms</button>
           <button id="k-one">One giant storm</button>
         </div>
+        <div class="ctl"><span class="cap" id="par-cap">Is your code built to use many cores at once?</span>
+          <div class="seg" id="par" role="group" aria-labelledby="par-cap"><button data-v="yes" aria-pressed="true">Yes</button><button data-v="notsure">Not sure</button><button data-v="no">No</button></div></div>
         <div class="readouts" id="h-ro"></div>
         <div class="hpc"><span class="hpc-h">In HPC terms</span><dl>
           <dt id="dt-many">1,000 separate storms</dt><dd>a job array, with no data exchange</dd>
@@ -361,9 +418,9 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
           <dt>Within one node</dt><dd>OpenMP threads can share memory</dd>
           <dt>Across nodes</dt><dd>needs MPI or a similar library</dd>
         </dl></div>
-        <p class="say" id="h-say" aria-live="polite"></p>
+        <p class="say" id="h-say"></p>
       </div>
-      <div class="right"><div class="rooms" id="rooms" aria-hidden="true"></div></div>
+      <div class="right"><div class="rooms" id="rooms" aria-hidden="true"></div><div class="dotkey" aria-hidden="true"><span class="dw">working</span><span class="di">assigned but idle</span><span class="df">not requested</span></div></div>
     </section>
 
     <!-- 4 talking -->
@@ -375,18 +432,25 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
         <p class="try">Try: add cores, then switch to the big map</p>
         <div class="segrow"><div class="seg" id="hp" role="group" aria-label="Cores"><button data-v="1">1 core</button><button data-v="4">4</button><button data-v="16" aria-pressed="true">16</button><button data-v="64">64</button></div>
         <div class="seg" id="ms" role="group" aria-label="Map size"><button data-v="16" aria-pressed="true">Small map</button><button data-v="48">Big map</button></div></div>
-        <div>
+        <div class="guess" id="g3">
+          <p id="g3-q">Before you look: with 16 cores on the small map, how much faster than 1 core?</p>
+          <div class="seg" role="group" aria-labelledby="g3-q"><button data-g="4">4&times;</button><button data-g="8">8&times;</button><button data-g="16">16&times;</button></div>
+          <button class="linkbtn" type="button" data-skip>Skip</button>
+        </div>
+        <p class="reveal" id="g3-r" hidden></p>
+        <div id="g3-hide" hidden>
           <div class="rowlab"><span id="tp-l"></span><b id="tp"></b></div><div class="stack"><div class="w" id="sw"></div><div class="t" id="st"></div></div>
+          <div class="key" style="margin-top:4px"><span class="kw">real work</span><span class="kt">halo exchange (striped)</span></div>
         </div>
         <div class="sowhat"><span class="hpc-h">What this means for you</span><ul>
           <li>More cores is not always faster, especially on small problems.</li>
           <li>Time a few short runs before requesting many cores (see <strong>Sizing a job</strong>).</li>
         </ul></div>
-        <p class="say" id="m-say" aria-live="polite"></p>
+        <p class="say" id="m-say"></p>
       </div>
       <div class="right">
         <div class="fit"><svg id="map" viewBox="0 0 400 400" style="max-width:min(440px, calc(100dvh - 330px))" role="img" aria-label="A map cut into patches, one per core"></svg></div>
-        <div class="key"><span class="ks">real work</span><span class="kt">halo exchange</span></div>
+        <div class="key"><span class="ks">real work</span><span class="kt">halo exchange (striped cells)</span></div>
       </div>
     </section>
 
@@ -404,7 +468,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
           <li>If your job fits on one node, ask for one (<code>--nodes=1</code>).</li>
           <li>A slower run on another day is often placement or network traffic.</li>
         </ul></div>
-        <p class="say" id="j-say" aria-live="polite"></p>
+        <p class="say" id="j-say"></p>
       </div>
       <div class="right"><svg id="fabric" viewBox="0 0 640 270" role="img" aria-label="Four nodes connected by a shared network"></svg></div>
     </section>
@@ -417,7 +481,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
         <p class="story">On a cluster you don&rsquo;t run programs directly. You submit a short script to the <strong>scheduler</strong>. It starts your job when enough nodes are free.</p>
         <p class="try">Try: step through the job</p>
         <div class="seg" id="stage" role="group" aria-label="Job stage"></div>
-        <p class="say" id="s-say" aria-live="polite"></p>
+        <p class="say" id="s-say"></p>
       </div>
       <div class="right">
         <pre class="script" id="script" aria-label="A simplified Slurm job script"></pre>
@@ -439,20 +503,20 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
           <dt>Serial chores</dt><dd>code that only one core can run</dd>
           <dt>The chart on the right</dt><dd>a scaling study</dd>
         </dl></div>
-        <p class="say" id="t-say" aria-live="polite"></p>
+        <p class="say" id="t-say"></p>
       </div>
       <div class="right">
         <div>
-          <div class="rowlab"><span>Time to finish (line = 30 h)</span><b id="tt"></b></div>
+          <div class="rowlab"><span>Wait in queue + run (line = 30 h)</span><b id="tt"></b></div>
           <div class="stack" id="tbar"></div>
-          <div class="key" style="margin-top:6px"><span class="kc">serial chores</span><span class="kw">real work</span><span class="kt">talking</span></div>
+          <div class="key" style="margin-top:6px"><span class="kqs">waiting in the queue</span><span class="kc">serial chores</span><span class="kw">real work</span><span class="kt">talking (striped)</span></div>
         </div>
         <div>
           <div class="rowlab"><span>Core-hours spent (line = 3,000)</span><b id="tc"></b></div>
           <div class="stack" id="cbar"></div>
         </div>
         <div>
-          <div class="rowlab"><span>Parallel efficiency at each core count (green = meets both)</span><b id="te"></b></div>
+          <div class="rowlab"><span>Parallel efficiency at each core count (&#10003; = meets both)</span><b id="te"></b></div>
           <svg id="effchart" viewBox="0 0 560 150" role="img" aria-label="Parallel efficiency for each core count"></svg>
         </div>
         <div class="win" id="win" hidden></div>
@@ -469,10 +533,17 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
           <div class="seg grid2" id="work" role="group" aria-label="Kind of work"></div></div>
         <div class="ctl"><span class="cap">2. How much of it?</span>
           <div class="seg grid3" id="scale" role="group" aria-label="Amount of work"></div></div>
-        <p class="say" id="d-say" aria-live="polite"></p>
+        <p class="say" id="d-say"></p>
       </div>
       <div class="right">
+        <div class="nextstep" id="nextstep"></div>
         <div class="rcards" id="rcards"></div>
+        <button class="linkbtn" type="button" id="others" aria-expanded="false" aria-controls="rothers"></button>
+        <div class="rcards" id="rothers" hidden></div>
+        <details><summary style="cursor:pointer;font-weight:600;color:var(--il-blue)">Copy a summary for a ticket or request</summary>
+          <textarea class="summary" id="summary" readonly aria-label="Summary of your choices"></textarea>
+          <p><button class="btn" type="button" id="copy">Copy summary</button> <span class="note" id="copied" role="status"></span></p>
+        </details>
         <p class="note">A large-memory GPU alone does not mean Delta: the Campus Cluster has 80 to 141 GB GPUs. If you are unsure, ask NCSA Research Consulting.</p>
       </div>
     </section>
@@ -483,11 +554,13 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     <span class="pos" id="pos"></span>
     <button class="btn primary" id="next">Next &rarr;</button>
   </div></footer>
+<div id="sr" class="sr-only" aria-live="polite"></div>
 </div>
 
-<div class="intro" id="intro" role="dialog" aria-labelledby="intro-h">
+<div class="intro" id="intro" role="dialog" aria-modal="true" aria-labelledby="intro-h">
   <div class="unitbar"><div class="wrap"><span class="unit">NCSA</span><span class="unit-sep" aria-hidden="true"></span><span class="unit-full">National Center for Supercomputing Applications &middot; University of Illinois Urbana-Champaign</span></div></div>
   <div class="inner">
+    <button class="btn close" type="button" id="close-intro" hidden>Close</button>
     <h1 id="intro-h">From Laptop to Cluster</h1>
     <p class="lead">Pick the example closest to your research. The pages that follow will use it, and you can switch at any time.</p>
     <div class="picks" id="picks"></div>
@@ -526,7 +599,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
   }
 
   /* ---- tabs ---- */
-  var MODS = ['problem', 'icrn', 'parallel', 'communication', 'placement', 'submit', 'sizing', 'decide'];
+  var MODS = ['problem', 'memory', 'icrn', 'parallel', 'communication', 'placement', 'submit', 'sizing', 'decide'];
   var cur = 0;
   function splitLines(html) {
     var out = [], start = 0, i, c;
@@ -539,16 +612,27 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
   function tidyText() {
     $$('.story, .say').forEach(function (el) { if (el.innerHTML.indexOf('class="ln"') < 0) { var t = splitLines(el.innerHTML); if (t !== el.innerHTML) el.innerHTML = t; } });
   }
-  new MutationObserver(tidyText).observe(document.body, { childList: true, subtree: true });
+  /* one polite announcement of the current tab's live sentence, 600 ms after changes stop */
+  var srTimer = null, lastSaid = '';
+  function announce() {
+    clearTimeout(srTimer);
+    srTimer = setTimeout(function () {
+      var el = document.querySelector('#m-' + MODS[cur] + ' .say'), t = el ? el.textContent : '';
+      if (t && t !== lastSaid) { lastSaid = t; $('#sr').textContent = t; }
+    }, 600);
+  }
+  new MutationObserver(function () { tidyText(); announce(); }).observe(document.querySelector('main'), { childList: true, subtree: true });
   function show(id) {
     var i = MODS.indexOf(id); if (i < 0) i = 0; cur = i;
     MODS.forEach(function (m, k) {
       document.getElementById('m-' + m).hidden = k !== i;
-      $('[data-tab="' + m + '"]').setAttribute('aria-selected', String(k === i));
+      var tb = $('[data-tab="' + m + '"]');
+      if (k === i) tb.setAttribute('aria-current', 'step'); else tb.removeAttribute('aria-current');
     });
     $('#prev').disabled = i === 0;
     $('#next').textContent = i === MODS.length - 1 ? 'Start over' : 'Next →';
-    $('#pos').textContent = (i + 1) + ' of ' + MODS.length;
+    $('#pos').textContent = 'Step ' + (i + 1) + ' of ' + MODS.length;
+    lastSaid = '';
     $('[data-tab="' + MODS[i] + '"]').scrollIntoView({ block: 'nearest', inline: 'nearest' });
     $('main').scrollTop = 0;
     try { history.replaceState(null, '', '#' + MODS[i]); } catch (e) {}
@@ -557,7 +641,9 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
   $('#prev').addEventListener('click', function () { if (cur > 0) show(MODS[cur - 1]); });
   $('#next').addEventListener('click', function () { show(MODS[(cur + 1) % MODS.length]); });
   document.addEventListener('keydown', function (e) {
-    if (e.target.closest('input, dialog')) return;
+    // arrow keys change tabs only from the tab bar or the page itself, never from a control
+    if (!(e.target === document.body || e.target.closest('nav'))) return;
+    if (!$('#intro').hidden) return;
     if (e.key === 'ArrowRight' && cur < MODS.length - 1) show(MODS[cur + 1]);
     if (e.key === 'ArrowLeft' && cur > 0) show(MODS[cur - 1]);
   });
@@ -574,7 +660,8 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       res: [['100 km', 1, '10 &times; 10'], ['50 km', 8, '20 &times; 20'], ['25 km', 64, '40 &times; 40'], ['10 km', 1000, '100 &times; 100'], ['5 km', 8000, '200 &times; 200'], ['2 km', 125000, '500 &times; 500']], resDef: 2,
       len: { cap: 'Forecast length', min: 1, max: 30, step: 1, def: 10, ref: 10, one: ' day', many: ' days' }, base: 1,
       note: 'Halving the square width gives 4&times; as many squares, and each time step has to be half as long, so the work goes up 8&times;.',
-      more: 'Try a finer grid.', pattern: 'storm', noun: 'storm', many: '1,000 separate storms', one: 'One giant storm',
+      more: 'Try a finer grid.', pattern: 'storm', noun: 'storm', many: '1,000 separate storms', count: 1000, one: 'One giant storm',
+      mem: 'Your forecast writes <strong>60 GB</strong> of output, and your analysis script loads all of it at once. Your laptop has <strong>16 GB of memory</strong> (RAM), the space a program works in.',
       comm: 'The map is split into patches, one per core (<strong>domain decomposition</strong>). After each step, neighbors swap edge values over <strong>MPI</strong>, a <strong>halo exchange</strong>.',
       run: 'storm run', decide: 'sim', file: 'storm.sh',
       script: script('storm', '#SBATCH --nodes=2', '#SBATCH --ntasks-per-node=128', '#SBATCH --time=06:00:00', 'storm-model', 'srun ./storm --grid 5km --days 10'),
@@ -585,7 +672,8 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       res: [['10k', 1, '10,000'], ['25k', 2.5, '25,000'], ['50k', 5, '50,000'], ['100k', 10, '100,000'], ['500k', 50, '500,000'], ['1M', 100, '1,000,000']], resDef: 2,
       len: { cap: 'Simulated time', min: 10, max: 500, step: 10, def: 100, ref: 10, one: ' ns', many: ' ns' }, base: 1,
       note: 'The work grows with the number of atoms and with the simulated time, so doubling both makes the run about 4&times; longer.',
-      more: 'Try a bigger system.', pattern: 'atoms', noun: 'simulation', many: '500 independent short runs', one: 'One large system',
+      more: 'Try a bigger system.', pattern: 'atoms', noun: 'simulation', many: '500 independent runs', count: 500, one: 'One large system',
+      mem: 'Your trajectory file is <strong>60 GB</strong>, and your analysis script loads all of it at once. Your laptop has <strong>16 GB of memory</strong> (RAM), the space a program works in.',
       comm: 'The simulation box is split into regions, one per core (<strong>domain decomposition</strong>). After each step, neighbors swap atoms near their edges over <strong>MPI</strong>, a <strong>halo exchange</strong>.',
       run: 'protein simulation', decide: 'sim', file: 'protein.sh',
       script: script('protein', '#SBATCH --nodes=2', '#SBATCH --ntasks-per-node=128', '#SBATCH --time=06:00:00', 'gromacs', 'srun gmx_mpi mdrun -deffnm protein'),
@@ -596,7 +684,8 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       res: [['4', 1, '4'], ['12', 3, '12'], ['24', 6, '24'], ['48', 12, '48'], ['96', 24, '96'], ['384', 96, '384']], resDef: 3,
       len: { cap: 'Sequencing depth', min: 10, max: 100, step: 5, def: 30, ref: 10, one: '&times;', many: '&times;' }, base: 1,
       note: 'Each sample is aligned on its own, so the work grows in step with the number of samples and the depth.',
-      more: 'Try more samples.', pattern: 'plate', noun: 'sample', many: '500 separate samples', one: 'One large assembly',
+      more: 'Try more samples.', pattern: 'plate', noun: 'sample', many: 'Each sample as its own task', split: 'res', one: 'One large assembly',
+      mem: 'Your genome assembly has to hold <strong>60 GB</strong> of reads in memory at once. Your laptop has <strong>16 GB of memory</strong> (RAM), the space a program works in.',
       comm: 'Most sequencing pipelines handle each sample on its own, so they skip this cost. Large genome assemblies split one problem across cores and swap data every step, like this map.',
       run: 'genome assembly', decide: 'sweep', file: 'align.sh',
       script: script('align', '#SBATCH --array=1-48', '#SBATCH --cpus-per-task=16', '#SBATCH --time=04:00:00', 'bwa', 'bwa mem -t 16 ref.fa sample_$SLURM_ARRAY_TASK_ID.fq'),
@@ -607,7 +696,8 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       res: [['10k', 1, '10,000'], ['50k', 5, '50,000'], ['100k', 10, '100,000'], ['500k', 50, '500,000'], ['1M', 100, '1,000,000'], ['5M', 500, '5,000,000']], resDef: 2,
       len: { cap: 'Training length', min: 5, max: 100, step: 5, def: 30, ref: 10, one: ' epoch', many: ' epochs' }, base: 1,
       note: 'Each epoch passes over every image once, so the work grows with both. A GPU does each pass far faster than a laptop processor.',
-      more: 'Try more images.', pattern: 'images', noun: 'training trial', many: '500 separate training trials', one: 'One large model on many GPUs',
+      more: 'Try more images.', pattern: 'images', noun: 'training trial', many: '500 separate training trials', count: 500, one: 'One large model on many GPUs',
+      mem: 'Your image dataset is <strong>60 GB</strong>, and your data loader tries to hold all of it in memory. Your laptop has <strong>16 GB of memory</strong> (RAM), the space a program works in.',
       comm: 'Training one model on many GPUs splits the data between them. After each step they average their updates over the network, which takes time like the swaps shown here.',
       run: 'model training run', decide: 'train', file: 'train.sh',
       script: script('train', '#SBATCH --nodes=1', '#SBATCH --gpus-per-node=4', '#SBATCH --time=12:00:00', 'pytorch', 'srun python train.py --epochs 30'),
@@ -618,7 +708,8 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       res: [['10k', 1, '10,000'], ['50k', 5, '50,000'], ['100k', 10, '100,000'], ['500k', 50, '500,000'], ['1M', 100, '1,000,000'], ['5M', 500, '5,000,000']], resDef: 2,
       len: { cap: 'Repeated runs', min: 10, max: 500, step: 10, def: 50, ref: 10, one: ' run', many: ' runs' }, base: 0.5,
       note: 'Each run follows every person, and you repeat the run many times to see the range of outcomes, so the work grows with both.',
-      more: 'Try a larger population.', pattern: 'agents', noun: 'run', many: '1,000 repeated runs', one: 'One huge population',
+      more: 'Try a larger population.', pattern: 'agents', noun: 'run', many: 'Each run as its own task', split: 'len', one: 'One huge population',
+      mem: 'Your survey and records table is <strong>60 GB</strong>, and R loads the whole table into memory. Your laptop has <strong>16 GB of memory</strong> (RAM), the space a program works in.',
       comm: 'A huge population is split into regions, one per core. People who cross a border are passed to the next core over <strong>MPI</strong>, a <strong>halo exchange</strong>.',
       run: 'population model', decide: 'sweep', file: 'abm.sh',
       script: script('abm', '#SBATCH --array=1-50', '#SBATCH --cpus-per-task=1', '#SBATCH --time=02:00:00', 'R', 'Rscript run_model.R $SLURM_ARRAY_TASK_ID'),
@@ -681,8 +772,9 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     L = hours / 24;
     $('#days-out').innerHTML = lv + (lv === 1 ? T.len.one : T.len.many);
     drawPattern(T.pattern, RI);
+    $('#cv').setAttribute('aria-label', T.name + ' example. ' + T.sizeLabel + ': ' + T.res[RI][2].replace('&times;', 'by') + '.');
     var need = hours / 12;
-    $('#p-ro').innerHTML = ro(T.sizeLabel, T.res[RI][2], '') + ro('Work vs smallest', fmt(work, work < 10 ? 1 : 0) + X, work > 8 ? 'mid' : '') + ro('On your laptop', dur(L), need > 1 ? 'bad' : 'good') + ro('Speedup needed', need > 1 ? fmt(need, need < 10 ? 1 : 0) + X : 'none', need > 1 ? 'bad' : 'good');
+    $('#p-ro').innerHTML = ro(T.sizeLabel, T.res[RI][2], '') + ro('Work vs smallest size', fmt(work, work < 10 ? 1 : 0) + X, work > 8 ? 'mid' : '') + ro('On your laptop', dur(L), need > 1 ? 'bad' : 'good') + ro('Speedup needed', need > 1 ? fmt(need, need < 10 ? 1 : 0) + X : 'none', need > 1 ? 'bad' : 'good');
     $('#p-say').innerHTML = need <= 1
       ? 'Your laptop can finish this overnight. <em>' + T.more + '</em>'
       : 'Your laptop needs <em>' + dur(L) + '</em>, but you have 12 hours. You would need to run <em>' + fmt(need, need < 10 ? 1 : 0) + ' times faster</em>.';
@@ -736,16 +828,40 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     $('#rooms').innerHTML = h;
   })();
   var dots = $$('#rooms i');
+  var par = 'yes';
+  seg('par', function (v) { par = v; drawHelpers(); });
+  /* How many independent pieces the "many" job has, and how long one piece takes.
+     Fixed-count themes (climate, md, ml): an ensemble of `count` copies, each as big as the step 1 run.
+     Split themes (genomics, social): the step 1 workload itself, split into its samples or runs. */
+  function pieces() {
+    if (T.split === 'res') { var n = parseInt(String(T.res[RI][2]).replace(/,/g, ''), 10); return { n: n, each: L / n }; }
+    if (T.split === 'len') { var r = +$('#days').value; return { n: r, each: L / r }; }
+    return { n: T.count, each: L };
+  }
   function drawHelpers() {
-    var N = Math.pow(2, +$('#hn').value), t = L / N, machines = Math.ceil(N / PER), met = t <= 0.5;
+    var N = Math.pow(2, +$('#hn').value), machines = Math.ceil(N / PER), serial = par !== 'yes', html, rows, met;
     $('#hn-out').textContent = fmt(N);
-    dots.forEach(function (d, i) { d.className = i < N ? 'on' : ''; });
-    $('#h-ro').innerHTML = ro('Nodes used', fmt(machines), '') + ro('Time, if all goes perfectly', dur(t), met ? 'good' : 'mid') + ro('By morning?', met ? 'yes' : 'no', met ? 'good' : 'bad');
-    var say;
-    if (N === 1) say = 'One core is about the same as your laptop, so <em>' + dur(L) + '</em>.';
-    else if (kind === 'many') say = fmt(N) + ' cores each run their own ' + T.noun + ' without waiting on each other, so the total time drops to <em>' + dur(t) + '</em>.';
-    else say = 'On paper, ' + fmt(N) + ' cores would cut <em>' + dur(L) + '</em> to <em>' + dur(t) + '</em>. <span class="bad">In practice it takes longer</span>, and the next tab shows why.';
-    $('#h-say').innerHTML = say;
+    $('#hn').setAttribute('aria-valuetext', fmt(N) + (N === 1 ? ' core' : ' cores'));
+    if (kind === 'many') {
+      var pc = pieces(), busy = Math.min(N, pc.n), total = pc.each * Math.ceil(pc.n / N), coreh = N * total * 24;
+      met = total <= 0.5;
+      dots.forEach(function (d, i) { d.className = i < busy ? 'on' : i < N ? 'idle' : ''; });
+      rows = ro('Nodes used', fmt(machines), '') + ro('One ' + T.noun + ' takes', dur(pc.each), '') + ro('All ' + fmt(pc.n) + ' finish in', dur(total), met ? 'good' : 'mid') + ro('By morning?', met ? 'yes' : 'no', met ? 'good' : 'bad') + ro('Core-hours used', fmt(coreh), N > pc.n ? 'bad' : '');
+      html = N === 1 ? 'One core runs all ' + fmt(pc.n) + ' one after another, so <em>' + dur(total) + '</em>.'
+        : 'Each core handles one ' + T.noun + ' start to finish. One still takes <em>' + dur(pc.each) + '</em>. With ' + fmt(busy) + ' cores working, all ' + fmt(pc.n) + ' are done in <em>' + dur(total) + '</em>.';
+      if (N > pc.n) html += ' <span class="bad">Only ' + fmt(pc.n) + ' cores have work.</span> The rest sit idle and still use your allocation.';
+      if (serial && N > 1) html += ' Your script does not need to be parallel for this. Each core runs its own copy.';
+    } else {
+      var effN = serial ? 1 : N, t = L / effN, coreh2 = N * t * 24;
+      met = t <= 0.5;
+      dots.forEach(function (d, i) { d.className = i < N ? (serial && i > 0 ? 'idle' : 'on') : ''; });
+      rows = ro('Nodes used', fmt(machines), '') + ro(serial ? 'Time to finish' : 'Time, if all goes perfectly', dur(t), met ? 'good' : 'mid') + ro('By morning?', met ? 'yes' : 'no', met ? 'good' : 'bad') + ro('Core-hours used', fmt(coreh2), serial && N > 1 ? 'bad' : '');
+      if (N === 1) html = 'One core. Your laptop has about 8, but most scripts use only one unless they were written to use more. That is <em>' + dur(L) + '</em>.';
+      else if (!serial) html = 'On paper, ' + fmt(N) + ' cores would cut <em>' + dur(L) + '</em> to <em>' + dur(t) + '</em>. <span class="bad">In practice it takes longer</span>, and the next tab shows why.';
+      else html = 'Your code uses one core, so the other ' + fmt(N - 1) + ' <span class="bad">sit idle and still use your allocation</span>. It still takes <em>' + dur(t) + '</em>.' + (par === 'notsure' ? ' To find out, time a short run with 1 core and with 4. If 4 is not faster, the code is serial.' : '');
+    }
+    $('#h-ro').innerHTML = rows;
+    $('#h-say').innerHTML = html;
   }
   $('#hn').addEventListener('input', drawHelpers);
   function setKind(k) { kind = k; $('#k-many').setAttribute('aria-pressed', String(k === 'many')); $('#k-one').setAttribute('aria-pressed', String(k === 'one')); drawHelpers(); }
@@ -767,11 +883,56 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     $('#map').innerHTML = svg;
     var work = s * s, talk = k > 1 ? (4 - 4 / k) * s : 0, t1 = SIZE * SIZE, tp = work + ALPHA * talk, speed = t1 / tp, eff = speed / P;
     $('#tp-l').textContent = 'Time per step with ' + P + (P === 1 ? ' core' : ' cores') + ' (full bar = 1 core)';
-    $('#tp').textContent = fmt(tp) + ' units';
+    $('#tp').textContent = fmt(tp / t1 * 100) + '% of 1-core time';
     $('#sw').style.width = (work / t1 * 100) + '%'; $('#st').style.width = (ALPHA * talk / t1 * 100) + '%';
     $('#m-say').innerHTML = P === 1
       ? 'With one core there is nothing to exchange, so <em>all of the time is real work</em>.'
       : 'Ideally ' + P + ' cores would be ' + P + X + ' faster. Here they are <em>' + fmt(speed, 1) + X + '</em> faster, a parallel efficiency of <span class="' + (eff >= 0.6 ? 'good' : 'bad') + '">' + fmt(eff * 100) + '%</span>.' + (SIZE === 16 && P >= 16 ? ' <em>Now try the big map.</em>' : (SIZE === 48 && P >= 16 ? ' A bigger problem gives each core more real work per exchange.' : ''));
+  }
+
+  /* guess first, then reveal (no scoring) */
+  (function () {
+    var box = $('#g3');
+    function done(g) {
+      var k = 4, s = 4, t1 = 256, tp = s * s + ALPHA * (4 - 4 / k) * s, sp = t1 / tp;
+      box.hidden = true; $('#g3-hide').hidden = false;
+      var r = $('#g3-r'); r.hidden = false;
+      r.innerHTML = (g ? 'You guessed ' + g + X + '. ' : '') + 'Most people guess 16' + X + '. It is ' + fmt(sp, 1) + X + ', because the cores spend time swapping edges.';
+      $('#sr').textContent = r.textContent;
+    }
+    $$('#g3 [data-g]').forEach(function (b) { b.addEventListener('click', function () { done(b.dataset.g); }); });
+    $('#g3 [data-skip]').addEventListener('click', function () { done(null); });
+  })();
+
+  /* ---- memory ---- */
+  var LAPTOP_GB = 16;
+  var NODE_GB = 256;   // TODO(NCSA): set to a typical Campus Cluster CPU node's memory
+  var SIZES = [1, 2, 5, 10, 20, 40, 60, 100, 200, 400, 800], COPIES = 2, WHERE = 'laptop';
+  seg('copies', function (v) { COPIES = +v; drawMem(); });
+  seg('where', function (v) { WHERE = v; drawMem(); });
+  $('#msz').addEventListener('input', drawMem);
+  function gb(n) { return n >= 1000 ? fmt(n / 1000, 1) + ' TB' : fmt(n) + ' GB'; }
+  function drawMem() {
+    var size = SIZES[+$('#msz').value], need = size * COPIES, cap = WHERE === 'laptop' ? LAPTOP_GB : NODE_GB, each;
+    $('#msz-out').textContent = gb(size); $('#msz').setAttribute('aria-valuetext', gb(size));
+    each = WHERE === 'split' ? [need / 4, need / 4, need / 4, need / 4] : WHERE === 'nosplit' ? [need, need, need, need] : [need];
+    var fits = each[0] <= cap, nm = WHERE === 'laptop' ? 'Laptop' : 'Node';
+    $('#mrows').innerHTML = each.map(function (m, i) {
+      return '<div><div class="rowlab"><span>' + nm + (each.length > 1 ? ' ' + (i + 1) : '') + ': needs ' + gb(m) + ', has ' + gb(cap) + '</span><b>' + (m <= cap ? 'fits' : 'does not fit') + '</b></div><div class="mbar"><div class="fill' + (m > cap ? ' over' : '') + '" style="width:' + Math.min(100, m / cap * 100) + '%"></div></div></div>';
+    }).join('');
+    $('#mem-ro').innerHTML = ro('Memory needed', gb(need) + (WHERE === 'split' ? ' total' : ''), '') + ro('Memory per machine', gb(cap), '') + ro('Fits?', fits ? 'yes' : 'no', fits ? 'good' : 'bad');
+    $('#oom').hidden = fits;
+    if (!fits) $('#oom-pre').textContent = '$ ' + (T.id === 'social' ? 'Rscript load_data.R' : 'python analyze.py') + '\nLoading data... ' + Math.max(1, Math.floor(cap / each[0] * 100)) + '%\nKilled';
+    var ask = Math.ceil(each[0] * 1.2 / 10) * 10, h;
+    if (!fits && WHERE === 'laptop') h = 'Your program needs <em>' + gb(need) + '</em>, and your laptop has ' + gb(cap) + '. <em>Try one cluster node.</em>';
+    else if (!fits && WHERE === 'nosplit') h = 'Every node loads the whole thing, so 4 nodes give you <span class="bad">no extra room</span>, and you pay for all 4.';
+    else if (!fits && WHERE === 'split') h = 'Even a quarter is too big for one node. Use more nodes, or work on smaller pieces at a time.';
+    else if (!fits) h = 'Too big for one node. <span class="bad">More cores will not help</span>, because cores do not add memory. <em>Try 4 nodes with code that splits the data.</em>';
+    else if (WHERE === 'laptop') h = 'It fits on your laptop. <em>You may not need a cluster for this.</em>';
+    else if (WHERE === 'node') h = 'It fits on one node. In your job script you would ask for about <em>' + gb(ask) + '</em>, a bit more than it needs.';
+    else if (WHERE === 'split') h = 'Each node holds a quarter. <em>Splitting the data is what lets more nodes add memory</em>, and the code has to be written to do it.';
+    else h = 'It fits, but every node holds a full copy. One node would do the same job at a quarter of the cost.';
+    $('#mem-say').innerHTML = h;
   }
 
   /* ---- 5: seating ---- */
@@ -838,7 +999,8 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
 
   /* ---- 7: your turn ---- */
   var T1H = 480, S = 0.01, C = 0.002, TLIM = 30, BUD = 3000;
-  function runAt(N) { var ch = S * T1H, wk = (1 - S) / N * T1H, tk = C * Math.log2(N) * T1H, tot = ch + wk + tk; return { ch: ch, wk: wk, tk: tk, tot: tot, cost: N * tot, eff: T1H / (N * tot) }; }
+  function waitH(N) { return 0.25 * Math.sqrt(N); }   // bigger requests usually wait longer in the queue (illustrative)
+  function runAt(N) { var ch = S * T1H, wk = (1 - S) / N * T1H, tk = C * Math.log2(N) * T1H, run = ch + wk + tk, q = waitH(N); return { q: q, ch: ch, wk: wk, tk: tk, run: run, tot: run + q, cost: N * run, eff: T1H / (N * run) }; }
   function stackHTML(parts, max, mark) {
     var h = '', used = 0;
     parts.forEach(function (p) { var w = Math.max(0, Math.min(p[1] / max * 100, 100 - used)); used += w; h += '<div class="' + p[0] + '" style="width:' + w + '%"></div>'; });
@@ -852,20 +1014,22 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
       if (good && !Nmin) Nmin = n;
       svg += '<rect class="eb' + (good ? ' ok' : '') + (n === N ? ' cur' : '') + '" x="' + x + '" y="' + (122 - h) + '" width="36" height="' + h + '"/>';
       svg += '<text class="ebl" x="' + (x + 18) + '" y="138">' + n + '</text>';
+      if (good && n !== N) svg += '<text class="ebv" x="' + (x + 18) + '" y="' + (116 - h) + '">&#10003;</text>';
       if (n === N) svg += '<text class="ebv" x="' + (x + 18) + '" y="' + (116 - h) + '">' + fmt(q.eff * 100) + '%</text>';
     }
     $('#effchart').innerHTML = svg;
     $('#te').textContent = fmt(eff * 100) + '% at ' + fmt(N) + (N === 1 ? ' core' : ' cores');
     $('#tn-out').textContent = fmt(N);
-    $('#tt').textContent = fmt(tot, 1) + ' hours';
+    $('#tn').setAttribute('aria-valuetext', fmt(N) + (N === 1 ? ' core' : ' cores'));
+    $('#tt').textContent = fmt(tot, 1) + ' hours (' + fmt(R0.q, 1) + ' waiting)';
     $('#tc').textContent = fmt(cost) + ' core-hours';
-    $('#tbar').innerHTML = stackHTML([['c', ch], ['w', wk], ['t', tk]], 60, TLIM);
+    $('#tbar').innerHTML = stackHTML([['q', R0.q], ['c', ch], ['w', wk], ['t', tk]], 60, TLIM);
     $('#cbar').innerHTML = stackHTML([['w', cost]], 6000, BUD);
     var okT = tot <= TLIM, okC = cost <= BUD;
     $('#t-ro').innerHTML = ro('30-hour deadline', okT ? 'met' : 'missed', okT ? 'good' : 'bad') + ro('3,000 core-hours', okC ? 'within' : 'over', okC ? 'good' : 'bad') + ro('Parallel efficiency', fmt(eff * 100) + '%', eff >= 0.6 ? 'good' : eff >= 0.35 ? 'mid' : 'bad');
     $('#t-say').innerHTML = okT && okC ? (N === Nmin ? '<span class="good">This meets both with the fewest cores.</span>' : 'This works, but <span class="bad">efficiency drops to ' + fmt(eff * 100) + '%</span>.')
       : !okT && !okC ? 'This is too slow <em>and</em> uses too much of the allocation.'
-      : !okT ? 'This misses the deadline. <em>Try more cores.</em>'
+      : !okT ? (N >= 256 ? 'This misses the deadline. Big requests wait longer in the queue. <em>Try fewer cores.</em>' : 'This misses the deadline. <em>Try more cores.</em>')
       : 'Fast enough, but <span class="bad">over budget</span>, so <em>try fewer cores</em>. Idle cores still use your allocation and could have served other researchers.';
     var win = $('#win'), best = runAt(Nmin);
     win.hidden = !(okT && okC);
@@ -878,16 +1042,17 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
 
   /* ---- 8: which resource ---- */
   var RES = [
-    { id: 'lap', name: 'Your laptop', d: 'Fine for small tests and for writing code.', a: 'You already have it.' },
-    { id: 'icrn', name: 'ICRN', d: 'Notebooks in your browser with 1 core, a shared GPU and 24-hour sessions.', a: 'Free for UIUC researchers. Log in with your NetID.' },
-    { id: 'iccp', name: 'Illinois Campus Cluster', d: 'Shared campus cluster with CPU nodes and A100 80 GB, H100 and H200 GPUs.', a: 'Free Illinois Computes allocation (100,000 core-hours, 1,000 GPU hours), or your group&rsquo;s own nodes.' },
-    { id: 'delta', name: 'Delta', d: 'National NCSA system with CPU nodes and A40, A100 and H200 GPU nodes.', a: 'ACCESS allocation, which grad students can request with a faculty co-PI. NAIRR also allocates AI projects.' },
-    { id: 'dai', name: 'DeltaAI', d: 'NCSA system for AI, with 96 GB H100 GPUs and ARM processors. GPU work only.', a: 'ACCESS, NAIRR, or Illinois Computes for large requests.' },
-    { id: 'rad', name: 'Radiant', d: 'Your own always-on Linux server in NCSA&rsquo;s cloud. You set it up and run it yourself.', w: 'You start with an empty server and handle software installs, the firewall, security updates and repairs yourself. Linux experience, or a labmate who has it, makes a big difference.', a: 'Free through Illinois Computes: one server with 8 cores and 32 GB of memory. GPUs cost extra. Request it with your advisor.' },
-    { id: 'cpanel', name: 'Campus web hosting (cPanel)', d: 'Free Illinois web hosting at web.illinois.edu for static pages, WordPress and small database-backed sites.', a: 'Self-service for students, faculty and staff with an @illinois.edu address. R and Shiny are not on its list of supported languages.' }
+    { id: 'lap', name: 'Your laptop', d: 'Fine for small tests and for writing code.', a: 'You already have it.', go: null, step: 'Keep working locally. Time one real run and note its peak memory, so you know when you outgrow it.' },
+    { id: 'icrn', name: 'ICRN', d: 'Notebooks in your browser with 1 core, a shared GPU and 24-hour sessions.', a: 'Free for UIUC researchers. Log in with your NetID.', go: 'https://computes.illinois.edu/resources/icrn/', step: 'Open the ICRN page and start a notebook with your NetID.' },
+    { id: 'iccp', name: 'Illinois Campus Cluster', d: 'Shared campus cluster with CPU nodes and A100 80 GB, H100 and H200 GPUs.', a: 'Free Illinois Computes allocation (100,000 core-hours, 1,000 GPU hours), or your group&rsquo;s own nodes.', go: 'https://computes.illinois.edu/', step: 'Request a free Campus Cluster allocation through Illinois Computes, or ask whether your group already owns nodes.' },
+    { id: 'delta', name: 'Delta', d: 'National NCSA system with CPU nodes and A40, A100 and H200 GPU nodes.', a: 'ACCESS allocation. Grad students can lead Explore or Discover projects with their advisor as co-PI and a letter from them. NAIRR also allocates AI projects.', go: 'https://allocations.access-ci.org/', step: 'Start an ACCESS request (Explore is the smallest tier). Grad students need their advisor as co-PI.' },
+    { id: 'dai', name: 'DeltaAI', d: 'NCSA system for AI, with 96 GB H100 GPUs and ARM processors. GPU work only.', a: 'ACCESS, NAIRR, or Illinois Computes for large requests.', go: 'https://allocations.access-ci.org/', step: 'Request DeltaAI time through ACCESS, or through the NAIRR Pilot for AI research.' },
+    { id: 'rad', name: 'Radiant', d: 'Your own always-on Linux server in NCSA&rsquo;s cloud. You set it up and run it yourself.', w: 'You start with an empty server and handle software installs, the firewall, security updates and repairs yourself. Linux experience, or a labmate who has it, makes a big difference.', a: 'Free through Illinois Computes: one server with 8 cores and 32 GB of memory. GPUs cost extra. Request it with your advisor.', go: 'https://computes.illinois.edu/', step: 'Request a Radiant server through Illinois Computes, with your advisor.' },
+    { id: 'cpanel', name: 'Campus web hosting (cPanel)', d: 'Free Illinois web hosting at web.illinois.edu for static pages, WordPress and small database-backed sites.', a: 'Self-service for students, faculty and staff with an @illinois.edu address. R and Shiny are not on its list of supported languages.', go: 'https://web.illinois.edu/', step: 'Sign in at web.illinois.edu and create your site.' }
   ];
   var WORK = [
     { id: 'explore', name: 'Explore and analyze data', ex: 'notebooks, statistics, plots' },
+    { id: 'mem', name: 'Data too big for memory', ex: 'analysis freezes or is Killed on big files' },
     { id: 'sweep', name: 'Many independent runs', ex: 'parameter sweeps, Monte Carlo, batches of files' },
     { id: 'sim', name: 'One large simulation', ex: 'a model split across many cores (MPI)' },
     { id: 'gpusim', name: 'GPU-accelerated simulation', ex: 'or GPU analysis that is not AI' },
@@ -904,6 +1069,10 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     explore: { S: ['icrn', ['lap'], 'For small interactive work, <em>ICRN</em> is the easiest place to start.'],
                M: ['icrn', ['iccp'], 'Start on <em>ICRN</em> and move to the <em>Campus Cluster</em> when one core is not enough.'],
                L: ['iccp', ['delta'], 'Large analyses fit on the <em>Campus Cluster</em>, either in notebooks or as batch jobs.'] },
+    // DRAFT(NCSA): routing for memory-bound work; confirm before publishing
+    mem:     { S: ['lap', ['iccp'], 'First try reading the data in chunks. If it still does not fit, one <em>Campus Cluster</em> node has far more memory than a laptop.'],
+               M: ['iccp', ['icrn'], 'A <em>Campus Cluster</em> node has far more memory than a laptop. Ask for the memory you need in your job script.'],
+               L: ['iccp', ['delta'], 'Data larger than one node needs code that splits it across nodes. Start on the <em>Campus Cluster</em> and ask NCSA Research Consulting for help.'] },
     sweep:   { S: ['icrn', ['lap'], 'A few hours of runs fit in a single <em>ICRN</em> session.'],
                M: ['iccp', [], 'Use job arrays on the <em>Campus Cluster</em>. The free allocation covers 100,000 core-hours.'],
                L: ['iccp', ['delta'], 'Ask Illinois Computes for a larger <em>Campus Cluster</em> allocation, or apply through ACCESS for CPU time on <em>Delta</em>.'] },
@@ -930,22 +1099,49 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
   var SCALE_WEB = { S: 'a few visitors, or just your group', M: 'used every week by a lab or class', L: 'public, with many users or heavy computing' };
   seg('work', function (v) { dWork = v; drawDecide(); });
   seg('scale', function (v) { dScale = v; drawDecide(); });
+  var CONSULT_URL = 'TODO(NCSA): Research Consulting contact link';
+  var showOthers = false;
+  $('#others').addEventListener('click', function () { showOthers = !showOthers; drawDecide(); });
+  function card(x, cls) {
+    var tag = cls === 'best' ? 'Best fit' : cls === 'also' ? 'Also works' : 'Not the best fit';
+    return '<div class="rc ' + cls + '"><h3>' + x.name + '</h3><span class="tag">' + tag + '</span><p class="d">' + x.d + '</p>' + (x.w ? '<p class="w">' + x.w + '</p>' : '') + '<p class="a">' + x.a + '</p></div>';
+  }
   function drawDecide() {
-    var r = REC[dWork][dScale], best = r[0], also = r[1];
-    $('#rcards').innerHTML = RES.map(function (x) {
-      var cls = x.id === best ? 'best' : also.indexOf(x.id) >= 0 ? 'also' : 'no';
-      var tag = cls === 'best' ? 'Best fit' : cls === 'also' ? 'Also works' : 'Not the best fit';
-      return '<div class="rc ' + cls + '"><h3>' + x.name + '</h3><span class="tag">' + tag + '</span><p class="d">' + x.d + '</p>' + (x.w ? '<p class="w">' + x.w + '</p>' : '') + '<p class="a">' + x.a + '</p></div>';
-    }).join('');
+    var r = REC[dWork][dScale], best = r[0], also = r[1], B = RES.filter(function (x) { return x.id === best; })[0];
+    var top = [B].concat(RES.filter(function (x) { return also.indexOf(x.id) >= 0; }));
+    var rest = RES.filter(function (x) { return x.id !== best && also.indexOf(x.id) < 0; });
+    $('#rcards').innerHTML = top.map(function (x) { return card(x, x.id === best ? 'best' : 'also'); }).join('');
+    $('#rothers').innerHTML = rest.map(function (x) { return card(x, 'no'); }).join('');
+    $('#rothers').hidden = !showOthers;
+    $('#others').textContent = showOthers ? 'Hide the other options' : 'Show the other ' + rest.length + ' options';
+    $('#others').setAttribute('aria-expanded', String(showOthers));
+    var consult = CONSULT_URL.indexOf('TODO') === 0 ? 'Not sure? Ask NCSA Research Consulting.<span class="draft">Link to add</span>' : 'Not sure? <a href="' + CONSULT_URL + '" target="_blank" rel="noopener">Ask NCSA Research Consulting</a>.';
+    $('#nextstep').innerHTML = '<span class="hpc-h" style="color:var(--il-prairie)">Your next step</span><p>' + B.step + '</p>' +
+      (B.go ? '<a class="btn primary" href="' + B.go + '" target="_blank" rel="noopener">Go to ' + B.go.replace(/^https:\/\//, '').replace(/\/$/, '') + '</a>' : '') +
+      '<p class="note">' + consult + '</p>';
+    var W = WORK.filter(function (w) { return w.id === dWork; })[0], Sc = SCALE.filter(function (w) { return w.id === dScale; })[0];
+    $('#summary').value = 'Compute needs summary (From Laptop to Cluster)\n' +
+      'Research example: ' + T.name + '\n' +
+      'Kind of work: ' + W.name + ' (' + W.ex + ')\n' +
+      'Amount: ' + Sc.name + ' (' + $$('#scale button').filter(function (b) { return b.dataset.v === dScale; })[0].querySelector('small').textContent + ')\n' +
+      'Code uses many cores at once: ' + ({ yes: 'Yes', no: 'No', notsure: 'Not sure' })[par] + '\n' +
+      'Suggested starting point: ' + B.name + '\n' +
+      'Also works: ' + (also.length ? also.map(function (id) { return RES.filter(function (x) { return x.id === id; })[0].name; }).join(', ') : 'none');
     $('#d-say').innerHTML = r[2];
     var webby = dWork === 'web' || dWork === 'app';
     $$('#scale button').forEach(function (b, i) { b.querySelector('small').textContent = webby ? SCALE_WEB[b.dataset.v] : SCALE[i].ex; });
+    $('#summary').value = $('#summary').value.replace(/Amount: (\w+) \([^)]*\)/, 'Amount: $1 (' + (webby ? SCALE_WEB[dScale] : SCALE.filter(function (w) { return w.id === dScale; })[0].ex) + ')');
   }
+  $('#copy').addEventListener('click', function () {
+    var ta = $('#summary'), msg = $('#copied');
+    function fallback() { ta.focus(); ta.select(); msg.textContent = 'Text selected. Press Ctrl+C or Cmd+C to copy.'; }
+    try { navigator.clipboard.writeText(ta.value).then(function () { msg.textContent = 'Copied.'; }, fallback); } catch (e) { fallback(); }
+  });
 
   /* ---- glossary ---- */
   var G = {
     'Core': 'One processor that does one stream of work.',
-    'Node': 'One machine in a cluster, with its own cores and memory. Often about 100 cores.',
+    'Node': 'One machine in a cluster, with its own cores and memory. A CPU node often has 128 cores.',
     'Cluster': 'Many nodes wired together and run as one shared system.',
     'ICRN': 'Illinois Computes Research Notebooks. Jupyter, RStudio or VS Code in your browser, hosted at NCSA.',
     'Illinois Computes': 'UIUC program that gives campus researchers compute, storage and expert help at no cost.',
@@ -956,9 +1152,14 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     'Shiny': 'An R package for building interactive web apps. A Shiny app needs a server running R the whole time people use it.',
     'Delta': 'An NCSA system funded by NSF, with CPU nodes and A40, A100 and H200 GPU nodes. Mostly allocated through ACCESS.',
     'DeltaAI': 'An NCSA system for AI, built from NVIDIA GH200 nodes (H100 GPUs, ARM CPUs). GPU allocations only.',
-    'ACCESS': 'The NSF program that allocates national systems such as Delta. Grad students can apply with a faculty co-PI.',
+    'ACCESS': 'The NSF program that allocates national systems such as Delta. Grad students can lead Explore or Discover projects, with their advisor as co-PI.',
     'NAIRR': 'The National AI Research Resource Pilot, an NSF-led program that allocates computing for AI research, including on Delta and DeltaAI.',
     'Notebook': 'A page where you run code in small pieces and see results right away. Jupyter is the common one.',
+    'Memory (RAM)': 'The space a program works in while it runs. If the data does not fit, the program stops.',
+    'Out of memory': 'When a program needs more memory than the machine has. It is often stopped with the message Killed.',
+    'Walltime': 'The time limit you set for a job (--time). The scheduler stops the job when it runs out.',
+    'Login node': 'The shared machine you reach when you sign in. Use it to edit files and submit jobs, not to run them.',
+    'Scratch storage': 'Fast, temporary space for files a job is working on. Old files are removed on a schedule, so copy results somewhere safe.',
     'Scheduler': 'The software that queues jobs and decides which nodes each one gets. Slurm is a common one.',
     'Batch job': 'Work you submit as a script and leave to run, instead of typing commands live.',
     'Queue': 'The line jobs wait in until enough nodes are free.',
@@ -992,19 +1193,24 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     seg('dx', function (v) { RI = +v; drawProblem(); drawHelpers(); });
     $('#k-many').textContent = T.many; $('#k-one').textContent = T.one; $('#dt-many').textContent = T.many; $('#dt-one').textContent = T.one;
     $('#m-story').innerHTML = T.comm;
-    $('#t-story').innerHTML = 'Your ' + T.run + ' takes 20 days on one core. Your advisor wants results in <strong>30 hours</strong>. Your allocation is <strong>3,000 core-hours</strong> (cores &times; hours).';
+    $('#mem-story').innerHTML = T.mem;
+    T.id = id;
+    $('#t-story').innerHTML = 'Your ' + T.run + ' takes 20 days on one core. Your advisor wants results in <strong>30 hours</strong>, counting the time your job waits in the <strong>queue</strong>. Bigger requests usually wait longer. Your allocation is <strong>3,000 core-hours</strong> (cores &times; hours).';
     themeStages();
     dWork = T.decide;
     $$('#work button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.v === dWork)); });
     try { localStorage.setItem('l2c-example', id); } catch (e) {}
-    drawProblem(); drawHelpers(); drawSubmit(); drawDecide();
+    drawProblem(); drawHelpers(); drawSubmit(); drawMem(); drawDecide();
   }
   var PICKS = ['climate', 'md', 'genomics', 'ml', 'social'];
   $('#picks').innerHTML = PICKS.map(function (id) { var t = THEMES[id]; return '<button class="pick" data-v="' + id + '"><b>' + t.name + '</b><span class="who">' + t.who + '</span><span class="prob">' + t.prob + '</span></button>'; }).join('') +
     '<button class="pick other" data-v="climate"><b>Something else</b><span class="who">Any field</span><span class="prob">Use the weather example. The ideas are similar in every field.</span></button>';
   var intro = $('#intro');
+  function closeIntro() { intro.hidden = true; $('#open-intro').focus(); }
   $$('#picks button').forEach(function (b) { b.addEventListener('click', function () { applyTheme(b.dataset.v); intro.hidden = true; show('problem'); }); });
-  $('#open-intro').addEventListener('click', function () { intro.hidden = false; });
+  $('#open-intro').addEventListener('click', function () { intro.hidden = false; $('#close-intro').hidden = false; $('#picks button').focus(); });
+  $('#close-intro').addEventListener('click', closeIntro);
+  intro.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('#close-intro').hidden) closeIntro(); });
   var saved = 'climate';
   try { saved = localStorage.getItem('l2c-example') || 'climate'; } catch (e) {}
   drawLid(); drawTalk(); drawFabric(); drawTurn();
@@ -1012,6 +1218,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
   var startTab = (location.hash || '').replace('#', '');
   intro.hidden = !!startTab;
   show(startTab);
+  if (!intro.hidden) { var fp = $('#picks button'); if (fp) fp.focus(); }
 })();
 </script>
 </body>

@@ -4,19 +4,20 @@ An interactive introduction to research computing for graduate students and othe
 
 **Start**
 1. **Why scale up.** Make the forecast grid finer and see how quickly the work grows.
+2. **Will it fit.** See why more cores do not add memory, what running out of memory looks like, and how splitting data across nodes helps.
 
 **Bigger laptop (ICRN)**
-2. **ICRN.** Illinois Computes Research Notebooks run at about the speed of one core, but there is nothing to install and they keep running after you close your laptop (up to 24 hours).
+3. **ICRN.** Illinois Computes Research Notebooks run at about the speed of one core, but there is nothing to install and they keep running after you close your laptop (up to 24 hours).
 
 **Cluster**
-3. **Parallel jobs.** Add cores across nodes. A job array speeds up almost perfectly, and a single large MPI job does not.
-4. **Communication.** Split a map into patches and see how the halo exchange cuts into the speedup.
-5. **Job placement.** Run the same job on one node or spread across nodes that share the network.
-6. **Batch jobs.** Write a job script, submit it, wait in the queue, run, and collect the output.
-7. **Sizing a job.** Meet a 30-hour deadline within a 3,000 core-hour allocation, and see how parallel efficiency falls as you add cores.
+4. **Parallel jobs.** Add cores across nodes. A job array finishes all its pieces sooner, while each piece still takes as long. A single large MPI job speeds up only if the code is written for it.
+5. **Communication.** Split a map into patches and see how the halo exchange cuts into the speedup.
+6. **Job placement.** Run the same job on one node or spread across nodes that share the network.
+7. **Batch jobs.** Write a job script, submit it, wait in the queue, run, and collect the output.
+8. **Sizing a job.** Meet a 30-hour deadline, counting queue wait, within a 3,000 core-hour allocation, and see how parallel efficiency falls as you add cores.
 
 **Decide**
-8. **Which resource.** Pick the kind of work and how much of it, and see whether your laptop, ICRN, the Illinois Campus Cluster, Delta, DeltaAI, Radiant or campus cPanel web hosting fits best. Examples range from parameter sweeps and AI training to sharing an R Shiny app.
+9. **Which resource.** Pick the kind of work and how much of it, get one next step with a link, and see whether your laptop, ICRN, the Illinois Campus Cluster, Delta, DeltaAI, Radiant or campus cPanel web hosting fits best. Examples range from parameter sweeps and AI training to sharing an R Shiny app.
 
 Each step fits on one screen on a laptop display. Use the tabs, the Back and Next buttons, or the arrow keys. "Words to know" opens a glossary.
 
