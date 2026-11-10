@@ -205,6 +205,9 @@ svg { display: block; width: 100%; height: auto; max-height: 100%; }
 .mbar .fill.over { background: repeating-linear-gradient(45deg, var(--il-altgeld) 0 4px, #fff 4px 8px); }
 pre.term { margin: 0; background: var(--il-storm-10); color: #fff; padding: 10px 14px; font: 13px/1.6 var(--f-code); border-left: 4px solid var(--il-altgeld); overflow-x: auto; }
 
+.learn { margin: 4px 0 0; font-size: 0.85rem; line-height: 1.35; border-top: 1px solid var(--line); padding-top: 4px; }
+.learn span { font-weight: 700; color: var(--il-blue); margin-right: 4px; }
+.learn small { color: var(--muted); }
 /* next step on Decide */
 .nextstep { border-left: 5px solid var(--il-prairie); background: #fff; outline: 1px solid var(--line); padding: 8px 12px; display: flex; flex-direction: column; gap: 6px; }
 .nextstep .btn { align-self: flex-start; text-decoration: none; display: inline-block; }
@@ -340,6 +343,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
         <div class="readouts" id="p-ro"></div>
         <p class="note" id="p-note"></p>
         <p class="say" id="p-say"></p>
+        <p class="learn"><span>Learn this</span> <a href="https://trainingdesktop.web.illinois.edu/#/tile/course-112" target="_blank" rel="noopener">How to Use the Linux Command Line</a> <small>(Learn@NCSA)</small></p>
       </div>
       <div class="right"><div class="fit"><canvas class="map" id="cv" width="400" height="400" role="img" aria-label="A picture of the problem at the chosen size"></canvas></div></div>
     </section>
@@ -363,6 +367,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
           <li>Reading the data in chunks often avoids needing a bigger machine at all.</li>
         </ul></div>
         <p class="say" id="mem-say"></p>
+        <p class="learn"><span>Learn this</span> <a href="https://trainingdesktop.web.illinois.edu/#/tile/course-71" target="_blank" rel="noopener">Using an HPC Cluster for Scientific Applications</a> <small>(Learn@NCSA)</small></p>
       </div>
       <div class="right">
         <div class="mrows" id="mrows"></div>
@@ -390,6 +395,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
         <div class="seg" id="lid" role="group" aria-label="Laptop lid"><button data-v="open" aria-pressed="true">Laptop stays open</button><button data-v="closed">Close the lid at hour 2</button></div>
         <p class="say" id="i-say"></p>
         <p class="note">Free for UIUC researchers. Limits change; check the <a href="https://icrn.ncsa.illinois.edu/" target="_blank" rel="noopener">ICRN page</a>.</p>
+        <p class="learn"><span>Learn this</span> <a href="https://trainingdesktop.web.illinois.edu/#/tile/course-114" target="_blank" rel="noopener">Interactive Jupyter Notebooks using ICRN</a> <small>(Learn@NCSA)</small></p>
       </div>
       <div class="right">
         <svg id="lidviz" viewBox="0 0 600 250" role="img" aria-label="Timeline of the same run on a laptop, on ICRN, and on a cluster"></svg>
@@ -419,6 +425,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
           <dt>Across nodes</dt><dd>needs MPI or a similar library</dd>
         </dl></div>
         <p class="say" id="h-say"></p>
+        <p class="learn"><span>Learn this</span> <a href="https://trainingdesktop.web.illinois.edu/#/tile/course-40" target="_blank" rel="noopener">Parallel Computing on High-Performance Systems</a> <small>(Learn@NCSA)</small></p>
       </div>
       <div class="right"><div class="rooms" id="rooms" aria-hidden="true"></div><div class="dotkey" aria-hidden="true"><span class="dw">working</span><span class="di">assigned but idle</span><span class="df">not requested</span></div></div>
     </section>
@@ -447,6 +454,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
           <li>Time a few short runs before requesting many cores (see <strong>Sizing a job</strong>).</li>
         </ul></div>
         <p class="say" id="m-say"></p>
+        <p class="learn"><span>Learn this</span> <a href="https://trainingdesktop.web.illinois.edu/#/tile/course-72" target="_blank" rel="noopener">Getting Started with MPI</a> <small>(Learn@NCSA)</small></p>
       </div>
       <div class="right">
         <div class="fit"><svg id="map" viewBox="0 0 400 400" style="max-width:min(440px, calc(100dvh - 330px))" role="img" aria-label="A map cut into patches, one per core"></svg></div>
@@ -469,6 +477,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
           <li>A slower run on another day is often placement or network traffic.</li>
         </ul></div>
         <p class="say" id="j-say"></p>
+        <p class="learn"><span>Learn this</span> <a href="https://trainingdesktop.web.illinois.edu/#/tile/course-97" target="_blank" rel="noopener">Interactive Jobs and Partitions</a> <small>(Learn@NCSA)</small></p>
       </div>
       <div class="right"><svg id="fabric" viewBox="0 0 640 270" role="img" aria-label="Four nodes connected by a shared network"></svg></div>
     </section>
@@ -482,6 +491,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
         <p class="try">Try: step through the job</p>
         <div class="seg" id="stage" role="group" aria-label="Job stage"></div>
         <p class="say" id="s-say"></p>
+        <p class="learn"><span>Learn this</span> <a href="https://trainingdesktop.web.illinois.edu/#/tile/course-39" target="_blank" rel="noopener">Getting Started on the Illinois Campus Cluster</a> <small>(Learn@NCSA)</small></p>
       </div>
       <div class="right">
         <pre class="script" id="script" aria-label="A simplified Slurm job script"></pre>
@@ -504,6 +514,7 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
           <dt>The chart on the right</dt><dd>a scaling study</dd>
         </dl></div>
         <p class="say" id="t-say"></p>
+        <p class="learn"><span>Learn this</span> <a href="https://trainingdesktop.web.illinois.edu/#/tile/course-44" target="_blank" rel="noopener">Introduction to Performance Tools</a> <small>(Learn@NCSA)</small></p>
       </div>
       <div class="right">
         <div>
@@ -1100,6 +1111,13 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
   seg('work', function (v) { dWork = v; drawDecide(); });
   seg('scale', function (v) { dScale = v; drawDecide(); });
   var CONSULT_URL = 'mailto:help@ncsa.illinois.edu';
+  // The front door turns these answers into a path of Learn@NCSA courses and live workshops (catalog/paths.yaml
+  // in keeley4/ncsa-training-desktop). Only these ids go in the link.
+  var FRONT_DOOR = 'https://trainingdesktop.web.illinois.edu/';
+  function pathUrl(best) {
+    return FRONT_DOOR + '#/path?' + ['work=' + dWork, 'scale=' + dScale, 'fit=' + best, 'ex=' + (T.id || 'climate'),
+      'par=' + par, 'from=l2c'].join('&');
+  }
   var showOthers = false;
   $('#others').addEventListener('click', function () { showOthers = !showOthers; drawDecide(); });
   function card(x, cls) {
@@ -1118,6 +1136,8 @@ dialog::backdrop { background: rgba(19,41,75,0.55); }
     var consult = 'Not sure? <a href="' + CONSULT_URL + '">Contact NCSA System Support</a>.';
     $('#nextstep').innerHTML = '<span class="hpc-h" style="color:var(--il-prairie)">Your next step</span><p>' + B.step + '</p>' +
       (B.go ? '<a class="btn primary" href="' + B.go + '" target="_blank" rel="noopener">Go to ' + B.go.replace(/^https:\/\//, '').replace(/\/$/, '') + '</a>' : '') +
+      (best === 'rad' || best === 'cpanel' ? '' : '<a class="btn" href="' + pathUrl(best) + '" target="_blank" rel="noopener">See what to learn next</a>' +
+        '<p class="note">Opens your learning path on NCSA Training: courses and live workshops for this kind of work. Sign in there to save it.</p>') +
       '<p class="note">' + consult + '</p>';
     var W = WORK.filter(function (w) { return w.id === dWork; })[0], Sc = SCALE.filter(function (w) { return w.id === dScale; })[0];
     $('#summary').value = 'Compute needs summary (From Laptop to Cluster)\n' +
