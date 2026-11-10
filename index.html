@@ -67,6 +67,10 @@ main > .wrap { height: 100%; padding-block: 14px; }
 .mod { height: 100%; display: grid; grid-template-columns: minmax(300px, 0.95fr) minmax(320px, 1.05fr); gap: 28px; }
 .left { display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0; }
 .right { min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 10px; justify-content: flex-start; padding-top: 12px; }
+/* Never squeeze a block below its content: a squeezed .say spilled over the "Learn this" line below it.
+   The panel scrolls instead (main has overflow: auto). Only the visual (.fit) may shrink to fit. */
+.left > *, .right > * { flex-shrink: 0; }
+.right > .fit { flex-shrink: 1; }
 .track { align-self: flex-start; font: 700 0.68rem var(--f-head); letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 8px; color: var(--il-blue); background: var(--il-storm-95); }
 .track.lap { background: var(--il-orange); color: var(--il-blue); }
 .track.clu { background: var(--il-blue); color: #fff; }
